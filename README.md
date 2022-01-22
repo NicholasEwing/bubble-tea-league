@@ -23,5 +23,5 @@ The BTL stats tracker is currently a static website, here's what we use to make 
 * CSS3
 * JavaScript
 * [Amazon Web Services](https://aws.amazon.com/)
-* [Tailwind CSS](https://tailwindcss.com/)
+* [Tailwind CSS](https://tailwindcss.com/), notably using [TailBlocks](https://tailblocks.cc/) to save time on design
 * [Riot Games Tournament API](https://developer.riotgames.com/apis#tournament-stub-v4)
