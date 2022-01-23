@@ -1,4 +1,4 @@
-name: Upload website to live environment
+name: Deploy to live URL
 
 on:
   push:

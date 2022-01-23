@@ -1,4 +1,4 @@
-name: Upload website to development environment
+name: Deploy to test URL
 
 on:
   push:
