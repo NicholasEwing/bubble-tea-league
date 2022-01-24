@@ -10,7 +10,7 @@ BTL is a community-organized League of Legends tournament league managed by a gr
 
 ## Try it out!
 
-[Click here to view the live site](http://bubble-tea-league.s3-website-us-east-1.amazonaws.com/)
+[Click here to view the live site](https://www.bubble-tea-league.com)
 
 ## Contributors
 
@@ -61,7 +61,7 @@ Once your pull request has been merged into `development`, check the [Bubble Tea
 
 Finally, once we've got changes on the `development` branch we want to go live to the world, we'll make a pull request from `development` -> `master`.
 
-Any code changes pushed or merged into `master` will be automatically deployed to the [official BTL site](http://bubble-tea-league.s3-website-us-east-1.amazonaws.com), so make sure it's tested and working on both desktop and mobile.
+Any code changes pushed or merged into `master` will be automatically deployed to the [official BTL site](https://www.bubble-tea-league.com), so make sure it's tested and working on both desktop and mobile.
 
 That's it!! :tada::tada:
 
