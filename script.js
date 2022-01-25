@@ -7,12 +7,12 @@ function loadNavbar() {
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
       </svg>
-      <a href="" class="text-white text-xl font-medium hover:text-gray-300"><span class="ml-3 text-xl">Bubble Tea League Stats Tracker</span></a>
+      <a href="./index.html" class="text-white text-xl font-medium hover:text-gray-300"><span class="ml-3 text-xl">Bubble Tea League Stats Tracker</span></a>
     </a>
     <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-      <a href="/matches.html"class="mr-5 hover:text-white">Matches</a>
-      <a href="/players.html"class="mr-5 hover:text-white">Players</a>
-      <a href="/contact.html"class="mr-5 hover:text-white">Contact</a>
+      <a href="./matches.html"class="mr-5 hover:text-white">Matches</a>
+      <a href="./players.html"class="mr-5 hover:text-white">Players</a>
+      <a href="./contact.html"class="mr-5 hover:text-white">Contact</a>
     </nav>
     <a href="https://github.com/NicholasEwing/bubble-tea-league" target="__blank">
       <button class="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:bg-gray-700 hover:text-white rounded text-base mt-4 md:mt-0">
@@ -36,4 +36,25 @@ function loadNavbar() {
   `;
 }
 
+function getUrlParams() {
+  const queryString = window.location.search;
+  return new URLSearchParams(queryString);
+}
+
+function parseTeamName() {
+  // check if we're on the team page
+  const onTeamPage = window.location.href.indexOf("team.html") > 0;
+
+  // only run function if we're on the team page
+  if (onTeamPage) {
+    const urlParams = getUrlParams();
+    const urlTeamName = urlParams.get("teamName");
+    const teamName = urlTeamName.match(/[A-Z][a-z]+/g).join(" ");
+
+    const teamNameEl = document.querySelector(".team-name");
+    teamNameEl.textContent = teamName;
+  }
+}
+
 loadNavbar();
+parseTeamName();
