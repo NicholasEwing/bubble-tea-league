@@ -14,17 +14,18 @@ BTL is a community-organized League of Legends tournament league managed by a gr
 
 ## Contributors
 
-This website is being developed and maintained by [Nicholas Ewing](https://github.com/NicholasEwing) and Chase Hunt.
+This website is being developed and maintained by [Nicholas Ewing](https://github.com/NicholasEwing) and [Chase Hunt](https://github.com/ChaseH38).
 
 ## Technologies used
 
 The BTL stats tracker is currently a static website, here's what we use to make it work:
-* HTML5
-* CSS3
-* JavaScript
-* [Amazon Web Services](https://aws.amazon.com/) & [Github Actions](https://github.com/features/actions)
-* [Tailwind CSS](https://tailwindcss.com/), notably using [TailBlocks](https://tailblocks.cc/) to save time on design
-* [Riot Games Tournament API](https://developer.riotgames.com/apis#tournament-stub-v4)
+
+- HTML5
+- CSS3
+- JavaScript
+- [Amazon Web Services](https://aws.amazon.com/) & [Github Actions](https://github.com/features/actions)
+- [Tailwind CSS](https://tailwindcss.com/), notably using [TailBlocks](https://tailblocks.cc/) to save time on design
+- [Riot Games Tournament API](https://developer.riotgames.com/apis#tournament-stub-v4)
 
 ## How to Contribute
 
@@ -35,6 +36,7 @@ If there's something you'd like to work on that doesn't have an issue, then [cre
 Next, make sure you've `git pull`'d on both the `master` and `development` branches. Then, create a new branch off of `development` to start working on your issue.
 
 Example of updating branches:
+
 ```
 git checkout master
 git pull
@@ -43,6 +45,7 @@ git pull
 ```
 
 Example of creating new branch off `development`:
+
 ```
 git checkout development
 git pull
