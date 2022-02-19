@@ -25,6 +25,8 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
-    "mysql2": "^2.3.3"
+    "dotenv": "^16.0.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.16.2"
   }
 }
