@@ -90,7 +90,7 @@ const Match = sequelize.define("Match", {
 });
 
 // - ✅ match rounds
-const MatchRound = sequelize.define("Match Round", {
+const MatchRound = sequelize.define("MatchRound", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -112,12 +112,87 @@ MatchRound.belongsTo(Match);
 
 // ✅ connect blue / red teams and winner to a match round
 Match.belongsTo(Team, { as: "winner" });
-Match.belongsTo(Team, { as: "redTeam", foreignKey: { allowNull: false } });
-Match.belongsTo(Team, { as: "blueTeam", foreignKey: { allowNull: false } });
+Match.belongsTo(Team, { as: "red team", foreignKey: { allowNull: false } });
+Match.belongsTo(Team, { as: "blue team", foreignKey: { allowNull: false } });
 
-// connect team stats to match round
+// - ✅ match round team stats
 
-// - match round player stats
+const MatchRoundTeamStats = sequelize.define("MatchRoundTeamStats", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  kills: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  goldEarned: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  towersDestroyed: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  heraldsKilled: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  dragonsKilled: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+});
+
+// ✅ connect team stats to match round
+MatchRoundTeamStats.belongsTo(MatchRound, { foreignKey: { allowNull: false } });
+
+// ✅ connect team stats to team
+MatchRoundTeamStats.belongsTo(Team, { foreignKey: { allowNull: false } });
+
+// - ✅ match round player stats
+const MatchRoundPlayerStats = sequelize.define("MatchRoundPlayerStats", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  kills: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  assists: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  deaths: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  champLevel: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  goldEarned: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  visionScore: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+});
+
+// ✅ connect player stats to match round
+MatchRoundPlayerStats.belongsTo(MatchRound, {
+  foreignKey: { allowNull: false },
+});
+
+// ✅ connect player stats to player
+MatchRoundPlayerStats.belongsTo(Player, { foreignKey: { allowNull: false } });
 
 // add a team to the db
 
@@ -130,7 +205,6 @@ Match.belongsTo(Team, { as: "blueTeam", foreignKey: { allowNull: false } });
 async function initDb() {
   try {
     const result = await sequelize.sync({ force: true }); // remove force: true for production
-    console.log(result);
     console.log("everything worked!");
   } catch (e) {
     console.error(e);
