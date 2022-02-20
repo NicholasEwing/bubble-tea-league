@@ -1,4 +1,6 @@
 const sequelize = require("./sequelize");
+const { generatePagesFromDB } = require("./ssr/generatePages");
+const { reset } = require("./database/setup");
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -16,10 +18,9 @@ async function init() {
   await assertDatabaseConnectionOk();
 
   try {
-    // uncomment sync sequelize to create any new models
-    // await sequelize.sync({ force: true });
-    // add a team to the db
-    // make a new team page based off the team name
+    // reset();
+    generatePagesFromDB(sequelize);
+
     // add 5 teams to the db
     // make 5 new team pages based off those team names
   } catch (error) {
