@@ -11,10 +11,10 @@ const formatFilename = (filename) => {
 };
 
 // slot info into template page
-const buildHTML = (template, dataValues) => {
+const buildHTML = (template, data) => {
   const source = fs.readFileSync(template, "utf8").toString();
   const templatedPage = Handlebars.compile(source);
-  const output = templatedPage(dataValues);
+  const output = templatedPage(data);
 
   return output;
 };
