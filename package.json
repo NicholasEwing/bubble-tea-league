@@ -1,0 +1,33 @@
+{
+  "name": "bubble-tea-league",
+  "version": "1.0.0",
+  "description": "Bubble Tea League website",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicholasEwing/bubble-tea-league.git"
+  },
+  "engines": {
+    "node": "=14"
+  },
+  "author": "Nicholas Ewing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicholasEwing/bubble-tea-league/issues"
+  },
+  "homepage": "https://github.com/NicholasEwing/bubble-tea-league#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "handlebars": "^4.7.7",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.16.2"
+  }
+}
