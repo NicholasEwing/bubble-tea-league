@@ -29,8 +29,6 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/BTL-Github-Actions
 
@@ -44,6 +42,7 @@ jobs:
         with:
           registry: ${{ steps.login-ecr.outputs.registry }}
           image_name: ${{ env.AWS_ECR_REPOSITORY_NAME }}
+          session: "${{ secrets.AWS_SESSION_TOKEN }}"
           build_extra_args: >-
             --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }}
             --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }}
