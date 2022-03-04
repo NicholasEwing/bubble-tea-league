@@ -5,10 +5,10 @@ const applyAssociations = require("./applyAssociations");
 // Register AWS DB creds and create new sequelize instance
 const sequelize = new Sequelize(
   "bubble_tea_league",
-  process.env.USERNAME,
-  process.env.PASSWORD,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.HOST,
+    host: process.env.RDS_HOST,
     port: 3306,
     dialect: "mysql",
   }
