@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: read
+  # pull-requests: read
   id-token: write
 
 jobs:
@@ -35,10 +35,6 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Am I logged in to ECR?
-        id: test-login-ecr
-        run: aws sts get-caller-identity
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
