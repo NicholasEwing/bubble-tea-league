@@ -35,18 +35,15 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: btl-stats
-        run: |
-          docker build \
-            --build-arg DB_USERNAME="${{ secrets.DB_USERNAME }}" \
-            --build-arg DB_USERNAME="${{ secrets.DB_PASSWORD }}" \
-            --build-arg RDS_HOST="${{ secrets.RDS_HOST }}" \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }} .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}"
-
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          registry: ${{ steps.login-ecr.outputs.registry }}
+          image_name: ${{ env.AWS_ECR_REPOSITORY_NAME }}
+          build_extra_args: >-
+            --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }}
+            --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            --build-arg RDS_HOST=${{ secrets.RDS_HOST }}
+          push_image_and_stages: true
       - name: Deploy to AWS Lambda
         run: |
           aws lambda update-function-code \
