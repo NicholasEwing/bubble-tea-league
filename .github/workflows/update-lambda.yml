@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: write
-  pull-requests: read
+  # pull-requests: read
   id-token: write
 
 jobs:
