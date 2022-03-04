@@ -36,13 +36,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Am I logged in to ECR?
+        id: test-login-ecr
+        run: aws sts get-caller-identity
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         uses: whoan/docker-build-with-cache-action@v5
         with:
           registry: ${{ steps.login-ecr.outputs.registry }}
           image_name: ${{ env.AWS_ECR_REPOSITORY_NAME }}
-          session: "${{ secrets.AWS_SESSION_TOKEN }}"
           build_extra_args: >-
             --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }}
             --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }}
