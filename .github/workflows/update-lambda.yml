@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ECR_IMAGE_TAG: latest
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_LAMBDA_FUNC_NAME: btl-stats-lamda
+      AWS_ECR_REPOSITORY_NAME: btl-stats
 
     steps:
       - name: checkout
@@ -50,5 +53,4 @@ jobs:
           --function-name ${{ env.AWS_LAMBDA_FUNC_NAME }} \
           --image-uri "${{ secrets.AWS_ECR_IMAGE_URI }}:${{ env.ECR_IMAGE_TAG }}"
         env:
-          AWS_LAMBDA_FUNC_NAME: btl-stats-lambda
-          AWS_DEFAULT_REGION: us-east-1
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
