@@ -46,6 +46,7 @@ jobs:
         with:
           registry: ${{ steps.login-ecr.outputs.registry }}
           image_name: ${{ env.AWS_ECR_REPOSITORY_NAME }}
+          session: "${{ env.AWS_SESSION_TOKEN }}"
           build_extra_args: >-
             --build-arg DB_USERNAME=${{ secrets.DB_USERNAME }}
             --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }}
