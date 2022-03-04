@@ -14,7 +14,7 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  update_lambda:
     runs-on: ubuntu-latest
     env:
       ECR_IMAGE_TAG: latest
