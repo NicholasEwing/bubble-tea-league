@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ECR_IMAGE_TAG: latest
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_LAMBDA_FUNC_NAME: btl-stats-lambda
+      AWS_ECR_REPOSITORY_NAME: btl-stats
 
     steps:
       - name: checkout
@@ -26,7 +29,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}}
           role-to-assume: arn:aws:iam::846395320883:role/BTL-Github-Actions
 
       - name: Login to Amazon ECR
@@ -49,6 +52,3 @@ jobs:
           aws lambda update-function-code \
           --function-name ${{ env.AWS_LAMBDA_FUNC_NAME }} \
           --image-uri "${{ secrets.AWS_ECR_IMAGE_URI }}:${{ env.ECR_IMAGE_TAG }}"
-        env:
-          AWS_LAMBDA_FUNC_NAME: btl-stats-lambda
-          AWS_DEFAULT_REGION: us-east-1
