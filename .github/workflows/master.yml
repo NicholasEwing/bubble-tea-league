@@ -55,11 +55,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: btl-stats
         run: |
-          FROM public.ecr.aws/lambda/nodejs:12
-          COPY package.json package-lock.json ${LAMBDA_TASK_ROOT}/
-          RUN npm ci --production
-          COPY . /${LAMBDA_TASK_ROOT}
-          CMD [ "app.handler" ]
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }} .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}"
       - name: Deploy to AWS Lambda
