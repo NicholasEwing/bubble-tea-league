@@ -18,7 +18,7 @@ const createTable = async () => {
       password,
     });
 
-    await connection.query(`CREATE DATABASE IF NOT EXISTS btl-db`);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS btl_db`);
   } catch (error) {
     console.log("Error creating table.");
     console.log(error);
@@ -29,7 +29,7 @@ createTable();
 
 // Register AWS DB creds and create new sequelize instance
 const sequelize = new Sequelize(
-  "btl-db",
+  "btl_db",
   process.env.DB_USERNAME,
   process.env.DB_PASSWORD,
   {
