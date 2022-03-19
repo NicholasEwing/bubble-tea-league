@@ -13,7 +13,7 @@
     "url": "git+https://github.com/NicholasEwing/bubble-tea-league.git"
   },
   "engines": {
-    "node": "=14"
+    "node": ">=14"
   },
   "author": "Nicholas Ewing",
   "license": "ISC",
