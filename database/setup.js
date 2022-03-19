@@ -17,10 +17,10 @@ const reset = async () => {
       { teamName: "True Heart Destiny" },
     ]);
 
+    // Create players
     // const teamIds = await Team.findAll({ attributes: ["id"] });
     // console.log(teamIds);
 
-    // Create players
     await Player.bulkCreate([
       {
         summonerName: "Nicholas Ewing",
