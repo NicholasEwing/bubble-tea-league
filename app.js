@@ -1,6 +1,8 @@
+const app = require("./express/app");
 const sequelize = require("./sequelize");
 const { generatePagesFromDB } = require("./ssr/generatePages");
 const { reset } = require("./database/setup");
+const PORT = 8080;
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -15,15 +17,19 @@ async function assertDatabaseConnectionOk() {
 }
 
 exports.handler = async function (event, context) {
-  // TODO: secure your RDS and set up sufficient perms
   await assertDatabaseConnectionOk();
 
   try {
-    // reset();
+    reset();
     // generatePagesFromDB(sequelize);
     console.log("IM RUNNING FROM THE LAMBDA");
     console.log("EVENT: \n" + JSON.stringify(event, null, 2));
-    return context.logStreamName;
+
+    app.listen(PORT, () => {
+      console.log(
+        `Express server started on port ${PORT}. Try hitting some routes!`
+      );
+    });
 
     // add 5 teams to the db
     // make 5 new team pages based off those team names

@@ -18,8 +18,6 @@ const reset = async () => {
     ]);
 
     // Create players
-    // const teamIds = await Team.findAll({ attributes: ["id"] });
-    // console.log(teamIds);
 
     await Player.bulkCreate([
       {
