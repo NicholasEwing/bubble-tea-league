@@ -19,7 +19,8 @@ const createTable = async () => {
     });
 
     await connection.query(`CREATE DATABASE IF NOT EXISTS btl_db`);
-    return initSequelize();
+    const sequelize = initSequelize();
+    return sequelize;
   } catch (error) {
     console.log("Error creating table.");
     console.log(error);
