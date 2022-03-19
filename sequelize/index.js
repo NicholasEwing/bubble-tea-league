@@ -3,20 +3,29 @@ const mysql = require("mysql2/promise");
 const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 
-// Create table if it doesn't already exist
-const host = process.env.RDS_HOST;
-const port = 3306;
-const user = process.env.DB_USERNAME;
-const password = process.env.DB_PASSWORD;
+const createTable = async () => {
+  try {
+    // Create table if it doesn't already exist
+    const host = process.env.RDS_HOST;
+    const port = 3306;
+    const user = process.env.DB_USERNAME;
+    const password = process.env.DB_PASSWORD;
 
-const connection = await mysql.createConnection({
-  host,
-  port,
-  user,
-  password,
-});
+    const connection = await mysql.createConnection({
+      host,
+      port,
+      user,
+      password,
+    });
 
-await connection.query(`CREATE DATABASE IF NOT EXISTS btl-db`);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS btl-db`);
+  } catch (error) {
+    console.log("Error creating table.");
+    console.log(error);
+  }
+};
+
+createTable();
 
 // Register AWS DB creds and create new sequelize instance
 const sequelize = new Sequelize(
