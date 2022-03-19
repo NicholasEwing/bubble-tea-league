@@ -19,7 +19,7 @@ exports.handler = async function (event, context) {
   await assertDatabaseConnectionOk();
 
   try {
-    // reset();
+    reset();
     // generatePagesFromDB(sequelize);
     console.log("IM RUNNING FROM THE LAMBDA");
     console.log("EVENT: \n" + JSON.stringify(event, null, 2));
