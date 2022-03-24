@@ -18,8 +18,8 @@ jobs:
     env:
       ECR_IMAGE_TAG: latest
       AWS_DEFAULT_REGION: us-east-1
-      AWS_LAMBDA_FUNC_NAME: btl-stats-lambda
-      AWS_ECR_REPOSITORY_NAME: btl-stats
+      AWS_LAMBDA_FUNC_NAME: btl-api-lambda
+      AWS_ECR_REPOSITORY_NAME: btl-api
 
     steps:
       - name: checkout
