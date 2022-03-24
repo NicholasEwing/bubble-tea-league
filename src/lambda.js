@@ -17,6 +17,8 @@ function assertDatabaseConnectionOk() {
 async function setup(event, context) {
   await assertDatabaseConnectionOk();
   serverlessExpressInstance = serverlessExpress({ app });
+  console.log("--------------- Serverless express instance: ---------------");
+  console.log(serverlessExpressInstance);
   return serverlessExpressInstance(event, context);
 }
 
