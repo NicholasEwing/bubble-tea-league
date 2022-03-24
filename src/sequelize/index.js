@@ -2,17 +2,27 @@ require("dotenv").config();
 const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 
+let sequelize;
+
 // Register AWS DB creds and create new sequelize instance
-const sequelize = new Sequelize(
-  "btl_db",
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.RDS_HOST,
+if (process.env.NODE_ENV === "production") {
+  sequelize = new Sequelize(
+    "btl_db",
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+      host: process.env.RDS_HOST,
+      port: 3306,
+      dialect: "mysql",
+    }
+  );
+} else {
+  sequelize = new Sequelize("btl_db", "root", process.env.LOCAL_DB_PASSWORD, {
+    host: "localhost",
     port: 3306,
     dialect: "mysql",
-  }
-);
+  });
+}
 
 // Define all models and then attaches them to sequelize.models
 const modelDefiners = [
