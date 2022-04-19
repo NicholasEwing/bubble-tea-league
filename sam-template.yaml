@@ -7,14 +7,17 @@ Parameters:
     Type: String
     Description: API Domain name
     Default: ""
+
   EcrImageUri:
     Type: String
     Description: ECR Image URI
     Default: "846395320883.dkr.ecr.us-east-1.amazonaws.com/btl-stats:latest"
+
   LambdaSecurityGroupId:
     Type: AWS::EC2::SecurityGroup::Id
     Description: Select the Security Group to use for the Lambda-functions
     Default: "sg-09970805fd9ecb3a4"
+
   LambdaFunctionName:
     Type: String
     Description: Name of Lambda function, this is set in package.json
