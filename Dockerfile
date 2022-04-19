@@ -12,4 +12,4 @@ ENV DB_USERNAME $DB_USERNAME
 ENV DB_PASSWORD $DB_PASSWORD
 ENV RDS_HOST $RDS_HOST
 
-CMD [ "lambda.handler" ]
+CMD [ "./src/lambda.handler" ]
