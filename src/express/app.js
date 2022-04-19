@@ -25,13 +25,6 @@ function makeHandlerAwareOfAsyncErrors(handler) {
   };
 }
 
-// We provide a root route just as an example
-app.get("/", (req, res) => {
-  res.send(
-    `hello there, this route doesn't do anything so go hit another one (:`
-  );
-});
-
 // We define the standard REST APIs for each route (if they exist).
 for (const [routeName, routeController] of Object.entries(routes)) {
   if (routeController.getAll) {
