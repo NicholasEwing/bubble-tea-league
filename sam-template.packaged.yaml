@@ -35,7 +35,7 @@ Resources:
       PackageType: Image
       ImageUri:
         Ref: EcrImageUri
-      CodeUri: s3://bubble-tea-league/a93126ef5ad832fd1df101324178bd20
+      CodeUri: s3://bubble-tea-league/e1be1e6a14fb1ccbc7dcd13571b73f16
       Role: arn:aws:iam::846395320883:role/lambda-vpc-role
       VpcConfig:
         SubnetIds:
