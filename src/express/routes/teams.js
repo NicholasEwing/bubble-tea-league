@@ -2,8 +2,12 @@ const { models } = require("../../sequelize");
 const { getIdParam } = require("../helpers");
 
 async function getAll(req, res) {
-  const teams = await models.Team.findAll();
-  res.status(200).json(teams);
+  try {
+    const teams = await models.Team.findAll();
+    res.status(200).json(teams);
+  } catch (error) {
+    res.status(404).send(error);
+  }
 }
 
 async function getById(req, res) {

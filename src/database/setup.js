@@ -42,6 +42,8 @@ const reset = async () => {
         TeamId: 4,
       },
     ]);
+
+    return "Reset finished";
   } catch (error) {
     console.log(error);
   }

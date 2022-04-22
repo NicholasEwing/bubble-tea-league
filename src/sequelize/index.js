@@ -16,6 +16,12 @@ if (process.env.NODE_ENV === "production") {
       port: 3306,
       dialect: "mysql",
       dialectModule: mysql2, // Needed to fix sequelize issues with WebPack
+      // pool: {
+      //   max: 5,
+      //   min: 0,
+      //   idle: 20000,
+      //   acquire: 20000,
+      // },
     }
   );
 } else {
@@ -43,6 +49,26 @@ for (const modelDefiner of modelDefiners) {
 
 // Apply our associations to all models
 applyAssociations(sequelize);
+
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log("Connection has been established successfully.");
+//   })
+//   .catch((err) => {
+//     console.log("Unable to connect to the database:", err);
+//   });
+
+// sequelize
+//   .getQueryInterface()
+//   .showAllSchemas()
+//   .then((tableObj) => {
+//     console.log("// Tables in database", "==========================");
+//     console.log(tableObj);
+//   })
+//   .catch((err) => {
+//     console.log("showAllSchemas ERROR", err);
+//   });
 
 // export the sequelize instance to be used elsewhere
 module.exports = sequelize;
