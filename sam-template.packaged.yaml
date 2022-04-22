@@ -6,14 +6,6 @@ Parameters:
     Type: String
     Description: API Domain name
     Default: ''
-  EcrImageUri:
-    Type: String
-    Description: ECR Image URI
-    Default: 846395320883.dkr.ecr.us-east-1.amazonaws.com/btl-stats:latest
-  LambdaSecurityGroupId:
-    Type: AWS::EC2::SecurityGroup::Id
-    Description: Select the Security Group to use for the Lambda-functions
-    Default: sg-09970805fd9ecb3a4
   LambdaFunctionName:
     Type: String
     Description: Name of Lambda function, this is set in package.json
@@ -30,19 +22,12 @@ Resources:
   ExpressLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
+      CodeUri: s3://bubble-tea-league/d42bbe442dc3064a9ebfb17b88c8888b
+      Handler: main.handler
+      MemorySize: 1024
+      Runtime: nodejs14.x
       FunctionName:
         Ref: LambdaFunctionName
-      PackageType: Image
-      ImageUri:
-        Ref: EcrImageUri
-      CodeUri: s3://bubble-tea-league/e1be1e6a14fb1ccbc7dcd13571b73f16
-      Role: arn:aws:iam::846395320883:role/lambda-vpc-role
-      VpcConfig:
-        SubnetIds:
-        - subnet-0f9e6a71984eabe86
-        SecurityGroupIds:
-        - Ref: LambdaSecurityGroupId
-      MemorySize: 1024
       Timeout: 30
       Events:
         ProxyApiRoot:
