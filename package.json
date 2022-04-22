@@ -20,7 +20,7 @@
     "deploy": "cross-var aws cloudformation deploy --template-file sam-template.packaged.yaml --stack-name $npm_package_config_cloudFormationStackName --capabilities CAPABILITY_NAMED_IAM --region $npm_package_config_region --parameter-overrides DomainName=$npm_package_config_domain",
     "package-deploy": "npm run build && npm run package && npm run deploy",
     "delete-stack": "cross-var aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
-    "setup": "npm install && (cross-var aws s3api get-bucket-location --bucket $npm_package_config_s3BucketName --region $npm_package_config_region || npm run create-bucket) && npm run package-deploy",
+    "setup": "npm install && npm update && (cross-var aws s3api get-bucket-location --bucket $npm_package_config_s3BucketName --region $npm_package_config_region || npm run create-bucket) && npm run package-deploy",
     "build": "webpack-cli"
   },
   "repository": {
@@ -40,7 +40,6 @@
     "copy-webpack-plugin": "^10.2.4",
     "cross-var": "^1.1.0",
     "nodemon": "^2.0.15",
-    "source-map-support": "^0.5.21",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   },
@@ -53,6 +52,8 @@
     "express": "^4.17.3",
     "handlebars": "^4.7.5",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.16.2"
+    "sequelize": "^6.16.2",
+    "source-map": "^0.7.3",
+    "source-map-support": "^0.5.21"
   }
 }

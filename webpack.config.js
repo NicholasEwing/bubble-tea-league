@@ -12,7 +12,11 @@ module.exports = {
     // library: 'serverlessExpressEdge',
     libraryTarget: "commonjs2",
   },
-  externals: fs.readdirSync("node_modules").filter((x) => {
-    return x !== ".bin";
-  }),
+  externals: ["pg-hstore"],
+  // externals: fs.readdirSync("node_modules").filter((x) => {
+  //   return x !== ".bin";
+  // }),
+  // optimization: {
+  //   concatenateModules: false,
+  // },
 };
