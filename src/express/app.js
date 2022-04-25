@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 
 const routes = {
   teams: require("./routes/teams"),
-  // players: require("./routes/players"),
+  players: require("./routes/players"),
   // matches: require("./routes/matches"),
   // Add more routes here...
   // items: require('./routes/items'),
