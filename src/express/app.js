@@ -5,6 +5,8 @@ const routes = {
   teams: require("./routes/teams"),
   players: require("./routes/players"),
   matches: require("./routes/matches"),
+  "match-rounds": require("./routes/match-rounds"),
+  seasons: require("./routes/seasons"),
   // Add more routes here like so...
   // items: require('./routes/items'),
 };
@@ -27,6 +29,8 @@ function makeHandlerAwareOfAsyncErrors(handler) {
 
 // We define the standard REST APIs for each route (if they exist).
 for (const [routeName, routeController] of Object.entries(routes)) {
+  // TODO: automatically convert camelCase routeNames to kebab-case
+  // i.e. matchRounds -> match-rounds
   if (routeController.getAll) {
     app.get(
       `/api/${routeName}`,
