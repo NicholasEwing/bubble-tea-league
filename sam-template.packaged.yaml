@@ -22,7 +22,7 @@ Resources:
   ExpressLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://bubble-tea-league/2a5a7b84faf8256c518607125845dc87
+      CodeUri: s3://bubble-tea-league/0e9b929d45720ef0b0a4dce55f52be63
       Handler: main.handler
       MemorySize: 1024
       Runtime: nodejs14.x
