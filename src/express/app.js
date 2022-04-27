@@ -7,6 +7,7 @@ const routes = {
   matches: require("./routes/matches"),
   "match-rounds": require("./routes/match-rounds"),
   seasons: require("./routes/seasons"),
+  provider: require("./routes/provider"),
   // Add more routes here like so...
   // items: require('./routes/items'),
 };
