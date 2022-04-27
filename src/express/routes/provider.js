@@ -18,7 +18,7 @@ async function create(req, res) {
     if (providerIds.length) {
       res.status(409).send("A provider ID already exists in the database.");
     } else {
-      const providerId = await createProviderId();
+      const providerId = await createProviderId2();
       await models.Provider.create({ providerId });
       res.status(201).send();
     }

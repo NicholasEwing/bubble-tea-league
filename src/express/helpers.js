@@ -1,4 +1,5 @@
 const https = require("https");
+const fetch = require("node-fetch");
 
 // A helper function to assert the request ID param is valid
 // and convert it to a number (since it comes as a string by default)
@@ -10,6 +11,40 @@ function getIdParam(req) {
   throw new TypeError(`Invalid ':id' param: "${id}"`);
 }
 
+// TODO: install node-fetch lmao and rewrite this
+async function createProviderId2() {
+  const ProviderRegistrationParameters = {
+    region: "NA",
+    url: process.env.BTL_MATCHES_ENDPOINT,
+  };
+
+  const res = await fetch(
+    "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers",
+    {
+      method: "post",
+      body: JSON.stringify(ProviderRegistrationParameters),
+      headers: {
+        "Content-Type": "application/json",
+        "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
+      },
+    }
+  );
+
+  if (res.statusCode < 200 || res.statusCode >= 300) {
+    throw new Error(`statuscode ${res.statusCode}`);
+  }
+
+  const providerId = await res.json();
+  return providerId;
+}
+
+// TODO: After that, ensure this thing BREAKS properly and WORKS properly
+
+// TODO: After that, make sure any existing providerIds are DELETED before making a new one
+
+// TODO: After that, make a new TOURNAMENT with the new providerId and store that on a Season record
+
+// TODO: Make sure you can create tournament codes when making a new match and attach it to the proper Season
 const createProviderId = () => {
   return new Promise((resolve, reject) => {
     const ProviderRegistrationParameters = JSON.stringify({
@@ -156,9 +191,10 @@ async function generateTournamentCodes(bestOf, tournamentId) {
   req.end();
 }
 
-module.exports = {
+module.export = {
   getIdParam,
   generateTournamentCodes,
   createProviderId,
+  createProviderId2,
   createTournament,
 };

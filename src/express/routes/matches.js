@@ -29,10 +29,25 @@ async function create(req, res) {
           `Bad request: ID should not be provided, since it is determined automatically by the database.`
         );
     } else {
+      // Before we make a match in our DB, we need to generate tournament codes for it
+
+      // TODO: Make sure these tournament codes come back correctly
+      const tournamentCodes = await generateTournamentCodes(
+        3,
+        process.env.TEST_TOURNAMENT_ID
+      );
+      console.log(
+        "---------------- WE GOT SOME TOURNAMENT CODES BOIZ ----------------"
+      );
+      console.log(tournamentCodes);
+
+      // TODO: Put these tourny codes in our DB so we know which codes go to which match
       await models.Match.create(req.body);
       res.status(201).end();
     }
   } catch (error) {
+    console.error("OH SHIT");
+    console.error(error);
     res.status(404).send(error);
   }
 }

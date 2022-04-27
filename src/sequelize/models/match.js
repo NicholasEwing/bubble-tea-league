@@ -2,11 +2,9 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Match", {
-    date: {
-      type: DataTypes.DATE,
-    },
     bestOf: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.ENUM,
+      values: [1, 3],
       allowNull: false,
     },
   });

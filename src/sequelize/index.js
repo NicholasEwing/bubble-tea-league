@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === "production") {
 // Define all models and then attaches them to sequelize.models
 const modelDefiners = [
   require("./models/team"),
+  require("./models/season"),
   require("./models/player"),
   require("./models/match"),
   require("./models/matchRound"),
