@@ -1,5 +1,6 @@
 const https = require("https");
-const fetch = require("node-fetch");
+const { default: fetch } = require("node-fetch");
+const provider = require("../sequelize/models/provider");
 
 // A helper function to assert the request ID param is valid
 // and convert it to a number (since it comes as a string by default)
@@ -21,7 +22,7 @@ async function createProviderId2() {
   const res = await fetch(
     "https://americas.api.riotgames.com/lol/tournament-stub/v4/providers",
     {
-      method: "post",
+      method: "POST",
       body: JSON.stringify(ProviderRegistrationParameters),
       headers: {
         "Content-Type": "application/json",
@@ -30,11 +31,18 @@ async function createProviderId2() {
     }
   );
 
-  if (res.statusCode < 200 || res.statusCode >= 300) {
-    throw new Error(`statuscode ${res.statusCode}`);
+  const providerId = await res.json();
+  console.log("provider id!", providerId);
+  console.log("provider id typeof", typeof providerId);
+  if (
+    (typeof providerId === "object" &&
+      providerId.hasOwnProperty("status") &&
+      providerId.status.status_code < 200) ||
+    providerId.status.status_code >= 300
+  ) {
+    throw new Error(providerId.status.status_code);
   }
 
-  const providerId = await res.json();
   return providerId;
 }
 
@@ -191,7 +199,7 @@ async function generateTournamentCodes(bestOf, tournamentId) {
   req.end();
 }
 
-module.export = {
+module.exports = {
   getIdParam,
   generateTournamentCodes,
   createProviderId,
