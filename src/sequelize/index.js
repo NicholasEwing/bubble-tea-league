@@ -25,11 +25,10 @@ if (process.env.NODE_ENV === "production") {
     }
   );
 } else {
-  sequelize = new Sequelize("btl_db", "root", process.env.LOCAL_DB_PASSWORD, {
+  sequelize = new Sequelize("btl_db", "root", "root", {
     host: "localhost",
     port: 3306,
     dialect: "mysql",
-    dialectModule: mysql2, // Needed to fix sequelize issues with WebPack
   });
 }
 

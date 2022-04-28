@@ -5,6 +5,7 @@ module.exports = (sequelize) => {
     providerId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      unique: true,
     },
   });
 };
