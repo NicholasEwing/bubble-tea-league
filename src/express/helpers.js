@@ -11,7 +11,7 @@ function getIdParam(req) {
   throw new TypeError(`Invalid ':id' param: "${id}"`);
 }
 
-async function createProviderId2() {
+async function createProviderId() {
   const ProviderRegistrationParameters = {
     region: "NA",
     url: process.env.BTL_MATCHES_ENDPOINT,
@@ -29,8 +29,6 @@ async function createProviderId2() {
   );
 
   const providerId = await res.json();
-  console.log("provider id!", providerId);
-  console.log("provider id typeof", typeof providerId);
   if (
     providerId?.status?.status_code &&
     (providerId.status.status_code < 200 ||
@@ -41,8 +39,6 @@ async function createProviderId2() {
 
   return providerId;
 }
-
-// TODO: After that, make a new TOURNAMENT with the new providerId and store that on a Season record
 
 async function createTournament(providerId) {
   // Docs on creating a tournament with a providerId
@@ -152,6 +148,6 @@ async function generateTournamentCodes(bestOf, tournamentId) {
 module.exports = {
   getIdParam,
   generateTournamentCodes,
-  createProviderId2,
+  createProviderId,
   createTournament,
 };

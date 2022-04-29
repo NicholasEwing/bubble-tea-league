@@ -1,4 +1,4 @@
-const { createProviderId, createProviderId2 } = require("../helpers");
+const { createProviderId } = require("../helpers");
 const { models } = require("../../sequelize");
 
 async function getAll(req, res) {
@@ -32,7 +32,7 @@ async function create(req, res) {
       await models.Provider.sync({ force: true }); // delete all Provider records just in case
 
       // TODO: make sure provider ID stores correctly
-      const providerId = await createProviderId2();
+      const providerId = await createProviderId();
 
       // TODO: Probably validate that we get a single number or something here
       // so we don't create a Provider with null or a weird value
