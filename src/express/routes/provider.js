@@ -12,15 +12,32 @@ async function getAll(req, res) {
 
 async function create(req, res) {
   try {
+    // If testing locally, convert the body from a buffer to a string
+    let { body } = req;
+    if (process.env.NODE_ENV === "local") {
+      body = body.toString();
+    }
+
     // make sure a provider isn't already in the database
+    // unless we're initially resetting with `reset: true`
     const providerIds = await models.Provider.findAll();
 
-    if (!req.body.reset && providerIds.length) {
-      console.log("all providers", providerIds);
-      res.status(409).send("A provider ID already exists in the database.");
+    if (!body.reset && providerIds.length) {
+      res
+        .status(409)
+        .send(
+          "A provider ID already exists in the database. Use 'reset: true' in the body to hard reset the Providers table."
+        );
     } else {
-      // TODO: delete all provider records in the db
+      await models.Provider.sync({ force: true }); // delete all Provider records just in case
+
+      // TODO: make sure provider ID stores correctly
       const providerId = await createProviderId2();
+
+      // TODO: Probably validate that we get a single number or something here
+      // so we don't create a Provider with null or a weird value
+
+      // Create Provider record with new ID
       await models.Provider.create({ providerId: providerId });
       res.status(201).send();
     }
