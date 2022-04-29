@@ -9,7 +9,7 @@
     "accept-language": "en-US,en;q=0.9",
     "cache-control": "max-age=0",
     "content-length": "0",
-    "host": "https://ab8ztabeq8.execute-api.us-east-1.amazonaws.com/api/teams",
+    "host": "https://ab8ztabeq8.execute-api.us-east-1.amazonaws.com/api/provider",
     "sec-fetch-dest": "document",
     "sec-fetch-mode": "navigate",
     "sec-fetch-site": "none",
@@ -21,10 +21,11 @@
     "x-forwarded-port": "443",
     "x-forwarded-proto": "https"
   },
+  "body": "{\"reset\":true}",
   "requestContext": {
     "accountId": "347971939225",
     "apiId": "6bwvllq3t2",
-    "domainName": "https://ab8ztabeq8.execute-api.us-east-1.amazonaws.com/api/teams",
+    "domainName": "https://ab8ztabeq8.execute-api.us-east-1.amazonaws.com/api/provider",
     "domainPrefix": "6bwvllq3t2",
     "http": {
       "method": "post",
@@ -39,5 +40,5 @@
     "time": "06/Jan/2021:10:55:03 +0000",
     "timeEpoch": 1609930503973
   },
-  "isBase64Encoded": true
+  "isBase64Encoded": false
 }
