@@ -5,6 +5,15 @@ module.exports = (sequelize) => {
     number: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      autoIncrement: true,
+      defaultValue: 8,
+      unique: true,
+      primaryKey: true,
+    },
+    tournamentId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      unique: true,
     },
   });
 };

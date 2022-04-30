@@ -1,6 +1,6 @@
 // each season is a "tournament" in terms of the Riot Games API
 const { models } = require("../../sequelize");
-const { getIdParam } = require("../helpers");
+const { getIdParam, createTournament } = require("../helpers");
 
 async function getAll(req, res) {
   try {
@@ -30,11 +30,24 @@ async function create(req, res) {
           `Bad request: ID should not be provided, since it is determined automatically by the database.`
         );
     } else {
-      // TODO: Create a new tournament via Riot Games API when a new season starts
-      await models.Season.create(req.body);
+      // Hit Riot Games API to create a "tournament" for the Season
+      const result = await models.Provider.findAll({ raw: true });
+      if (!result.length)
+        throw new Error(
+          "No providers registered. Please register a provider before creating a Season."
+        ); // if no providers, short-circuit
+
+      const { providerId } = result[0];
+
+      const tournamentId = await createTournament(providerId);
+
+      // TODO: Make sure season has a number associated with it for BTL.
+      // Start at 8 and auto-increment and use that as primary key
+      await models.Season.create({ tournamentId });
       res.status(201).end();
     }
   } catch (error) {
+    console.log("Error inside seasons");
     res.status(404).send(error);
   }
 }

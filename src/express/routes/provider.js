@@ -15,7 +15,7 @@ async function create(req, res) {
     // If testing locally, convert the body from a buffer to a string
     let { body } = req;
     if (process.env.NODE_ENV === "local") {
-      body = body.toString();
+      body = JSON.parse(body.toString());
     }
 
     // make sure a provider isn't already in the database
@@ -38,7 +38,7 @@ async function create(req, res) {
       // so we don't create a Provider with null or a weird value
 
       // Create Provider record with new ID
-      await models.Provider.create({ providerId: providerId });
+      await models.Provider.create({ providerId });
       res.status(201).send();
     }
   } catch (error) {
