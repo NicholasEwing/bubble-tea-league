@@ -16,7 +16,7 @@ async function getById(req, res) {
     const matchRound = await models.MatchRound.findByPk(id);
     res.status(200).json(matchRound);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -36,7 +36,7 @@ async function create(req, res) {
       res.status(201).end();
     }
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -60,7 +60,7 @@ async function update(req, res) {
         );
     }
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -74,7 +74,7 @@ async function remove(req, res) {
     });
     res.status(200).end();
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 

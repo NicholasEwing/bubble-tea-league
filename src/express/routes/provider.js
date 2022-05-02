@@ -6,7 +6,7 @@ async function getAll(req, res) {
     const providerIds = await models.Provider.findAll();
     res.status(200).json(providerIds);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -42,9 +42,7 @@ async function create(req, res) {
       res.status(201).send();
     }
   } catch (error) {
-    console.log("Reach an error in POST /api/provider");
-    console.log(error);
-    res.status(404).send();
+    res.status(404).send(error.message);
   }
 }
 

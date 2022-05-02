@@ -7,7 +7,7 @@ async function getAll(req, res) {
     const seasons = await models.Season.findAll();
     res.status(200).json(seasons);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -17,7 +17,7 @@ async function getById(req, res) {
     const season = await models.Season.findByPk(id);
     res.status(200).json(season);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -30,25 +30,25 @@ async function create(req, res) {
           `Bad request: ID should not be provided, since it is determined automatically by the database.`
         );
     } else {
-      // Hit Riot Games API to create a "tournament" for the Season
       const result = await models.Provider.findAll({ raw: true });
+
       if (!result.length)
         throw new Error(
           "No providers registered. Please register a provider before creating a Season."
-        ); // if no providers, short-circuit
+        );
 
       const { providerId } = result[0];
 
+      // Hit Riot Games API to create a "tournament" for the Season
       const tournamentId = await createTournament(providerId);
+      const { number } = req.body;
 
       // TODO: Make sure season has a number associated with it for BTL.
-      // Start at 8 and auto-increment and use that as primary key
-      await models.Season.create({ tournamentId });
+      await models.Season.create({ number, tournamentId });
       res.status(201).end();
     }
   } catch (error) {
-    console.log("Error inside seasons");
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -72,7 +72,7 @@ async function update(req, res) {
         );
     }
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -86,7 +86,7 @@ async function remove(req, res) {
     });
     res.status(200).end();
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
