@@ -11,7 +11,7 @@
     "domain": ""
   },
   "scripts": {
-    "start": "node app.local.js",
+    "start": "nodemon app.local.js",
     "local": "node src/scripts/local",
     "invoke-lambda": "cross-var aws lambda invoke --function-name $npm_package_config_functionName --region $npm_package_config_region --payload file://api-gateway-event.json lambda-invoke-response.json && cat lambda-invoke-response.json",
     "create-bucket": "cross-var aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",

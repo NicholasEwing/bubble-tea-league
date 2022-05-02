@@ -12,17 +12,11 @@ async function getAll(req, res) {
 
 async function create(req, res) {
   try {
-    // If testing locally, convert the body from a buffer to a string
-    let { body } = req;
-    if (process.env.NODE_ENV === "local") {
-      body = JSON.parse(body.toString());
-    }
-
     // make sure a provider isn't already in the database
     // unless we're initially resetting with `reset: true`
     const providerIds = await models.Provider.findAll();
 
-    if (!body.reset && providerIds.length) {
+    if (!req.body.reset && providerIds.length) {
       res
         .status(409)
         .send(
@@ -30,9 +24,10 @@ async function create(req, res) {
         );
     } else {
       await models.Provider.sync({ force: true }); // delete all Provider records just in case
+      const riotGamesApiKey = req.headers["x-riot-token"];
 
       // TODO: make sure provider ID stores correctly
-      const providerId = await createProviderId();
+      const providerId = await createProviderId(riotGamesApiKey);
 
       // TODO: Probably validate that we get a single number or something here
       // so we don't create a Provider with null or a weird value
@@ -42,6 +37,7 @@ async function create(req, res) {
       res.status(201).send();
     }
   } catch (error) {
+    console.log(error);
     res.status(404).send(error.message);
   }
 }
