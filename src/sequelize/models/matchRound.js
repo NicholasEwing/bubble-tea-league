@@ -11,8 +11,14 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     gameId: {
+      // use for the v5-match API
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    tournamentCode: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     metaData: {
       type: DataTypes.STRING,

@@ -1,5 +1,7 @@
 const app = require("./src/app");
 const sequelize = require("./src/sequelize");
+const { reset } = require("./src/database/setup");
+
 const port = 3002;
 
 async function assertDatabaseConnectionOk() {
@@ -16,11 +18,12 @@ async function assertDatabaseConnectionOk() {
 
 async function init() {
   await assertDatabaseConnectionOk();
+  // await reset();
 
   console.log(`Starting Sequelize + Express example on port ${port}...`);
 
   app.listen(port, () => {
-    console.log(`Express server started on port ${port}. Try some routes!.`);
+    console.log(`Express server started on port ${port}. Try some routes!`);
   });
 }
 

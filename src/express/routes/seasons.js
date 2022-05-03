@@ -30,25 +30,31 @@ async function create(req, res) {
           `Bad request: ID should not be provided, since it is determined automatically by the database.`
         );
     } else {
-      const result = await models.Provider.findAll({ raw: true });
-
-      if (!result.length)
+      // Ensure we have only one provider record
+      const providers = await models.Provider.findAll({ raw: true });
+      if (!providers.length === 1)
         throw new Error(
           "No providers registered. Please register a provider before creating a Season."
         );
 
-      const { providerId } = result[0];
+      const { providerId } = providers[0];
 
       // Hit Riot Games API to create a "tournament" for the Season
       const tournamentId = await createTournament(providerId);
       const { number } = req.body;
 
-      // TODO: Make sure season has a number associated with it for BTL.
       await models.Season.create({ number, tournamentId });
-      res.status(201).end();
+
+      res.status(201).send({ tournamentId });
     }
   } catch (error) {
-    res.status(404).send(error.message);
+    if (error?.parent?.sqlMessage) {
+      res.status(404).send(error.parent.sqlMessage);
+    } else if (error.message) {
+      res.status(404).send(error.message);
+    } else {
+      res.status(404).send(error);
+    }
   }
 }
 

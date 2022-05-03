@@ -11,7 +11,7 @@ function getIdParam(req) {
   throw new TypeError(`Invalid ':id' param: "${id}"`);
 }
 
-async function createProviderId(riotGamesApiKey) {
+async function createProviderId() {
   // Docs on creating a new providerId
   // New API key means you need to re-register as a provider
   // https://developer.riotgames.com/apis#tournament-stub-v4/POST_registerProviderData
@@ -27,7 +27,7 @@ async function createProviderId(riotGamesApiKey) {
       method: "POST",
       body: JSON.stringify(ProviderRegistrationParameters),
       headers: {
-        "X-Riot-Token": riotGamesApiKey,
+        "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
       },
     }
   );
@@ -37,7 +37,7 @@ async function createProviderId(riotGamesApiKey) {
 
   let statusCode;
   if (hasStatusCode) {
-    statusCode = providerId.status.status_code;
+    statusCode = providerId?.status?.status_code;
   }
 
   if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
@@ -69,17 +69,18 @@ async function createTournament(providerId) {
   );
 
   const tournamentId = await res.json();
+  const hasStatusCode = !!tournamentId?.status?.status_code;
 
-  // TODO: implement error handling
+  let statusCode;
+  if (hasStatusCode) {
+    statusCode = tournamentId.status.status_code;
+  }
 
-  // if (
-  //   tournamentId?.status?.status_code &&
-  //   (tournamentId.status.status_code < 200 ||
-  //     tournamentId.status.status_code >= 300)
-  // ) {
-  //   throw new Error(tournamentId.status.status_code);
-  // }
-
+  if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
+    throw new Error(
+      `Error from Riot Games API. Received status code ${statusCode}`
+    );
+  }
   return tournamentId;
 }
 
@@ -91,19 +92,17 @@ async function generateTournamentCodes(season, bestOf, tournamentId) {
     title: `Season ${season} - Team ABC vs. Team XYZ`,
   });
 
-  const TournamentCodeParameters = JSON.stringify({
+  const TournamentCodeParameters = {
     mapType: "SUMMONERS_RIFT",
     metadata, // metadata only accepts strings
     pickType: "TOURNAMENT_DRAFT",
     spectatorType: "LOBBYONLY",
     teamSize: 5,
-  });
+  };
 
-  // todo: pull tournament ID for season
-
-  // todo: pull count from route options
+  // TODO: Figure out why tournamentId is not being passed correctly as query param
   const res = await fetch(
-    `https://americas.api.riotgames.com/lol/tournament-stub/v4/codes?count=${bestOf}tournamentId=${tournamentId}/`,
+    `https://americas.api.riotgames.com/lol/tournament-stub/v4/codes?count=${bestOf}&tournamentId=${tournamentId}`,
     {
       method: "POST",
       body: JSON.stringify(TournamentCodeParameters),
@@ -112,6 +111,21 @@ async function generateTournamentCodes(season, bestOf, tournamentId) {
       },
     }
   );
+
+  const tournamentCodes = await res.json();
+  const hasStatusCode = !!tournamentCodes?.status?.status_code;
+
+  let statusCode;
+  if (hasStatusCode) {
+    statusCode = tournamentCodes.status.status_code;
+  }
+
+  if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
+    throw new Error(
+      `Error from Riot Games API. Received status code ${statusCode}`
+    );
+  }
+  return tournamentCodes;
 }
 
 module.exports = {

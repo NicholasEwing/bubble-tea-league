@@ -23,22 +23,24 @@ async function create(req, res) {
           "A provider ID already exists in the database. Use 'reset: true' in the body to hard reset the Providers table."
         );
     } else {
-      await models.Provider.sync({ force: true }); // delete all Provider records just in case
-      const riotGamesApiKey = req.headers["x-riot-token"];
+      // delete all Provider records so we only have one at all times
+      await models.Provider.sync({ force: true });
 
-      // TODO: make sure provider ID stores correctly
-      const providerId = await createProviderId(riotGamesApiKey);
-
-      // TODO: Probably validate that we get a single number or something here
-      // so we don't create a Provider with null or a weird value
+      const providerId = await createProviderId();
 
       // Create Provider record with new ID
       await models.Provider.create({ providerId });
-      res.status(201).send();
+
+      res.status(201).send({ providerId });
     }
   } catch (error) {
-    console.log(error);
-    res.status(404).send(error.message);
+    if (error?.parent?.sqlMessage) {
+      res.status(404).send(error.parent.sqlMessage);
+    } else if (error.message) {
+      res.status(404).send(error.message);
+    } else {
+      res.status(404).send(error);
+    }
   }
 }
 
