@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/NicholasEwing/bubble-tea-league#readme",
   "devDependencies": {
+    "@faker-js/faker": "^6.3.1",
     "copy-webpack-plugin": "^10.2.4",
     "cross-var": "^1.1.0",
     "nodemon": "^2.0.15",

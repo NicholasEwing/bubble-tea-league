@@ -1,4 +1,8 @@
 const sequelize = require("../sequelize");
+const { fakeTeams, fakePlayers } = require("./fake-info-generator");
+
+// console.log("fake teams:", fakeTeams);
+// console.log("fake players", fakePlayers);
 
 const reset = async () => {
   console.log("Rewriting the MySQL database and adding dummy data.");
@@ -22,13 +26,13 @@ const reset = async () => {
     await Player.bulkCreate([
       {
         summonerName: "Nicholas Ewing",
-        discordName: "Nicholas Ewing",
+        discordName: "Nicholas#1234",
         TeamId: 4,
       },
       { summonerName: "Chase Hunt", discordName: "Chase Hunt", TeamId: 4 },
       {
         summonerName: "Chris Concannon",
-        discordName: "Chris Concannon",
+        discordName: "Chris#1234",
         TeamId: 4,
       },
       {
