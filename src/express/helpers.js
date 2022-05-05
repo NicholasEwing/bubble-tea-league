@@ -84,12 +84,12 @@ async function createTournament(providerId) {
   return tournamentId;
 }
 
-async function generateTournamentCodes(season, bestOf, tournamentId) {
+async function generateTournamentCodes(season, bestOf, tournamentId, matchId) {
   // Docs on creating tournament codes:
   // https://developer.riotgames.com/apis#tournament-stub-v4/POST_createTournamentCode
 
   const metadata = JSON.stringify({
-    title: `Season ${season} - Team ABC vs. Team XYZ`,
+    matchId,
   });
 
   const TournamentCodeParameters = {

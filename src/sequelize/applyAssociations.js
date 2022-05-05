@@ -7,24 +7,55 @@ const applyAssociations = (sequelize) => {
     MatchRound,
     MatchRoundTeamStats,
     MatchRoundPlayerStats,
+    TournamentCode,
   } = sequelize.models;
 
-  // Associate teams with players
-  Team.hasMany(Player, { foreignKey: { allowNull: false } });
-  Player.belongsTo(Team);
-
   // Associate matches with seasons
-  Season.hasMany(Match);
-  Match.belongsTo(Season, { foreignKey: { allowNull: false } });
+  Season.hasMany(Match, { foreignKey: "season" });
+  Match.belongsTo(Season, { foreignKey: "season" });
+
+  // Associate teams with seasons
+  Season.hasMany(Team, { foreignKey: "season" });
+  Team.belongsTo(Season, { foreignKey: "season" });
 
   // Associate matches with match rounds (ex: A best of three match can have up to three rounds)
   Match.hasMany(MatchRound);
   MatchRound.belongsTo(Match);
 
-  // Connect blue / red teams and winners to a match
-  Match.belongsTo(Team, { as: "winner" });
-  Match.belongsTo(Team, { as: "red team" });
-  Match.belongsTo(Team, { as: "blue team" });
+  // Associate matches with match winning teams
+  Team.hasMany(Match, { foreignKey: { name: "matchWinnerTeamId" } });
+  Match.belongsTo(Team, { foreignKey: { name: "matchWinnerTeamId" } });
+
+  // Associate winning / losing teams with match rounds
+  Team.hasMany(MatchRound, {
+    foreignKey: { name: "winningTeamId" },
+  });
+  MatchRound.belongsTo(Team, {
+    foreignKey: { name: "losingTeamId" },
+  });
+
+  // Associate winning / losing teams with match rounds
+  // Team.belongsToMany(MatchRound, { through: "TeamMatchRounds" });
+  // MatchRound.belongsToMany(Team, { through: "TeamMatchRounds" });
+
+  // Associate teams with players
+  Team.hasMany(Player, { foreignKey: { allowNull: false } });
+  Player.belongsTo(Team);
+
+  // Connect two teams to a match with a foreign key for a winning team
+  // Team.hasMany(Match, { foreignKey: { name: "winner" } });
+  // Match.belongsTo(Team, {
+  //   foreignKey: {
+  //     allowNull: false,
+  //     name: "teamOne",
+  //   },
+  // });
+  // Match.belongsTo(Team, {
+  //   foreignKey: {
+  //     allowNull: false,
+  //     name: "teamTwo",
+  //   },
+  // });
 
   // Connect team stats to a match round AND a team
   MatchRoundTeamStats.belongsTo(MatchRound, {
