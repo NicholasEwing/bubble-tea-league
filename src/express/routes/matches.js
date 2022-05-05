@@ -1,5 +1,5 @@
 const { models } = require("../../sequelize");
-const { getIdParam } = require("../helpers");
+const { getIdParam, generateTournamentCodes } = require("../helpers");
 
 async function getAll(req, res) {
   try {
@@ -29,26 +29,45 @@ async function create(req, res) {
           `Bad request: ID should not be provided, since it is determined automatically by the database.`
         );
     } else {
-      // Before we make a match in our DB, we need to generate tournament codes for it
+      // teamOne / teamTwo should reference ids from the Teams table
+      const { season, bestOf } = req.body;
 
-      // TODO: Make sure these tournament codes come back correctly
+      const { tournamentId } = await models.Season.findByPk(season, {
+        raw: true,
+      });
+
+      // create fake match to get matchId
+      const matchObj = {
+        season,
+      };
+
+      const match = await models.Match.create(matchObj);
+      const matchId = match.dataValues.id;
+
+      // create X number of fake match rounds
+      // and associate them with the new matchId
       const tournamentCodes = await generateTournamentCodes(
-        3,
-        process.env.TEST_TOURNAMENT_ID
+        season,
+        bestOf,
+        tournamentId,
+        matchId
       );
-      console.log(
-        "---------------- WE GOT SOME TOURNAMENT CODES BOIZ ----------------"
-      );
-      console.log(tournamentCodes);
 
-      // TODO: Put these tourny codes in our DB so we know which codes go to which match
-      await models.Match.create(req.body);
+      // For every code, make a match round and slap a tourny code on it
+      tournamentCodes.forEach(async (tournamentCode) => {
+        const matchRoundObj = {
+          MatchId: matchId,
+          tournamentCode,
+        };
+
+        await MatchRound.create(matchRoundObj);
+      });
+
       res.status(201).end();
     }
   } catch (error) {
-    console.error("OH SHIT");
     console.error(error);
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -72,7 +91,7 @@ async function update(req, res) {
         );
     }
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
@@ -86,7 +105,7 @@ async function remove(req, res) {
     });
     res.status(200).end();
   } catch (error) {
-    res.status(404).send(error);
+    res.status(404).send(error.message);
   }
 }
 
