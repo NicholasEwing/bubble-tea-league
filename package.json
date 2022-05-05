@@ -10,6 +10,11 @@
     "functionName": "btl-api-lambda",
     "domain": ""
   },
+  "nodemonConfig": {
+    "ignore": [
+      "*.json"
+    ]
+  },
   "scripts": {
     "start": "nodemon app.local.js",
     "local": "node src/scripts/local",
