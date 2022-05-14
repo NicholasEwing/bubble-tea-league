@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === "production") {
       port: 3306,
       dialect: "mysql",
       dialectModule: mysql2, // Needed to fix sequelize issues with WebPack
+      query: { raw: true },
       // pool: {
       //   max: 5,
       //   min: 0,
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === "production") {
     host: "localhost",
     port: 3306,
     dialect: "mysql",
+    query: { raw: true },
   });
 }
 

@@ -2,6 +2,10 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Player", {
+    PUUID: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
     summonerName: {
       type: DataTypes.STRING,
       unique: true,

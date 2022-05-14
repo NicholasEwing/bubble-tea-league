@@ -49,7 +49,7 @@ async function createProviderId() {
   return providerId;
 }
 
-async function createTournament(providerId) {
+async function createTournamentId(providerId) {
   // Docs on creating a tournament with a providerId
   // https://developer.riotgames.com/apis#tournament-stub-v4/POST_registerTournament
   const TournamentRegistrationParameters = {
@@ -128,9 +128,37 @@ async function generateTournamentCodes(season, bestOf, tournamentId, matchId) {
   return tournamentCodes;
 }
 
+async function getPlayerPUUID(summonerName) {
+  const res = await fetch(
+    `https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`,
+    {
+      headers: {
+        "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
+      },
+    }
+  );
+  const playerInfo = await res.json();
+  const { puuid } = playerInfo;
+
+  const hasStatusCode = !!playerInfo?.status?.status_code;
+
+  let statusCode;
+  if (hasStatusCode) {
+    statusCode = playerInfo.status.status_code;
+  }
+
+  if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
+    throw new Error(
+      `Error from Riot Games Summoner API. Received status code ${statusCode}`
+    );
+  }
+  return puuid;
+}
+
 module.exports = {
   getIdParam,
   generateTournamentCodes,
   createProviderId,
-  createTournament,
+  createTournamentId,
+  getPlayerPUUID,
 };
