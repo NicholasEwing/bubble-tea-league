@@ -470,8 +470,4 @@ btlPlayers.forEach((player, i) => {
   player.TeamId = teamNumber;
 });
 
-console.log(
-  `Generated BTL teams (${btlTeams.length}) and BTL players (${btlPlayers.length}).`
-);
-
 module.exports = { btlTeams, btlPlayers };

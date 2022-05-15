@@ -31,20 +31,18 @@ async function create(req, res) {
         );
     } else {
       // Ensure we have only one provider record
-      const providers = await models.Provider.findAll({ raw: true });
+      const providers = await models.Provider.findAll();
       if (!providers.length === 1)
         throw new Error(
           "No providers registered. Please register a provider before creating a Season."
         );
 
+      const { number } = req.body; // assign season #
       const { providerId } = providers[0];
-
       // Hit Riot Games API to create a "tournament" for the Season
       const tournamentId = await createTournament(providerId);
-      const { number } = req.body;
 
       await models.Season.create({ number, tournamentId });
-
       res.status(201).send({ tournamentId });
     }
   } catch (error) {

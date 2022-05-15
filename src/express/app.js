@@ -15,7 +15,6 @@ const routes = {
 const app = express();
 
 app.get(`/api/`, (req, res) => {
-  console.log("yoooo");
   res.status(200).end();
 });
 

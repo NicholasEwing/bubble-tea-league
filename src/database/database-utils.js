@@ -1,5 +1,6 @@
 const sequelize = require("../sequelize");
 const { RateLimiter } = require("limiter");
+const { default: fetch } = require("node-fetch");
 const {
   Team,
   Player,
@@ -161,9 +162,7 @@ const findTeamIdsFromMatchResults = async (matchResults) => {
   const winningPlayer = await Player.findOne({
     where: { summonerName: firstWinner },
   });
-  console.log("WINNING PLAYER:", winningPlayer);
   const winningTeamId = winningPlayer.TeamId;
-  console.log("WINNING TEAM ID", winningPlayer.TeamId);
 
   const losingPlayer = await Player.findOne({
     where: { summonerName: firstLoser },
@@ -190,9 +189,6 @@ const updateMatchResultsInDb = async (hardcodedTournamentCode) => {
       TeamId: losingTeamId,
     },
   });
-
-  console.log("winning players:", winningPlayers);
-  console.log("losing players:", losingPlayers);
 
   // Now let's fake a POST request from Riot Games with
   // two random teams and one of our tournament codes from earlier
@@ -279,24 +275,38 @@ const updateMatchResultsInDb = async (hardcodedTournamentCode) => {
   // TODO: Hit v5 match api using matchResults.gameId
 
   // Random ranked game I played
-  // const testGameId = `NA1_${4304210544}`;
+  const testGameId = `NA1_${4304210544}`;
 
-  // const res = await fetch(
-  //   `https://americas.api.riotgames.com/lol/match/v5/matches/${testGameId}`,
-  //   {
-  //     headers: {
-  //       "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
-  //     },
-  //   }
-  // );
+  const res = await fetch(
+    `https://americas.api.riotgames.com/lol/match/v5/matches/${testGameId}`,
+    {
+      headers: {
+        "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
+      },
+    }
+  );
 
-  // const testMatchRoundResults = await res.json();
-
-  // save these results to a JSON file for easier debugging
-  // saveJSONtoFile(testMatchRoundResults, "matchRoundResults.json");
+  const testMatchRoundResults = await res.json();
 
   // TODO: Parse team info into a matchRoundTeamStatsObj
   // and store that in our database for each team
+  const winningPUUIDs = winningPlayers.map((player) => player.PUUID);
+  const losingPUUIDs = losingPlayers.map((player) => player.PUUID);
+  const newParticipants = [...winningPUUIDs, ...losingPUUIDs];
+  console.log("New Participants", newParticipants);
+
+  // Replace metadata player info
+  const { participants } = testMatchRoundResults.metadata;
+  participants.splice(0, participants.length, ...newParticipants); // manually replace participants
+
+  // Replace individual player info
+  const infoParticipants = testMatchRoundResults.info.participants; // this is an array of objects
+  infoParticipants.forEach((player, i) => {
+    player.puuid = newParticipants[i];
+  });
+
+  // save these results to a JSON file for easier debugging
+  saveJSONtoFile(testMatchRoundResults, "matchRoundResults.json");
 
   // TODO: Parse player info into a matchRoundPlayerStatsObj
   // and store that in our database for each player

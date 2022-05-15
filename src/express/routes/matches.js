@@ -32,9 +32,7 @@ async function create(req, res) {
       // teamOne / teamTwo should reference ids from the Teams table
       const { season, bestOf } = req.body;
 
-      const { tournamentId } = await models.Season.findByPk(season, {
-        raw: true,
-      });
+      const { tournamentId } = await models.Season.findByPk(season);
 
       // create fake match to get matchId
       const matchObj = {

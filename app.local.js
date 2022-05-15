@@ -18,7 +18,7 @@ async function assertDatabaseConnectionOk() {
 
 async function init() {
   await assertDatabaseConnectionOk();
-  await reset();
+  // await reset();
 
   console.log(`Starting Sequelize + Express example on port ${port}...`);
 

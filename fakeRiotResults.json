@@ -1,0 +1,29 @@
+{
+  "table": [
+    {
+      "startTime": 1234567890000,
+      "winningTeam": [
+        { "summonerName": "Not Drunk" },
+        { "summonerName": "Emperix" },
+        { "summonerName": "Raskotrug" },
+        { "summonerName": "CutieAF" },
+        { "summonerName": "ChiaSnax" }
+      ],
+      "losingTeam": [
+        { "summonerName": "DefyIncite" },
+        { "summonerName": "Twohandss" },
+        { "summonerName": "VidTheMid" },
+        { "summonerName": "Meian" },
+        { "summonerName": "Kyuuyii" }
+      ],
+      "shortCode": "NA78-TOURNAMENTCODE0001",
+      "metaData": "{\"matchId\":1}",
+      "gameId": 1234567890,
+      "gameName": "a123bc45-ab1c-1a23-ab12-12345a67b89c",
+      "gameType": "Practice",
+      "gameMap": 11,
+      "gameMode": "CLASSIC",
+      "region": "NA1"
+    }
+  ]
+}

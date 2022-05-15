@@ -26,11 +26,9 @@ async function create(req, res) {
       // delete all Provider records so we only have one at all times
       await models.Provider.sync({ force: true });
 
-      const providerId = await createProviderId();
-
       // Create Provider record with new ID
+      const providerId = await createProviderId();
       await models.Provider.create({ providerId });
-
       res.status(201).send({ providerId });
     }
   } catch (error) {

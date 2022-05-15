@@ -1,5 +1,7 @@
 const https = require("https");
 const { default: fetch } = require("node-fetch");
+const sequelize = require("../sequelize");
+const { Player } = sequelize.models;
 
 // A helper function to assert the request ID param is valid
 // and convert it to a number (since it comes as a string by default)
@@ -155,10 +157,28 @@ async function getPlayerPUUID(summonerName) {
   return puuid;
 }
 
+const findTeamIdsFromMatchResults = async (matchResults) => {
+  const firstWinner = matchResults.winningTeam[0].summonerName;
+  const firstLoser = matchResults.losingTeam[0].summonerName;
+
+  const winningPlayer = await Player.findOne({
+    where: { summonerName: firstWinner },
+  });
+  const winningTeamId = winningPlayer.TeamId;
+
+  const losingPlayer = await Player.findOne({
+    where: { summonerName: firstLoser },
+  });
+  const losingTeamId = losingPlayer.TeamId;
+
+  return { winningTeamId, losingTeamId };
+};
+
 module.exports = {
   getIdParam,
   generateTournamentCodes,
   createProviderId,
   createTournamentId,
   getPlayerPUUID,
+  findTeamIdsFromMatchResults,
 };
