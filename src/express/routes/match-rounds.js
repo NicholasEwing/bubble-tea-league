@@ -1,5 +1,6 @@
 const sequelize = require("../../sequelize");
-const { MatchRound, Player, MatchRoundTeamStats } = sequelize.models;
+const { MatchRound, Player, MatchRoundTeamStats, MatchRoundPlayerStats } =
+  sequelize.models;
 const { getIdParam, findTeamIdsFromMatchResults } = require("../helpers");
 const { default: fetch } = require("node-fetch");
 
@@ -82,7 +83,20 @@ async function create(req, res) {
           },
         }
       );
+
       const matchRoundResults = await riotGamesResponse.json();
+      const hasStatusCode = !!matchRoundResults?.status?.status_code;
+
+      let statusCode;
+      if (hasStatusCode) {
+        statusCode = matchRoundResults?.status?.status_code;
+      }
+
+      if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
+        throw new Error(
+          `Error from Riot Games API. Received status code ${statusCode}`
+        );
+      }
 
       // this is all temp stuff to make it look like we're getting valid match v5 results----------
 
@@ -101,17 +115,18 @@ async function create(req, res) {
       });
       // --------- end of temp fake stuff
 
-      // TODO: Parse team info into a matchRoundTeamStats object
+      // Parse team info into a matchRoundTeamStats object
       // and store that in our database for each team using matchRoundResults
 
       // Parse winner info
-      const winnerInfo = matchRoundResults.info.teams.filter(
-        (team) => team.win
-      )[0];
+      const winnerInfo = matchRoundResults.info.teams.find((team) => team.win);
+      const winningTeamGoldEarned = matchRoundResults.info.participants
+        .filter((p) => p.win)
+        .reduce((g, w) => (g += w.goldEarned), 0);
 
       const matchRoundTeamStatsWinner = {
         kills: winnerInfo.objectives.champion.kills,
-        goldEarned: 0, //TODO: Do math from players goldEarned and add this later
+        goldEarned: winningTeamGoldEarned,
         towersDestroyed: winnerInfo.objectives.tower.kills,
         heraldsKilled: winnerInfo.objectives.riftHerald.kills,
         dragonsKilled: winnerInfo.objectives.dragon.kills,
@@ -120,13 +135,17 @@ async function create(req, res) {
       };
 
       // Parse loser info
-      const loserInfo = matchRoundResults.info.teams.filter(
+      const loserInfo = matchRoundResults.info.teams.find(
         (team) => team.win === false
-      )[0];
+      );
+
+      const losingTeamGoldEarned = matchRoundResults.info.participants
+        .filter((p) => p.win === false)
+        .reduce((g, l) => (g += l.goldEarned), 0);
 
       const matchRoundTeamStatsLoser = {
         kills: loserInfo.objectives.champion.kills,
-        goldEarned: 0, //TODO: Do math from players goldEarned and add this later
+        goldEarned: losingTeamGoldEarned,
         towersDestroyed: loserInfo.objectives.tower.kills,
         heraldsKilled: loserInfo.objectives.riftHerald.kills,
         dragonsKilled: loserInfo.objectives.dragon.kills,
@@ -141,6 +160,69 @@ async function create(req, res) {
 
       // Add team stats for winner / losing into db
       await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
+      // ^^^^^^^ this works, comment it out for now to avoid dups!!! ^^^^^^
+
+      // Parse and store this game's stats for each player
+      const allPlayers = [...winningPlayers, ...losingPlayers];
+      const parsePlayers = (allPlayers, MatchRoundId) => {
+        const matchRoundPlayerStatsRecords = allPlayers.map((player) => {
+          // match PUUID with participant
+          const participant = matchRoundResults.info.participants.find(
+            (p) => p.puuid === player.PUUID
+          );
+
+          const primaryRuneInfo = participant.perks.styles.find(
+            (s) => s.description === "primaryStyle"
+          );
+          const secondaryRuneInfo = participant.perks.styles.find(
+            (s) => s.description === "subStyle"
+          );
+
+          const matchRoundPlayerStatsObj = {
+            kills: participant.kills,
+            deaths: participant.deaths,
+            assists: participant.assists,
+            goldEarned: participant.goldEarned,
+            champLevel: participant.champLevel,
+            championName: participant.championName,
+            championTransform: participant.championTransform,
+            champLevel: participant.champLevel,
+            item0: participant.item0,
+            item1: participant.item1,
+            item2: participant.item2,
+            item3: participant.item3,
+            item4: participant.item4,
+            item5: participant.item5,
+            item6: participant.item6,
+            summoner1Id: participant.summoner1Id,
+            summoner2Id: participant.summoner2Id,
+            lane: participant.lane,
+            totalMinionsKilled: participant.totalMinionsKilled,
+            visionScore: participant.visionScore,
+            statPerks: JSON.stringify(participant.perks.statPerks),
+            primaryRunePath: primaryRuneInfo.style,
+            primaryRunePerks: JSON.stringify(primaryRuneInfo.selections),
+            secondaryRunePath: secondaryRuneInfo.style,
+            secondaryRunePerks: JSON.stringify(secondaryRuneInfo.selections),
+            summonerName: participant.summonerName,
+            PlayerId: player.id,
+            MatchRoundId,
+          };
+
+          return matchRoundPlayerStatsObj;
+        });
+
+        return matchRoundPlayerStatsRecords;
+      };
+
+      const matchRoundPlayerStatsRecords = parsePlayers(
+        allPlayers,
+        MatchRoundId
+      );
+
+      // Record all 10 players individual stats for this game
+      await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
+      // ^^^^^^^ this works, comment it out for now to avoid dups!!! ^^^^^^
 
       res.status(201).end();
     }

@@ -238,7 +238,8 @@ const updateMatchResultsInDb = async (hardcodedTournamentCode) => {
     region: "NA1",
   };
 
-  saveJSONtoFile(matchResults, "fakeRiotResults.json"); // for debugging
+  // for copy/pasting into postman to replicate tourny callback response
+  saveJSONtoFile(matchResults, "fakeRiotResults.json");
 
   // Construct the match round object that goes in our database
 
@@ -293,7 +294,6 @@ const updateMatchResultsInDb = async (hardcodedTournamentCode) => {
   const winningPUUIDs = winningPlayers.map((player) => player.PUUID);
   const losingPUUIDs = losingPlayers.map((player) => player.PUUID);
   const newParticipants = [...winningPUUIDs, ...losingPUUIDs];
-  console.log("New Participants", newParticipants);
 
   // Replace metadata player info
   const { participants } = testMatchRoundResults.metadata;
@@ -305,11 +305,8 @@ const updateMatchResultsInDb = async (hardcodedTournamentCode) => {
     player.puuid = newParticipants[i];
   });
 
-  // save these results to a JSON file for easier debugging
+  // save these results to a JSON file for debugging
   saveJSONtoFile(testMatchRoundResults, "matchRoundResults.json");
-
-  // TODO: Parse player info into a matchRoundPlayerStatsObj
-  // and store that in our database for each player
 };
 
 module.exports = {
