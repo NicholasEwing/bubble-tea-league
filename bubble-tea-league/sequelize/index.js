@@ -2,6 +2,7 @@ require("dotenv").config();
 const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const mysql2 = require("mysql2");
+const { resetDatabase } = require("./reset");
 
 let sequelize;
 
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === "production") {
     port: 3306,
     dialect: "mysql",
     query: { raw: true },
-    logging: false,
+    logging: true,
   });
 }
 
@@ -55,6 +56,9 @@ for (const modelDefiner of modelDefiners) {
 
 // Apply our associations to all models
 applyAssociations(sequelize);
+
+// Reset db
+// resetDatabase(sequelize); // this only triggers when you hit an API route
 
 // sequelize
 //   .authenticate()

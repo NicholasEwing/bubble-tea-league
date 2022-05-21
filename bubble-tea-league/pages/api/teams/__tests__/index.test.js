@@ -1,7 +1,7 @@
 import teamsHandler from "../index";
 import { createMocks } from "node-mocks-http";
 
-describe("/api/teams API Endpoint", () => {
+describe("/api/teams", () => {
   let req, res, teams;
 
   beforeAll(async () => {
@@ -10,20 +10,27 @@ describe("/api/teams API Endpoint", () => {
     teams = res._getJSONData();
   });
 
-  it("should return a successful response", () => {
-    expect.assertions();
+  // it("should return a successful response", () => {
+  //   expect.assertions();
 
+  //   expect(res.statusCode).toBe(200);
+  //   expect(res.getHeaders()).toEqual({ "content-type": "application/json" });
+  //   expect(res.statusMessage).toEqual("OK");
+  // });
+
+  // it("All Teams, GET /teams", () => {
+  //   expect.assertions();
+  //   expect(teams).toBeArray();
+  // });
+
+  it("GET /teams", () => {
     expect(res.statusCode).toBe(200);
-    expect(res.getHeaders()).toEqual({ "content-type": "application/json" });
+    expect(res.getHeaders()).toEqual({
+      "content-type": "application/json",
+    });
     expect(res.statusMessage).toEqual("OK");
-  });
-
-  it("should return an array", () => {
-    expect.assertions();
     expect(teams).toBeArray();
-  });
 
-  it("should contain team objects", () => {
     if (!teams.length) return;
 
     expect(teams).toEqual(
