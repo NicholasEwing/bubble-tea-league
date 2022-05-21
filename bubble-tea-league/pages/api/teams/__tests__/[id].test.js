@@ -1,21 +1,27 @@
 import { createMocks } from "node-mocks-http";
-import teamsHandler from "../[id]";
+import teamsIdHandler from "../[id]";
 
 describe("/api/teams/[:id] API Endpoint", () => {
-  it("should return a successful response", async () => {
-    const { req, res } = createMocks({ body: { id: 1 } });
-    await teamsHandler(req, res);
+  let req, res, team;
 
+  // look for a team with an id of 1 in the db
+  const body = {
+    id: 1,
+  };
+
+  beforeAll(async () => {
+    ({ req, res } = createMocks({ body }));
+    await teamsIdHandler(req, res);
+    team = res._getJSONData();
+  });
+
+  it("should return a successful response", () => {
     expect(res.statusCode).toBe(200);
     expect(res.getHeaders()).toEqual({ "content-type": "application/json" });
     expect(res.statusMessage).toEqual("OK");
   });
 
-  it("should return a single team objects", async () => {
-    const { req, res } = createMocks({ body: { id: 1 } });
-    await teamsHandler(req, res);
-
-    const team = res._getJSONData();
+  it("should return a single team object", async () => {
     expect(team).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
