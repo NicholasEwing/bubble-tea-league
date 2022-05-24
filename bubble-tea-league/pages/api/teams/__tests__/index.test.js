@@ -1,34 +1,14 @@
 import teamsHandler from "../index";
 import { createMocks } from "node-mocks-http";
+import { assertStatusResponse } from "../../../../lib/jest-api-helpers";
 
 describe("/api/teams", () => {
-  let req, res, teams;
-
-  beforeAll(async () => {
-    ({ req, res } = createMocks());
+  it("GET /teams (Get all teams)", async () => {
+    const { req, res } = createMocks();
     await teamsHandler(req, res);
-    teams = res._getJSONData();
-  });
+    const teams = res._getJSONData();
 
-  // it("should return a successful response", () => {
-  //   expect.assertions();
-
-  //   expect(res.statusCode).toBe(200);
-  //   expect(res.getHeaders()).toEqual({ "content-type": "application/json" });
-  //   expect(res.statusMessage).toEqual("OK");
-  // });
-
-  // it("All Teams, GET /teams", () => {
-  //   expect.assertions();
-  //   expect(teams).toBeArray();
-  // });
-
-  it("GET /teams", () => {
-    expect(res.statusCode).toBe(200);
-    expect(res.getHeaders()).toEqual({
-      "content-type": "application/json",
-    });
-    expect(res.statusMessage).toEqual("OK");
+    assertStatusResponse(res, 200);
     expect(teams).toBeArray();
 
     if (!teams.length) return;
@@ -43,5 +23,18 @@ describe("/api/teams", () => {
         }),
       ])
     );
+  });
+
+  it("POST /teams", async () => {
+    const body = {
+      teamName: "Panic In Our Oceans",
+      description: "Wow what a cool team",
+      season: 1,
+    };
+
+    const { req, res } = createMocks({ method: "POST", body });
+    await teamsHandler(req, res);
+    // expect an id or other status code that shows it was created
+    assertStatusResponse(res, 201);
   });
 });

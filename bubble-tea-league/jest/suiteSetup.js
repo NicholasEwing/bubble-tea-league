@@ -1,4 +1,4 @@
-const sequelize = require("./sequelize");
+const sequelize = require("../sequelize/index");
 // after all Jest tests, close Sequelize connections
 // otherwise, our tests will hang for a bit
 afterAll(() => sequelize.close());

@@ -1,4 +1,5 @@
 import { createMocks } from "node-mocks-http";
+import { assertStatusResponse } from "../../../../lib/jest-api-helpers";
 import teamsIdHandler from "../[id]";
 
 describe("/api/teams/[:id]", () => {
@@ -16,11 +17,7 @@ describe("/api/teams/[:id]", () => {
   });
 
   it("GET /teams/[:id]", async () => {
-    expect(res.statusCode).toBe(200);
-    expect(res.getHeaders()).toEqual({
-      "content-type": "application/json",
-    });
-    expect(res.statusMessage).toEqual("OK");
+    assertStatusResponse(res, 200);
 
     if (!team) return;
 
