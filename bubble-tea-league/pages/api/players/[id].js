@@ -1,3 +1,5 @@
+import { getIdParam } from "../../../lib/general-api-helpers";
+
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const sequelize = require("../../../sequelize");
 const { Player } = sequelize.models;
@@ -8,12 +10,13 @@ export default async function handler(req, res) {
       const player = await Player.findByPk(req.body.id);
       res.status(200).json(player);
       break;
-    case "UPDATE":
+    case "PATCH":
+      const patchId = getIdParam(req);
       // We only accept an UPDATE request if the `:id` param matches the body `id`
-      if (req.body.id === id) {
+      if (req.body.id === patchId) {
         await Player.update(req.body, {
           where: {
-            id: id,
+            id: patchId,
           },
         });
         res.status(200).end();
@@ -26,9 +29,10 @@ export default async function handler(req, res) {
       }
       break;
     case "DELETE":
+      const deleteId = getIdParam(req);
       await Player.destroy({
         where: {
-          id: req.body.id,
+          id: deleteId,
         },
       });
       res.status(200).end();
