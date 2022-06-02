@@ -2,6 +2,7 @@ require("dotenv").config();
 const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const mysql2 = require("mysql2");
+const config = require("./config/config");
 
 let sequelize;
 
@@ -26,10 +27,12 @@ if (process.env.NODE_ENV === "production") {
     }
   );
 } else {
-  sequelize = new Sequelize("btl_db", "root", "root", {
-    host: "localhost",
-    port: 3306,
-    dialect: "mysql",
+  const { database, username, password, host, port, dialect } =
+    config.development;
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    port,
+    dialect,
     query: { raw: true },
   });
 }

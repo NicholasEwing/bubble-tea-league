@@ -1,22 +1,13 @@
 import { createMocks } from "node-mocks-http";
 import { assertStatusResponse } from "../../../../lib/jest-api-helpers";
 import teamsIdHandler from "../[id]";
+const { faker } = require("@faker-js/faker");
 
 describe("/api/teams/[:id]", () => {
-  let req, res, team;
-
-  // look for a team with an id of 1 in the db
-  const body = {
-    id: 1,
-  };
-
-  beforeAll(async () => {
-    ({ req, res } = createMocks({ body }));
-    await teamsIdHandler(req, res);
-    team = res._getJSONData();
-  });
-
   it("GET /teams/[:id]", async () => {
+    const { req, res } = createMocks({ body: { id: 1 } });
+    await teamsIdHandler(req, res);
+    const team = res._getJSONData();
     assertStatusResponse(res, 200);
 
     if (!team) return;
@@ -29,5 +20,28 @@ describe("/api/teams/[:id]", () => {
         season: expect.any(Number),
       })
     );
+  });
+
+  it("PATCH /teams/[:id]", async () => {
+    const teamName = faker.company.companyName();
+
+    const { req, res } = createMocks({
+      method: "PATCH",
+      params: { id: 1 },
+      body: { id: 1, teamName },
+    });
+    await teamsIdHandler(req, res);
+
+    assertStatusResponse(res, 200);
+  });
+
+  it("DELETE /teams/[:id]", async () => {
+    const { req, res } = createMocks({
+      method: "DELETE",
+      params: { id: 1 },
+    });
+    await teamsIdHandler(req, res);
+
+    assertStatusResponse(res, 200);
   });
 });

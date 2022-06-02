@@ -5,7 +5,6 @@ import playersIdHandler from "../[id]";
 describe("/api/players/[:id]", () => {
   let req, res, player;
 
-  // look for a player with an id of 1 in the db
   const body = {
     id: 1,
   };

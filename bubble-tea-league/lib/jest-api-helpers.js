@@ -3,12 +3,8 @@ const mysql2 = require("mysql2/promise");
 
 // Helper function to assert status code and keep things DRY
 const assertStatusResponse = (res, codeToAssert) => {
+  // this doesn't seem so useful anymore lmao
   expect(res.statusCode).toBe(codeToAssert);
-  if (codeToAssert === 200) {
-    expect(res.getHeaders()).toEqual({
-      "content-type": "application/json",
-    });
-  }
 };
 
 // Generate fake data based on faker.js functions in schema objects

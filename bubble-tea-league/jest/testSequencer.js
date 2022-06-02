@@ -5,11 +5,10 @@ class CustomSequencer extends Sequencer {
     // Test structure information
     // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
     const copyTests = Array.from(tests);
-    // console.log("TEST:", copyTests);
 
     const testOrder = new Array(6);
 
-    // sorts tests in this order:
+    // sorts tests in this order (index, then [id]):
     // provider [0]
     // seasons [1]
     // teams [2]
@@ -24,18 +23,7 @@ class CustomSequencer extends Sequencer {
       const apiNameMatches = test.path.match(/api\/(\w+)/m);
       const apiName = apiNameMatches[1];
 
-      // provider [0]
-      // seasons [1]
-      // teams, index [2]
-      // teams, id [3]
-      // players, index [4]
-      // players, id [5]
-      // matches, index [6]
-      // matches, id [7]
-      // match-rounds, index ???
-      // match-rounds, id ???
-
-      // No way to predict what other these tests loop
+      // No way to predict what order these tests loop
       // so we manually organize the order of our tests
       switch (true) {
         case apiName === "provider":

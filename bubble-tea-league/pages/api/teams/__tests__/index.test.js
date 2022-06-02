@@ -34,7 +34,6 @@ describe("/api/teams", () => {
 
     const { req, res } = createMocks({ method: "POST", body });
     await teamsHandler(req, res);
-    // expect an id or other status code that shows it was created
     assertStatusResponse(res, 201);
   });
 });
