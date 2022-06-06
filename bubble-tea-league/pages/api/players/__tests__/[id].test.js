@@ -40,7 +40,7 @@ describe("/api/players/[:id]", () => {
   it("DELETE /players/[:id]", async () => {
     const { req, res } = createMocks({
       method: "DELETE",
-      params: { id: 1 },
+      params: { id: 51 },
     });
     await playersIdHandler(req, res);
 

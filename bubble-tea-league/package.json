@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "jest": {
-    "globalSetup": "./jest/makeTables.js",
+    "globalSetup": "./jest/globalSetup.js",
     "setupFilesAfterEnv": [
       "./jest/suiteSetup.js"
     ],
@@ -15,7 +15,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test-api": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create && jest -i && NODE_ENV=test npx sequelize-cli db:drop"
+    "test-api": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create && jest -i"
   },
   "dependencies": {
     "dotenv": "^16.0.0",
@@ -39,6 +39,7 @@
     "sequelize-cli": "^6.4.1",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "^3.0.0",
+    "limiter": "^2.1.0"
   }
 }

@@ -1,5 +1,7 @@
 const { faker } = require("@faker-js/faker");
 const mysql2 = require("mysql2/promise");
+const { RateLimiter } = require("limiter");
+const { getPlayerPUUID } = require("../lib/riot-games-api-helpers");
 
 // Helper function to assert status code and keep things DRY
 const assertStatusResponse = (res, codeToAssert) => {
@@ -35,6 +37,7 @@ const fakeInfoGenerator = (schema, min = 1, max) => {
 const teamSchema = {
   teamName: "Team {{company.companyName}}",
   description: "{{lorem.sentence(5)}}",
+  season: "1",
 };
 
 const playerSchema = {

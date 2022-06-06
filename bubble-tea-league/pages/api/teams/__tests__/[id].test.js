@@ -27,8 +27,8 @@ describe("/api/teams/[:id]", () => {
 
     const { req, res } = createMocks({
       method: "PATCH",
-      params: { id: 1 },
-      body: { id: 1, teamName },
+      params: { id: 11 },
+      body: { id: 11, teamName },
     });
     await teamsIdHandler(req, res);
 
@@ -38,7 +38,7 @@ describe("/api/teams/[:id]", () => {
   it("DELETE /teams/[:id]", async () => {
     const { req, res } = createMocks({
       method: "DELETE",
-      params: { id: 1 },
+      params: { id: 11 },
     });
     await teamsIdHandler(req, res);
 
