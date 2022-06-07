@@ -13,6 +13,8 @@ export default async function handler(req, res) {
       res.status(200).json(seasons);
       break;
     case "POST":
+      const { name } = req.body;
+
       // Ensure we have only one provider record
       const providers = await Provider.findAll();
 
@@ -23,7 +25,7 @@ export default async function handler(req, res) {
       const { providerId } = providers[0];
 
       // Hit Riot Games API to create a "tournament" for the Season
-      const tournamentId = await createTournamentId(providerId);
+      const tournamentId = await createTournamentId(providerId, name);
 
       if (req.body?.number) {
         await Season.create({ number, tournamentId });

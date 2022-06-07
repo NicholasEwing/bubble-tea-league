@@ -29,8 +29,8 @@ describe("/api/players/[:id]", () => {
 
     const { req, res } = createMocks({
       method: "PATCH",
-      params: { id: 1 },
-      body: { id: 1, firstName },
+      params: { id: 51 },
+      body: { id: 51, firstName },
     });
     await playersIdHandler(req, res);
 

@@ -5,6 +5,7 @@ module.exports = (sequelize) => {
     PUUID: {
       type: DataTypes.STRING,
       unique: true,
+      allowNull: false,
     },
     summonerName: {
       type: DataTypes.STRING,

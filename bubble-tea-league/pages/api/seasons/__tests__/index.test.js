@@ -31,10 +31,13 @@ describe("/api/seasons", () => {
 
   it("POST /seasons (Create a BTL season)", async () => {
     expect(season).toBeArray();
+    const body = {
+      name: "BTL Test Tournament!",
+    };
 
     if (season.length) return; // if we have a season, skip test
 
-    const events = createMocks({ method: "POST" });
+    const events = createMocks({ method: "POST", body });
     const postReq = events.req;
     const postRes = events.res;
     await seasonsHandler(postReq, postRes);

@@ -38,7 +38,7 @@ describe("/api/players", () => {
       firstName,
       lastName,
       discordName,
-      summonerName,
+      summonerName: "HughBk", // this has to be a real summoner name since PUUID is required
       TeamId: 1,
     };
 

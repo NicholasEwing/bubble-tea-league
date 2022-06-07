@@ -17,11 +17,6 @@ export default async function handler(req, res) {
         const players = await Player.findAll();
         res.status(200).json(players);
         break;
-      case "UPDATE":
-        //TODO: update player with set() and save() and TEST IT
-        // await Player.create(req.body);
-        // res.status(201).end();
-        break;
     }
   } catch (error) {
     console.error("Error inside /api/players", error);

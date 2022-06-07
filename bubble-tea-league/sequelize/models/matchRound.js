@@ -9,9 +9,8 @@ module.exports = (sequelize) => {
     tournamentCode: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
-    metaData: {
+    metadata: {
       type: DataTypes.STRING,
     },
   });
