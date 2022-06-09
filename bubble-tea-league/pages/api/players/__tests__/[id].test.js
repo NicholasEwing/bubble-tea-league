@@ -5,7 +5,7 @@ const { faker } = require("@faker-js/faker");
 
 describe("/api/players/[:id]", () => {
   it("GET /players/[:id]", async () => {
-    const { req, res } = createMocks({ body: { id: 1 } });
+    const { req, res } = createMocks({ params: { id: 1 } });
     await playersIdHandler(req, res);
     const player = res._getJSONData();
 

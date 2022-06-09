@@ -7,7 +7,8 @@ const { Player } = sequelize.models;
 export default async function handler(req, res) {
   switch (req.method) {
     case "GET":
-      const player = await Player.findByPk(req.body.id);
+      const playerId = getIdParam(req);
+      const player = await Player.findByPk(playerId);
       res.status(200).json(player);
       break;
     case "PATCH":

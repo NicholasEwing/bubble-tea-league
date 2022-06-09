@@ -15,7 +15,7 @@ describe("/api/matches/[:id]", () => {
   });
 
   it("GET /matches/[:id]", async () => {
-    const { req, res } = createMocks({ body: { id: 2 } });
+    const { req, res } = createMocks({ params: { id: 2 } });
     await matchesIdHandler(req, res);
     const match = res._getJSONData();
 
