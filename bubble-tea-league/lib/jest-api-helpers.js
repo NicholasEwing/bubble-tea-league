@@ -47,9 +47,41 @@ const playerSchema = {
   discordName: "{{name.firstName}}#{{datatype.number}}",
 };
 
+async function replaceFakePlayerInfo(
+  matchRoundResults,
+  winningPlayers,
+  losingPlayers
+) {
+  const winningPUUIDs = winningPlayers.map((player) => player.PUUID);
+  const losingPUUIDs = losingPlayers.map((player) => player.PUUID);
+  const newPUUIDs = [...winningPUUIDs, ...losingPUUIDs];
+
+  const winningSummonerNames = winningPlayers.map(
+    (player) => player.summonerName
+  );
+  const losingSummonerNames = losingPlayers.map(
+    (player) => player.summonerName
+  );
+  const newSummonerNames = [...winningSummonerNames, ...losingSummonerNames];
+
+  // Replace metadata player info
+  const { participants } = matchRoundResults.metadata;
+  participants.splice(0, participants.length, ...newPUUIDs); // replace PUUIDs
+
+  // Replace individual player info
+  const infoParticipants = matchRoundResults.info.participants;
+  infoParticipants.forEach((player, i) => {
+    player.puuid = newPUUIDs[i]; // replace PUUIDs... again
+    player.summonerName = newSummonerNames[i]; // replace summonerNames
+  });
+
+  return matchRoundResults;
+}
+
 module.exports = {
   assertStatusResponse,
   fakeInfoGenerator,
   teamSchema,
   playerSchema,
+  replaceFakePlayerInfo,
 };

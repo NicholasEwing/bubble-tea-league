@@ -196,7 +196,7 @@ async function create(req, res) {
             item6: participant.item6,
             summoner1Id: participant.summoner1Id,
             summoner2Id: participant.summoner2Id,
-            lane: participant.lane,
+            role: participant.role,
             totalMinionsKilled: participant.totalMinionsKilled,
             visionScore: participant.visionScore,
             statPerks: JSON.stringify(participant.perks.statPerks),

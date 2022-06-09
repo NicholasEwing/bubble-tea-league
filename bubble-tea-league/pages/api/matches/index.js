@@ -11,6 +11,9 @@ export default async function handler(req, res) {
         const { season, bestOf } = req.body;
         const match = await Match.create({ season });
         const MatchId = match.dataValues.id;
+        const metadata = {
+          MatchId,
+        };
 
         const { tournamentId } = await Season.findByPk(season);
 
@@ -19,7 +22,7 @@ export default async function handler(req, res) {
           season,
           bestOf,
           tournamentId,
-          MatchId
+          metadata
         );
 
         // For every code made, make a match round record and slap a tourny code on it

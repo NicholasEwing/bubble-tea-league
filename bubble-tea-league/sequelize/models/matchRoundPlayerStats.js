@@ -75,7 +75,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    lane: {
+    teamPosition: {
       type: DataTypes.STRING,
       allowNull: false,
     },

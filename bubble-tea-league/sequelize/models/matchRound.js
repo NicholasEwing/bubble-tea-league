@@ -4,13 +4,13 @@ module.exports = (sequelize) => {
   sequelize.define("MatchRound", {
     gameId: {
       // use for the v5-match API
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     tournamentCode: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    metadata: {
+    metaData: {
       type: DataTypes.STRING,
     },
   });

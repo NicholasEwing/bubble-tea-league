@@ -1,4 +1,6 @@
 const { default: fetch } = require("node-fetch");
+const sequelize = require("../sequelize");
+const { Player } = sequelize.models;
 
 async function createProviderId() {
   // Docs on creating a new providerId
@@ -144,9 +146,56 @@ async function generateTournamentCodes(season, bestOf, tournamentId, MatchId) {
   return tournamentCodes;
 }
 
+async function findTeamIdsFromMatchResults(matchResults) {
+  const firstWinner = matchResults.winningTeam[0].summonerName;
+  const firstLoser = matchResults.losingTeam[0].summonerName;
+
+  const winningPlayer = await Player.findOne({
+    where: { summonerName: firstWinner },
+  });
+  const winningTeamId = winningPlayer.TeamId;
+
+  const losingPlayer = await Player.findOne({
+    where: { summonerName: firstLoser },
+  });
+  const losingTeamId = losingPlayer.TeamId;
+
+  return { winningTeamId, losingTeamId };
+}
+
+async function v5getMatch(gameId) {
+  const riotGameId = `NA1_${gameId}`;
+  const riotGamesResponse = await fetch(
+    `https://americas.api.riotgames.com/lol/match/v5/matches/${riotGameId}`,
+    {
+      headers: {
+        "X-Riot-Token": process.env.RIOT_GAMES_API_KEY,
+      },
+    }
+  );
+
+  const matchRoundResults = await riotGamesResponse.json();
+  const hasStatusCode = !!matchRoundResults?.status?.status_code;
+
+  let statusCode;
+  if (hasStatusCode) {
+    statusCode = matchRoundResults?.status?.status_code;
+  }
+
+  if (hasStatusCode && (statusCode < 200 || statusCode >= 300)) {
+    throw new Error(
+      `Error from Riot Games API. Received status code ${statusCode}`
+    );
+  }
+
+  return matchRoundResults;
+}
+
 module.exports = {
   createProviderId,
   createTournamentId,
   getPlayerPUUID,
   generateTournamentCodes,
+  findTeamIdsFromMatchResults,
+  v5getMatch,
 };
