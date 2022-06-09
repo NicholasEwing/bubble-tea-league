@@ -6,7 +6,7 @@ describe("/api/matches/[:id]", () => {
   it("PATCH /matches/[:id]", async () => {
     const { req, res } = createMocks({
       method: "PATCH",
-      params: { id: 2 },
+      query: { id: 2 },
       body: { id: 2, matchWinnerTeamId: 1 },
     });
     await matchesIdHandler(req, res);
@@ -15,7 +15,7 @@ describe("/api/matches/[:id]", () => {
   });
 
   it("GET /matches/[:id]", async () => {
-    const { req, res } = createMocks({ params: { id: 2 } });
+    const { req, res } = createMocks({ query: { id: 2 } });
     await matchesIdHandler(req, res);
     const match = res._getJSONData();
 
@@ -35,7 +35,7 @@ describe("/api/matches/[:id]", () => {
   it("DELETE /matches/[:id]", async () => {
     const { req, res } = createMocks({
       method: "DELETE",
-      params: { id: 2 },
+      query: { id: 2 },
     });
     await matchesIdHandler(req, res);
 

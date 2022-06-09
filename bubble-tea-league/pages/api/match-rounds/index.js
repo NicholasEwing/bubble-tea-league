@@ -24,12 +24,21 @@ export default async function handler(req, res) {
         break;
       case "POST":
         // where a lot of the magic happens
-        const { matchResults } = req.body;
-        const teamIds = await findTeamIdsFromMatchResults(matchResults);
 
-        const { winningTeamId, losingTeamId } = teamIds;
+        const { matchResults } = req.body;
+        // make sure Riot callback includes our API key
         const { metaData, gameId, winningTeam, losingTeam } = matchResults;
-        const { MatchId } = JSON.parse(metaData);
+        const { MatchId, riotAuth } = JSON.parse(metaData);
+
+        if (riotAuth !== process.env.BTL_API_KEY) {
+          res
+            .status(401)
+            .send("You are not authorized to send results to the BTL API.");
+        }
+
+        const teamIds = await findTeamIdsFromMatchResults(matchResults);
+        const { winningTeamId, losingTeamId } = teamIds;
+
         const matchRoundObj = {
           gameId,
           winningTeamId,

@@ -4,7 +4,7 @@ import matchRoundIdHandler from "../[id]";
 
 describe("/api/match-rounds/[:id]", () => {
   it("GET /match-rounds/[:id]", async () => {
-    const { req, res } = createMocks({ params: { id: 1 } });
+    const { req, res } = createMocks({ query: { id: 1 } });
     await matchRoundIdHandler(req, res);
     const matchRound = res._getJSONData();
 

@@ -5,7 +5,7 @@ const { faker } = require("@faker-js/faker");
 
 describe("/api/teams/[:id]", () => {
   it("GET /teams/[:id]", async () => {
-    const { req, res } = createMocks({ params: { id: 1 } });
+    const { req, res } = createMocks({ query: { id: 1 } });
     await teamsIdHandler(req, res);
     const team = res._getJSONData();
     assertStatusResponse(res, 200);
@@ -27,7 +27,7 @@ describe("/api/teams/[:id]", () => {
 
     const { req, res } = createMocks({
       method: "PATCH",
-      params: { id: 11 },
+      query: { id: 11 },
       body: { id: 11, teamName },
     });
     await teamsIdHandler(req, res);
@@ -38,7 +38,7 @@ describe("/api/teams/[:id]", () => {
   it("DELETE /teams/[:id]", async () => {
     const { req, res } = createMocks({
       method: "DELETE",
-      params: { id: 11 },
+      query: { id: 11 },
     });
     await teamsIdHandler(req, res);
 

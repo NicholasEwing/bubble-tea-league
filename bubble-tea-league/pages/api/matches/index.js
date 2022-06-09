@@ -13,6 +13,7 @@ export default async function handler(req, res) {
         const MatchId = match.dataValues.id;
         const metadata = {
           MatchId,
+          riotAuth: process.env.BTL_API_KEY,
         };
 
         const { tournamentId } = await Season.findByPk(season);

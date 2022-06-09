@@ -11,7 +11,7 @@
     "verbose": true
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_ENV=test next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

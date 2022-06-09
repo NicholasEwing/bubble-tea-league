@@ -10,7 +10,7 @@ module.exports = {
   development: {
     username: "root",
     password: "root",
-    database: "btl_db",
+    database: "btl_db_jest",
     host: "localhost",
     port: 3306,
     dialect: "mysql",
