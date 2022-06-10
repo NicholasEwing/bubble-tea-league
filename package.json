@@ -18,7 +18,6 @@
     "test-api": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create && jest -i"
   },
   "dependencies": {
-    "dotenv": "^16.0.0",
     "mysql2": "^2.3.3",
     "next": "12.1.6",
     "node-fetch": "^2.6.7",
