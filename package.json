@@ -26,7 +26,6 @@
     "sequelize": "^6.16.2"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.18.0",
     "@faker-js/faker": "^6.3.1",
     "copy-webpack-plugin": "^10.2.4",
     "cross-var": "^1.1.0",

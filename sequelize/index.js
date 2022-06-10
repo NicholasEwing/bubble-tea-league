@@ -1,4 +1,3 @@
-require("dotenv").config();
 const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
