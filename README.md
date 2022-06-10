@@ -1,71 +1,34 @@
-# Bubble Tea League Stats Tracker
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This website is used to make tracking stats for the Bubble Tea League (BTL) publicly available to the world with a pretty user interface.
+## Getting Started
 
-Currently, all stats are tracked by hand by Danz which is a huge pain.
+First, run the development server:
 
-BTL is a community-organized League of Legends tournament league managed by a group of friends in their free time.
-
-^ _(we'll describe this better later for ppl reading this)_
-
-## Try it out!
-
-[Click here to view the live site](https://www.bubble-tea-league.com)
-
-## Contributors
-
-This website is being developed and maintained by [Nicholas Ewing](https://github.com/NicholasEwing) and [Chase Hunt](https://github.com/ChaseH38).
-
-## Technologies used
-
-The BTL stats tracker is currently a static website, here's what we use to make it work:
-
-- HTML5
-- CSS3
-- JavaScript
-- [Amazon Web Services](https://aws.amazon.com/) & [Github Actions](https://github.com/features/actions)
-- [Tailwind CSS](https://tailwindcss.com/), notably using [TailBlocks](https://tailblocks.cc/) to save time on design
-- [Riot Games Tournament API](https://developer.riotgames.com/apis#tournament-stub-v4)
-
-## How to Contribute
-
-First, find an [issue](https://github.com/NicholasEwing/bubble-tea-league/issues) to work on.
-
-If there's something you'd like to work on that doesn't have an issue, then [create a new one](https://github.com/NicholasEwing/bubble-tea-league/issues/new).
-
-Next, make sure you've `git pull`'d on both the `master` and `development` branches. Then, create a new branch off of `development` to start working on your issue.
-
-Example of updating branches:
-
-```
-git checkout master
-git pull
-git checkout development
-git pull
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-Example of creating new branch off `development`:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```
-git checkout development
-git pull
-git checkout -b my-new-branch
-```
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-When you've finished work on your branch, open a pull request to merge it into `development`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
 
-You'll need an approval from a [Code Owner](https://github.com/NicholasEwing/bubble-tea-league/blob/master/.github/CODEOWNERS) on your pull request before you can merge it into `development`.
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-Please ensure your pull request is [linked to the Github issue(s) you worked on](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue), this will automatically mark and close the issue(s) for us.
+## Learn More
 
-Currently, only [@NicholasEwing](https://github.com/NicholasEwing/) is set as a Code Owner to prevent any errors from being accidentally deployed.
+To learn more about Next.js, take a look at the following resources:
 
-Once your pull request has been merged into `development`, check the [Bubble Tea League test URL](http://test-bubble-tea-league.s3-website-us-east-1.amazonaws.com) to see if everything looks and works the way you expect.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Finally, once we've got changes on the `development` branch we want to go live to the world, we'll make a pull request from `development` -> `master`.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-Any code changes pushed or merged into `master` will be automatically deployed to the [official BTL site](https://www.bubble-tea-league.com), so make sure it's tested and working on both desktop and mobile.
+## Deploy on Vercel
 
-That's it!! :tada::tada:
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-If you have any questions, please leave comments in the appropriate issues / PRs.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
