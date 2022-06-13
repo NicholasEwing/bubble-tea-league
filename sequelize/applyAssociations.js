@@ -70,4 +70,4 @@ const applyAssociations = (sequelize) => {
   MatchRoundPlayerStats.belongsTo(Player, { foreignKey: { allowNull: false } });
 };
 
-export default applyAssociations;
+module.exports = applyAssociations;

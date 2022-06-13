@@ -2,7 +2,7 @@ import {
   createProviderId,
   createTournamentId,
 } from "../../../lib/riot-games-api-helpers";
-import sequelize from "../../../sequelize/index.js";
+const sequelize = require("../../../sequelize");
 const { Season, Provider } = sequelize.models;
 
 export default async function handler(req, res) {

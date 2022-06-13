@@ -1,6 +1,6 @@
-import sequelize from "../sequelize/index.js";
-import { RateLimiter } from "limiter";
-import { getPlayerPUUID } from "../lib/riot-games-api-helpers.js";
+const sequelize = require("../sequelize/index");
+const { RateLimiter } = require("limiter");
+const { getPlayerPUUID } = require("../lib/riot-games-api-helpers");
 
 const seedTeamsAndPlayers = async () => {
   // generate 10 teams / players
@@ -29,4 +29,4 @@ const seedTeamsAndPlayers = async () => {
   return true;
 };
 
-export default seedTeamsAndPlayers;
+module.exports = seedTeamsAndPlayers;

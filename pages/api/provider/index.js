@@ -1,5 +1,5 @@
 import { createProviderId } from "../../../lib/riot-games-api-helpers";
-import sequelize from "../../../sequelize";
+const sequelize = require("../../../sequelize");
 const { Provider } = sequelize.models;
 
 export default async function handler(req, res) {

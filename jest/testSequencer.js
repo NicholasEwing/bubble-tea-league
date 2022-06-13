@@ -1,6 +1,6 @@
-import Sequencer from "@jest/test-sequencer";
+const Sequencer = require("@jest/test-sequencer").default;
 
-export default class CustomSequencer extends Sequencer.default {
+class CustomSequencer extends Sequencer {
   sort(tests) {
     // Test structure information
     // https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21
@@ -59,3 +59,5 @@ export default class CustomSequencer extends Sequencer.default {
     return testOrder;
   }
 }
+
+module.exports = CustomSequencer;

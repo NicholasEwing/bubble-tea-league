@@ -1,7 +1,7 @@
 import seasonsHandler from "../index";
 import { createMocks } from "node-mocks-http";
 import { assertStatusResponse } from "../../../../lib/jest-api-helpers";
-import sequelize from "../../../../sequelize";
+const sequelize = require("../../../../sequelize");
 const { Season } = sequelize.models;
 
 describe("/api/seasons", () => {

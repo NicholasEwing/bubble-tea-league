@@ -1,6 +1,6 @@
-import { DataTypes } from "sequelize";
+const { DataTypes } = require("sequelize");
 
-export default (sequelize) => {
+module.exports = (sequelize) => {
   sequelize.define("MatchRoundTeamStats", {
     kills: {
       type: DataTypes.INTEGER.UNSIGNED,
