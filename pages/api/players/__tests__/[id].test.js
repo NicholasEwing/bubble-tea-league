@@ -1,7 +1,7 @@
 import { createMocks } from "node-mocks-http";
 import { assertStatusResponse } from "../../../../lib/jest-api-helpers";
 import playersIdHandler from "../[id]";
-const { faker } = require("@faker-js/faker");
+import { faker } from "@faker-js/faker";
 
 describe("/api/players/[:id]", () => {
   it("GET /players/[:id]", async () => {

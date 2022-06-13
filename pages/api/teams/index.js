@@ -1,4 +1,4 @@
-const sequelize = require("../../../sequelize");
+import sequelize from "../../../sequelize";
 const { Team } = sequelize.models;
 
 export default async function handler(req, res) {

@@ -1,6 +1,6 @@
-const Sequelize = require("sequelize");
-const applyAssociations = require("./applyAssociations");
-const config = require("./config/config");
+import Sequelize from "sequelize";
+import applyAssociations from "./applyAssociations.js";
+import config from "./config/config.js";
 
 let database, username, password, host, port, dialect;
 
@@ -19,17 +19,17 @@ const sequelize = new Sequelize(database, username, password, {
 
 // Define all models and then attaches them to sequelize.models
 const modelDefiners = [
-  require("./models/team"),
-  require("./models/provider"),
-  require("./models/season"),
-  require("./models/player"),
-  require("./models/match"),
-  require("./models/matchRound"),
-  require("./models/matchRoundTeamStats"),
-  require("./models/matchRoundPlayerStats"),
+  import("./models/team.js"),
+  import("./models/provider.js"),
+  import("./models/season.js"),
+  import("./models/player.js"),
+  import("./models/match.js"),
+  import("./models/matchRound.js"),
+  import("./models/matchRoundTeamStats.js"),
+  import("./models/matchRoundPlayerStats.js"),
 ];
 
-for (const modelDefiner of modelDefiners) {
+for await (const { default: modelDefiner } of modelDefiners) {
   modelDefiner(sequelize);
 }
 
@@ -46,4 +46,4 @@ applyAssociations(sequelize);
 //   });
 
 // export the sequelize instance to be used elsewhere
-module.exports = sequelize;
+export default sequelize;

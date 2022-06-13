@@ -1,5 +1,6 @@
-const sequelize = require("../sequelize/index");
-import { loadEnvConfig } from "@next/env";
+import sequelize from "../sequelize/index.js";
+import pkg from "@next/env";
+const { loadEnvConfig } = pkg;
 
 const makeTables = async () => {
   await sequelize.sync({ force: true });
@@ -16,4 +17,4 @@ const globalSetup = async () => {
   }
 };
 
-module.exports = globalSetup;
+export default globalSetup;

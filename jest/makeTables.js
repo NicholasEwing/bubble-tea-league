@@ -1,4 +1,4 @@
-const sequelize = require("../sequelize/index");
+import sequelize from "../sequelize/index.js";
 
 const makeTables = async () => {
   if (process.env.NODE_ENV === "test") {
@@ -6,4 +6,4 @@ const makeTables = async () => {
   }
 };
 
-module.exports = makeTables;
+export default makeTables;

@@ -1,7 +1,6 @@
-import { getPlayerPUUID } from "../../../lib/riot-games-api-helpers";
-
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const sequelize = require("../../../sequelize");
+import { getPlayerPUUID } from "../../../lib/riot-games-api-helpers";
+import sequelize from "../../../sequelize";
 const { Player } = sequelize.models;
 
 export default async function handler(req, res) {

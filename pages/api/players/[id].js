@@ -1,7 +1,6 @@
-import { getIdParam } from "../../../lib/general-api-helpers";
-
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const sequelize = require("../../../sequelize");
+import { getIdParam } from "../../../lib/general-api-helpers";
+import sequelize from "../../../sequelize";
 const { Player } = sequelize.models;
 
 export default async function handler(req, res) {
