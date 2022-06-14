@@ -14,7 +14,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect,
-  query: { raw: true },
+  // query: { raw: true }, // this breaks next-auth lol
 });
 
 // Define all models and then attaches them to sequelize.models

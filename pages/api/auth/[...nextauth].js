@@ -11,4 +11,14 @@ export default NextAuth({
     }),
     // ...add more providers here
   ],
+  adapter: SequelizeAdapter(sequelize),
+  callbacks: {
+    async session({ session, token, user }) {
+      session.user.id = user.id; // used to uniquely identify user
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
+  },
 });
