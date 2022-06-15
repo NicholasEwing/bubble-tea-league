@@ -8,7 +8,6 @@ import styles from "../styles/Home.module.css";
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log("ROUTER", router);
 
   return (
     <div className={styles.container}>
