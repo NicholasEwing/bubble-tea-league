@@ -33,7 +33,7 @@ export default function Home() {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              signIn("discord");
+              signIn("discord", null, { prompt: "none" });
             }}
           >
             Sign In
