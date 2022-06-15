@@ -26,9 +26,7 @@ export default function Home() {
           />
         )}
         {status !== "authenticated" && !session && (
-          <Link href="/auth/signin">
-            <a>Sign In</a>
-          </Link>
+          <a onClick={() => signIn("discord")}>Sign In</a>
         )}
         {status === "authenticated" && session && (
           <>
