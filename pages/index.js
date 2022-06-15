@@ -2,10 +2,13 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+  console.log("ROUTER", router);
 
   return (
     <div className={styles.container}>
@@ -26,15 +29,26 @@ export default function Home() {
           />
         )}
         {status !== "authenticated" && !session && (
-          <a onClick={() => signIn("discord")}>Sign In</a>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              signIn("discord");
+            }}
+          >
+            Sign In
+          </a>
         )}
         {status === "authenticated" && session && (
-          <>
-            <p>User ID is: {session?.user?.id}</p>
-            <Link href="/auth/signout">
-              <a>Sign Out</a>
-            </Link>
-          </>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              signOut();
+            }}
+          >
+            Sign Out
+          </a>
         )}
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
