@@ -1,14 +1,9 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
   return (
     <div className={styles.container}>
       <Head>
@@ -18,37 +13,6 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        {session?.user?.image && (
-          <Image
-            src={session.user.image}
-            alt="User Image"
-            width="50"
-            height="50"
-            style={{ borderRadius: "50%" }}
-          />
-        )}
-        {status !== "authenticated" && !session && (
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              signIn("discord", null, { prompt: "none" });
-            }}
-          >
-            Sign In
-          </a>
-        )}
-        {status === "authenticated" && session && (
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              signOut();
-            }}
-          >
-            Sign Out
-          </a>
-        )}
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
