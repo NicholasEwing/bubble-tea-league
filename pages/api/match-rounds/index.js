@@ -24,39 +24,38 @@ export default async function handler(req, res) {
         break;
       case "POST":
         // where a lot of the magic happens
-
         const { matchResults } = req.body;
-        // make sure Riot callback includes our API key
         const { metaData, gameId, winningTeam, losingTeam } = matchResults;
         const { MatchId, riotAuth } = JSON.parse(metaData);
 
+        // make sure Riot callback includes our API key
         if (riotAuth !== process.env.BTL_API_KEY) {
           res
             .status(401)
             .send("You are not authorized to send results to the BTL API.");
         }
 
-        // reach out to Riot Games API for more stats
+        // reach out to Riot Games API for all stats
         let matchRoundResults = await v5getMatch(gameId);
 
-        // mutate matchRoundResults to use correct PUUIDs
+        // parse useful info
+        const teamIds = await findTeamIdsFromMatchResults(matchResults);
+        const { winningTeamId, losingTeamId } = teamIds;
+        const winningPlayers = await Player.findAll({
+          where: {
+            TeamId: winningTeamId,
+          },
+          raw: true,
+        });
+        const losingPlayers = await Player.findAll({
+          where: {
+            TeamId: losingTeamId,
+          },
+          raw: true,
+        });
+
+        // mutate matchRoundResults to use correct PUUIDs when testing
         if (process.env.NODE_ENV === "test") {
-          const teamIds = await findTeamIdsFromMatchResults(matchResults);
-          const { winningTeamId, losingTeamId } = teamIds;
-
-          const winningPlayers = await Player.findAll({
-            where: {
-              TeamId: winningTeamId,
-            },
-            raw: true,
-          });
-          const losingPlayers = await Player.findAll({
-            where: {
-              TeamId: losingTeamId,
-            },
-            raw: true,
-          });
-
           matchRoundResults = await replaceFakePlayerInfo(
             matchRoundResults,
             winningPlayers,
@@ -92,22 +91,6 @@ export default async function handler(req, res) {
         const blueTeamId = bluePlayerTeam.TeamId;
         const redTeamId = redPlayerTeam.TeamId;
 
-        // check who won
-        const winningPlayerPUUID = matchRoundResults.info.participants.find(
-          (participant) => {
-            return participant.win;
-          }
-        ).puuid;
-
-        // find winning team id
-        const winningPlayerTeam = await Player.findOne({
-          where: { PUUID: winningPlayerPUUID },
-          attributes: ["TeamId"],
-          raw: true,
-        });
-
-        const winningTeamId = winningPlayerTeam.TeamId;
-
         // get game length
         const gameDuration = matchRoundResults.info.gameDuration;
 
@@ -121,7 +104,7 @@ export default async function handler(req, res) {
           blueTeamId,
         };
 
-        // Update a MatchRound record with the winner / losers
+        // Update a MatchRound record with the winner
         const emptyMatchRound = await MatchRound.findOne({
           raw: false,
           where: {
@@ -139,22 +122,22 @@ export default async function handler(req, res) {
         const MatchRoundId = matchRound.dataValues.id;
 
         // // Create 2 MatchRoundTeamStats records
-        // const matchRoundTeamStatsRecords = await parseTeamStats(
-        //   matchRoundResults,
-        //   winningTeamId,
-        //   losingTeamId,
-        //   MatchRoundId
-        // );
-        // await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
+        const matchRoundTeamStatsRecords = await parseTeamStats(
+          matchRoundResults,
+          winningTeamId,
+          losingTeamId,
+          MatchRoundId
+        );
+        await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
 
         // // Create 10 MatchRoundPlayerStats records
-        // const allPlayers = [...winningPlayers, ...losingPlayers];
-        // const matchRoundPlayerStatsRecords = await parsePlayerStats(
-        //   allPlayers,
-        //   MatchRoundId,
-        //   matchRoundResults
-        // );
-        // await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
+        const allPlayers = [...winningPlayers, ...losingPlayers];
+        const matchRoundPlayerStatsRecords = await parsePlayerStats(
+          allPlayers,
+          MatchRoundId,
+          matchRoundResults
+        );
+        await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
 
         res.status(201).end();
         break;

@@ -171,7 +171,6 @@ describe("/api/match-rounds", () => {
     const matchRound = await MatchRound.findAll({
       where: {
         winningTeamId: 4,
-        losingTeamId: 2,
       },
     });
 
