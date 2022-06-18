@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 import MatchContainer from "../../components/match-results/MatchContainer";
 import TeamResults from "../../components/match-results/TeamResults";
 const sequelize = require("../../sequelize/index");
-const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats } =
+const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats, Team } =
   sequelize.models;
 
 export const getStaticPaths = async () => {
@@ -36,14 +36,43 @@ export const getStaticProps = async (context) => {
   });
 
   // find losing team
-  matchRounds.forEach((round) => {
-    const { blueTeamId, redTeamId, winningTeamId } = round;
-    const losingTeamId = [blueTeamId, redTeamId].find(
-      (id) => id !== winningTeamId
-    );
+  // const round = matchRounds.map((round) => {
+  //   const { blueTeamId, redTeamId, winningTeamId } = round;
+  //   const losingTeamId = [blueTeamId, redTeamId].find(
+  //     (id) => id !== winningTeamId
+  //   );
 
-    round.losingTeamId = losingTeamId; // add losing team to the object
-  });
+  //   return {
+  //     ...round,
+  //     losingTeamId, // add losing team to the obj since we don't store it in db
+  //   };
+  // });
+
+  // find team names
+  const roundsWithTeamNames = await Promise.all(
+    matchRounds.map(async (round) => {
+      const { blueTeamId, redTeamId, winningTeamId } = round;
+      const teams = await Team.findAll({
+        attributes: ["id", "teamName"],
+        raw: true,
+      });
+      const blueTeam = teams.find((team) => team.id === blueTeamId);
+      const redTeam = teams.find((team) => team.id === redTeamId);
+      const winningTeam = teams.find((team) => team.id === winningTeamId);
+      const losingTeam = teams.find((team) => team.id !== winningTeamId);
+
+      return {
+        ...round,
+        blueTeamName: blueTeam.teamName,
+        redTeamName: redTeam.teamName,
+        winningTeamName: winningTeam.teamName,
+        losingTeamName: losingTeam.teamName,
+        losingTeamId: losingTeam.id,
+      };
+    })
+  );
+
+  console.log("round info", roundsWithTeamNames);
 
   const matchRoundTeamStats = await Promise.all(
     matchRounds.map(async (round) => {
@@ -71,7 +100,7 @@ export const getStaticProps = async (context) => {
   return {
     props: {
       match: JSON.parse(JSON.stringify(match)),
-      matchRounds: JSON.parse(JSON.stringify(matchRounds)),
+      matchRounds: JSON.parse(JSON.stringify(roundsWithTeamNames)),
       matchRoundTeamStats: JSON.parse(JSON.stringify(matchRoundTeamStats)),
       matchRoundPlayerStats: JSON.parse(JSON.stringify(matchRoundPlayerStats)),
     },
@@ -92,8 +121,8 @@ export default function MatchResults({
           <div key={round.id}>
             <p>Round Id: {round.id}</p>
             <p>Tournament Code: {round.tournamentCode}</p>
-            <p>Winning team: {round.winningTeamId}</p>
-            <p>Losing team: {round.losingTeamId}</p>
+            <p>Winning team: {round.winningTeamName}</p>
+            <p>Losing team: {round.losingTeamName}</p>
           </div>
         ))}
       </ul>
