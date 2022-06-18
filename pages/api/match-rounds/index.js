@@ -36,15 +36,89 @@ export default async function handler(req, res) {
             .send("You are not authorized to send results to the BTL API.");
         }
 
-        const teamIds = await findTeamIdsFromMatchResults(matchResults);
-        const { winningTeamId, losingTeamId } = teamIds;
+        // reach out to Riot Games API for more stats
+        let matchRoundResults = await v5getMatch(gameId);
+
+        // mutate matchRoundResults to use correct PUUIDs
+        if (process.env.NODE_ENV === "test") {
+          const teamIds = await findTeamIdsFromMatchResults(matchResults);
+          const { winningTeamId, losingTeamId } = teamIds;
+
+          const winningPlayers = await Player.findAll({
+            where: {
+              TeamId: winningTeamId,
+            },
+            raw: true,
+          });
+          const losingPlayers = await Player.findAll({
+            where: {
+              TeamId: losingTeamId,
+            },
+            raw: true,
+          });
+
+          matchRoundResults = await replaceFakePlayerInfo(
+            matchRoundResults,
+            winningPlayers,
+            losingPlayers
+          );
+        }
+
+        // get player puuids
+        const firstBluePlayerPUUID = matchRoundResults.info.participants.find(
+          (participant) => {
+            return participant.teamId === 100;
+          }
+        ).puuid;
+
+        const firstRedPlayerPUUID = matchRoundResults.info.participants.find(
+          (participant) => {
+            return participant.teamId === 200;
+          }
+        ).puuid;
+
+        // get blue / red team id
+        const bluePlayerTeam = await Player.findOne({
+          where: { PUUID: firstBluePlayerPUUID },
+          attributes: ["TeamId"],
+          raw: true,
+        });
+        const redPlayerTeam = await Player.findOne({
+          where: { PUUID: firstRedPlayerPUUID },
+          attributes: ["TeamId"],
+          raw: true,
+        });
+
+        const blueTeamId = bluePlayerTeam.TeamId;
+        const redTeamId = redPlayerTeam.TeamId;
+
+        // check who won
+        const winningPlayerPUUID = matchRoundResults.info.participants.find(
+          (participant) => {
+            return participant.win;
+          }
+        ).puuid;
+
+        // find winning team id
+        const winningPlayerTeam = await Player.findOne({
+          where: { PUUID: winningPlayerPUUID },
+          attributes: ["TeamId"],
+          raw: true,
+        });
+
+        const winningTeamId = winningPlayerTeam.TeamId;
+
+        // get game length
+        const gameDuration = matchRoundResults.info.gameDuration;
 
         const matchRoundObj = {
           gameId,
-          winningTeamId,
-          losingTeamId,
           metaData,
+          gameDuration,
           MatchId,
+          winningTeamId,
+          redTeamId,
+          blueTeamId,
         };
 
         // Update a MatchRound record with the winner / losers
@@ -55,60 +129,32 @@ export default async function handler(req, res) {
             winningTeamID: {
               [Op.is]: null,
             },
-            losingTeamId: {
-              [Op.is]: null,
-            },
             gameId: {
               [Op.eq]: null,
             },
           },
         });
+
         const matchRound = await emptyMatchRound.update(matchRoundObj);
         const MatchRoundId = matchRound.dataValues.id;
 
-        const winningPlayers = await Player.findAll({
-          where: {
-            TeamId: winningTeamId,
-          },
-        });
+        // // Create 2 MatchRoundTeamStats records
+        // const matchRoundTeamStatsRecords = await parseTeamStats(
+        //   matchRoundResults,
+        //   winningTeamId,
+        //   losingTeamId,
+        //   MatchRoundId
+        // );
+        // await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
 
-        const losingPlayers = await Player.findAll({
-          where: {
-            TeamId: losingTeamId,
-          },
-        });
-
-        // reach out to Riot Games API for more stats
-        let matchRoundResults = await v5getMatch(gameId);
-
-        if (process.env.NODE_ENV === "test") {
-          // when testing, we're just getting a random match and replacing
-          // summonerNames / PUUIDs so it looks like a real tournament
-          // game took place
-          matchRoundResults = await replaceFakePlayerInfo(
-            matchRoundResults,
-            winningPlayers,
-            losingPlayers
-          );
-        }
-
-        // Create 2 MatchRoundTeamStats records
-        const matchRoundTeamStatsRecords = await parseTeamStats(
-          matchRoundResults,
-          winningTeamId,
-          losingTeamId,
-          MatchRoundId
-        );
-        await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
-
-        // Create 10 MatchRoundPlayerStats records
-        const allPlayers = [...winningPlayers, ...losingPlayers];
-        const matchRoundPlayerStatsRecords = await parsePlayerStats(
-          allPlayers,
-          MatchRoundId,
-          matchRoundResults
-        );
-        await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
+        // // Create 10 MatchRoundPlayerStats records
+        // const allPlayers = [...winningPlayers, ...losingPlayers];
+        // const matchRoundPlayerStatsRecords = await parsePlayerStats(
+        //   allPlayers,
+        //   MatchRoundId,
+        //   matchRoundResults
+        // );
+        // await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
 
         res.status(201).end();
         break;

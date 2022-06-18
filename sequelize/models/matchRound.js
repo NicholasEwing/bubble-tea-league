@@ -13,5 +13,8 @@ module.exports = (sequelize) => {
     metaData: {
       type: DataTypes.STRING,
     },
+    gameDuration: {
+      type: DataTypes.INTEGER.UNSIGNED,
+    },
   });
 };

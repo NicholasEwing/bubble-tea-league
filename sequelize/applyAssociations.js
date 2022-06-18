@@ -31,31 +31,19 @@ const applyAssociations = (sequelize) => {
     foreignKey: { name: "winningTeamId" },
   });
   MatchRound.belongsTo(Team, {
-    foreignKey: { name: "losingTeamId" },
+    foreignKey: { name: "winningTeamId" },
   });
 
-  // Associate winning / losing teams with match rounds
-  // Team.belongsToMany(MatchRound, { through: "TeamMatchRounds" });
-  // MatchRound.belongsToMany(Team, { through: "TeamMatchRounds" });
+  Team.hasMany(MatchRound, {
+    foreignKey: { name: "redTeamId" },
+  });
+  MatchRound.belongsTo(Team, {
+    foreignKey: { name: "blueTeamId" },
+  });
 
   // Associate teams with players
   Team.hasMany(Player, { foreignKey: { allowNull: false } });
   Player.belongsTo(Team);
-
-  // Connect two teams to a match with a foreign key for a winning team
-  // Team.hasMany(Match, { foreignKey: { name: "winner" } });
-  // Match.belongsTo(Team, {
-  //   foreignKey: {
-  //     allowNull: false,
-  //     name: "teamOne",
-  //   },
-  // });
-  // Match.belongsTo(Team, {
-  //   foreignKey: {
-  //     allowNull: false,
-  //     name: "teamTwo",
-  //   },
-  // });
 
   // Connect team stats to a match round AND a team
   MatchRoundTeamStats.belongsTo(MatchRound, {
