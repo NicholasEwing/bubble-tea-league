@@ -1,6 +1,8 @@
 const sequelize = require("../sequelize/index");
 const { RateLimiter } = require("limiter");
 const { getPlayerPUUID } = require("../lib/riot-games-api-helpers");
+const player = require("../sequelize/models/player");
+const { Player } = sequelize.models;
 
 const seedTeamsAndPlayers = async () => {
   // generate 10 teams, but only 10 players
@@ -12,7 +14,7 @@ const seedTeamsAndPlayers = async () => {
 
   // only create teams 2 and 4 for testing purposes so we don't piss off Riot
   const limiter = new RateLimiter({
-    tokensPerInterval: 30,
+    tokensPerInterval: 20,
     interval: "second",
   });
 
@@ -20,18 +22,30 @@ const seedTeamsAndPlayers = async () => {
     return player.TeamId === 4 || player.TeamId === 2;
   });
 
-  // Add PUUID to each player before adding to db
-  for (const player of teamTwoAndFourPlayers) {
-    const remainingRequests = await limiter.removeTokens(1);
-    const foundPUUID = await getPlayerPUUID(player.summonerName);
-    player.PUUID = foundPUUID;
-    console.log(
-      `Set PUUID of ${foundPUUID} for ${player.summonerName} on Team ${player.TeamId}`
-    );
+  // check if players exist
+  const players = await Player.findAll({ raw: true });
+
+  if (!players.length) {
+    // Add PUUID to each player before adding to db
+    for (const player of teamTwoAndFourPlayers) {
+      try {
+        const remainingRequests = await limiter.removeTokens(1);
+        const foundPUUID = await getPlayerPUUID(player.summonerName);
+        player.PUUID = foundPUUID;
+        console.log(
+          `Set PUUID of ${foundPUUID} for ${player.summonerName} on Team ${player.TeamId}`
+        );
+      } catch (error) {
+        console.error("Received an error when retrieving PUUIDs");
+        console.error(error.message);
+        break;
+      }
+    }
+
+    await sequelize.models.Player.bulkCreate(teamTwoAndFourPlayers);
   }
 
   // Add players to db
-  await sequelize.models.Player.bulkCreate(teamTwoAndFourPlayers);
   return true;
 };
 

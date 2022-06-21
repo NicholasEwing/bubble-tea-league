@@ -1,7 +1,4 @@
-import {
-  createProviderId,
-  createTournamentId,
-} from "../../../lib/riot-games-api-helpers";
+import { createTournamentId } from "../../../lib/riot-games-api-helpers";
 const sequelize = require("../../../sequelize");
 const { Season, Provider } = sequelize.models;
 

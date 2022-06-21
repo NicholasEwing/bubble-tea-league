@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.TEXT,
     },
-    logoImgPath: {
+    tricode: {
       type: DataTypes.STRING,
       unique: true,
     },
