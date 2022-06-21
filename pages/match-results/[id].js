@@ -151,7 +151,7 @@ export default function MatchResults({
           </span>
         </div>
       </section>
-      <section className="game-selector flex w-screen justify-center bg-[#0a0e13] text-white text-md items-center h-16 border-b-gray-300 border-b-1">
+      <section className="game-selector flex w-screen justify-center bg-[#0a0e13] text-white text-md items-center h-12 border-b-gray-300 border-b-1">
         <span className="label text-[#8fa3b0] font-semibold pr-8">GAME</span>
         <a
           href="#"
