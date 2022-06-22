@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Op } from "sequelize";
-import MatchContainer from "../../components/match-results/MatchContainer";
-import TeamResults from "../../components/match-results/TeamResults";
+import MatchContainer from "../../components/match-results/Containers/MatchContainer";
+import MatchSection from "../../components/match-results/Containers/MatchSection";
+import TeamHeader from "../../components/match-results/TeamHeader";
+import TeamSummary from "../../components/match-results/TeamSummary";
 const sequelize = require("../../sequelize/index");
 const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats, Team } =
   sequelize.models;
@@ -36,19 +38,6 @@ export const getStaticProps = async (context) => {
     raw: true,
   });
 
-  // find losing team
-  // const round = matchRounds.map((round) => {
-  //   const { blueTeamId, redTeamId, winningTeamId } = round;
-  //   const losingTeamId = [blueTeamId, redTeamId].find(
-  //     (id) => id !== winningTeamId
-  //   );
-
-  //   return {
-  //     ...round,
-  //     losingTeamId, // add losing team to the obj since we don't store it in db
-  //   };
-  // });
-
   // find team names
   const roundsWithTeamNames = await Promise.all(
     matchRounds.map(async (round) => {
@@ -79,8 +68,6 @@ export const getStaticProps = async (context) => {
       };
     })
   );
-
-  console.log("round info", roundsWithTeamNames);
 
   const matchRoundTeamStats = await Promise.all(
     matchRounds.map(async (round) => {
@@ -120,39 +107,18 @@ export default function MatchResults({
   matchRoundTeamStats,
   matchRoundPlayerStats,
 }) {
-  console.log(matchRounds);
   return (
     <MatchContainer matchId={match.id}>
-      <section className="teams flex w-screen justify-center bg-black text-white text-lg items-center h-16 border-b-gray-300 border-b-1">
-        <div className="team flex items-center p-3">
-          <span className="tricode text-left font-semibold px-2">
-            {matchRounds[0].blueTeamTricode}
-          </span>
-          <Image
-            src={`/teams/${matchRounds[0].blueTeamTricode}.png`}
-            alt="Team Logo"
-            width="36"
-            height="36"
-          />
-        </div>
+      <MatchSection>
+        <TeamHeader tricode={matchRounds[0].blueTeamTricode} teamSide="blue" />
         <span className="separator px-2 text-sm text-gray-400 font-semibold">
           VS
         </span>
-        <div className="team flex items-center p-3">
-          <Image
-            src={`/teams/${matchRounds[0].redTeamTricode}.png`}
-            alt="Team Logo"
-            width="36"
-            height="36"
-            className="px-2"
-          />
-          <span className="tricode text-right font-semibold px-2">
-            {matchRounds[0].redTeamTricode}
-          </span>
-        </div>
-      </section>
-      <section className="game-selector flex w-screen justify-center bg-[#0a0e13] text-white text-md items-center h-12 border-b-gray-300 border-b-1">
+        <TeamHeader tricode={matchRounds[0].redTeamTricode} teamSide="red" />
+      </MatchSection>
+      <MatchSection bgClass="bg-[#0a0e13]">
         <span className="label text-[#8fa3b0] font-semibold pr-8">GAME</span>
+        {/* for each matchRound, make an <a> selector */}
         <a
           href="#"
           className="px-8 text-[#00c8c8] active pointer-events-none font-semibold"
@@ -165,8 +131,8 @@ export default function MatchResults({
         <a href="#" className="px-8 text-[#687077] font-semibold">
           3
         </a>
-      </section>
-      <section className="stats-header flex w-screen justify-left bg-black text-white items-center h-16 border-b-gray-300 border-b-1">
+      </MatchSection>
+      <MatchSection left>
         <ul className="menu list-none	pt-1 px-2 h-full">
           <li
             className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
@@ -175,181 +141,643 @@ export default function MatchResults({
             STATS
           </li>
         </ul>
+      </MatchSection>
+      <section className="team-stats bg-[#0a0e13] flex flex-col">
+        <TeamSummary matchRoundTeamStats={matchRoundTeamStats[0]} />
+        <section className="player-stats relative bg-[#0a0e13] text-white flex flex-col cursor-pointer">
+          <div className="blue-team flex flex-col flex-1 border-r border-r-[#252c32]">
+            <div
+              role="button"
+              className="player top p-4 pr-0 h-32 flex flex-wrap text-lg border-b border-b-[#252c32]"
+            >
+              <div className="name basis-full pb-1 font-bold">TL Bwipo</div>
+              <div className="portrait relative basis-16 h-16 w-16 before:block before:absolute before:-left- before:-top-1 before:-right-1 before:-bottom-1 before:z-1 before:rounded-3xl before:border-[3px] before:border-[#0a0e13]">
+                <div className="wrapper h-full w-full bg-[#333] rounded-3xl overflow-hidden relative z-[1]">
+                  <Image
+                    className="image inline-block h-full w-full m-0"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Aatrox.png"
+                    alt=""
+                    width="60"
+                    height="60"
+                    style={{ transform: "scale3d(1.1,1.1,1.1)" }}
+                  />
+                </div>
+                <div className="level absolute -l-2 -b-2 bg-black rounded-2xl pt-1 text-center w-6 h-6 text-lg font-semibold border border-[#252c32] overflow-hidden z-2">
+                  8
+                </div>
+              </div>
+              <div className="details pl-1 flex flex-1">
+                <div className="stat kda">
+                  <svg
+                    className="icon float-left clear-left mx-1 mt-[2px] mb-0 inline-block align-bottom leading-5"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills ">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">0</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon float-left clear-left mx-1 mt-[2px] mb-0 inline-block align-bottom leading-5"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  78
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon float-left clear-left mx-1 mt-[2px] mb-0 inline-block align-bottom leading-5"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.9 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player jungle">
+              <div className="name">TL Santorin</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/JarvanIV.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">1</span>&nbsp;/&nbsp;
+                  <span className="assists">2</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  58
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.9 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player mid">
+              <div className="name">TL Bjergsen</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Leblanc.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">8</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">1</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">1</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  80
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  3.3 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player bottom">
+              <div className="name">TL Hans sama</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Zeri.png"
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">0</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  80
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  3.0 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player support">
+              <div className="name">TL CoreJJ</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Rakan.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">1</span>&nbsp;/&nbsp;
+                  <span className="deaths">1</span>&nbsp;/&nbsp;
+                  <span className="assists">1</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  16
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.4 K
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="red-team flex flex-1 items-end">
+            <div role="button" className="player top">
+              <div className="name">100 Ssumday</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Tryndamere.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">7</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">1</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">0</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  49
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.7 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player jungle">
+              <div className="name">100 Closer</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Viego.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">2</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  57
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.9 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player mid">
+              <div className="name">100 Abbedagge</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Vex.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">2</span>&nbsp;/&nbsp;
+                  <span className="assists">1</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  57
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.6 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player bottom">
+              <div className="name">100 FBI</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Aphelios.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">1</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">0</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  82
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  3.4 K
+                </div>
+              </div>
+            </div>
+            <div role="button" className="player support">
+              <div className="name">100 huhi</div>
+              <div className="portrait">
+                <div className="wrapper">
+                  <img
+                    className="image"
+                    src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Leona.png"
+                    alt=""
+                  />
+                </div>
+                <div className="level">6</div>
+              </div>
+              <div className="details">
+                <div className="stat kda">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
+                    </g>
+                  </svg>
+                  <span className="kills">0</span>&nbsp;/&nbsp;
+                  <span className="deaths">0</span>&nbsp;/&nbsp;
+                  <span className="assists">1</span>
+                </div>
+                <div className="stat cs">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <path
+                      className="shape"
+                      fill="#555d64"
+                      d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
+                    ></path>
+                  </svg>
+                  14
+                </div>
+                <div className="stat gold">
+                  <svg
+                    className="icon"
+                    width="16px"
+                    height="16px"
+                    viewBox="0 0 16 16"
+                    xmlns="https://www.w3.org/2000/svg"
+                  >
+                    <g className="shape" fill="#555d64" fillRule="evenodd">
+                      <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
+                      <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
+                    </g>
+                  </svg>
+                  2.0 K
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </section>
-      <section className="team-stats pt-4 pb-0 pr-4 pl-4 w-screen bg-[#0a0e13] text-white text-md items-center border-b-gray-300 border-b-1">
-        <div className="dragons flex mb-4">
-          <span className="blue-team flex-1"></span>
-          <span className="label text-center flex-1 text-[#8fa3b0] tracking-widest font-semibold text-sm">
-            DRAGONS
-          </span>
-          <span className="red-team flex-1"></span>
-        </div>
-        <div className="gold">
-          <div className="bar flex">
-            <div className="blue-team flex-1 mr-1 border-b-4 border-b-[#1580b6]"></div>
-            <div className="red-team flex-1 ml-1 border-b-4 border-b-[#de2f2f]"></div>
-          </div>
-          <div className="totals flex mt-2 font-semibold text-lg">
-            <div className="blue-team flex-1">2.5 K</div>
-            <div className="title text-center flex-1 text-[#8fa3b0] tracking-widest font-semibold text-sm">
-              GOLD
-            </div>
-            <div className="red-team flex-1 text-right">2.5 K</div>
-          </div>
-        </div>
-        <div className="details flex">
-          <div className="blue-team flex-1 flex justify-between pt-4 pb-0 pr-4 pl-4 mt-4 border-r border-r-[#252c32]">
-            <div className="stat inhibitors inline-block text-center text-lg font-medium w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#4c7184]"
-                  fill="#555d64"
-                  d="M12,2 C17.522,2 22,6.478 22,12 C22,17.522 17.522,22 12,22 C6.477,22 2,17.522 2,12 C2,6.478 6.477,2 12,2 Z M12,4 C7.639,4 4,7.635 4,12 C4,16.365 7.639,20 12,20 C16.362,20 20,16.365 20,12 C20,7.635 16.362,4 12,4 Z M12,8 L16,12 L12,16 L8,12 L12,8 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat barons inline-block text-center text-lg font-medium w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#4c7184]"
-                  fill="#555d64"
-                  d="M17,12.5049 C17,13.3299 16.331,13.9999 15.504,13.9999 L15.496,13.9999 C14.669,13.9999 14,13.3299 14,12.5049 L14,12.4949 C14,11.6699 14.669,10.9999 15.496,10.9999 L15.504,10.9999 C16.331,10.9999 17,11.6699 17,12.4949 L17,12.5049 Z M13,10.0079 C13,10.5559 12.556,10.9999 12.008,10.9999 L11.992,10.9999 C11.444,10.9999 11,10.5559 11,10.0079 L11,9.9919 C11,9.4439 11.444,8.9999 11.992,8.9999 L12.008,8.9999 C12.556,8.9999 13,9.4439 13,9.9919 L13,10.0079 Z M13,15.0099 C13,15.5569 12.557,15.9999 12.01,15.9999 L11.99,15.9999 C11.443,15.9999 11,15.5569 11,15.0099 L11,14.9899 C11,14.4429 11.443,13.9999 11.99,13.9999 L12.01,13.9999 C12.557,13.9999 13,14.4429 13,14.9899 L13,15.0099 Z M10,12.5139 C10,13.3349 9.334,13.9999 8.514,13.9999 L8.486,13.9999 C7.666,13.9999 7,13.3349 7,12.5139 L7,12.4859 C7,11.6659 7.666,10.9999 8.486,10.9999 L8.514,10.9999 C9.334,10.9999 10,11.6659 10,12.4859 L10,12.5139 Z M22,5.9999 L15,1.9999 L15,3.9999 L18,6.9999 L16,8.9999 L12,4.9999 L8,8.9999 L6,6.9999 L9,3.9999 L9,1.9999 L2,5.9999 L6,10.9999 L2,14.9999 L5,18.9999 L5,14.9999 L7,14.9999 L8,19.9999 L10,21.9999 L10,17.9999 L12,19.9999 L14,17.9999 L14,21.9999 L16,19.9999 L17,14.9999 L19,14.9999 L19,18.9999 L22,14.9999 L18,10.9999 L22,5.9999 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat towers inline-block text-center text-lg font-medium w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#4c7184]"
-                  fill="#555d64"
-                  d="M9.0004,1.0004 L9.0004,5.9994 L6.9994,5.0004 L4.0004,6.9994 L4.9994,11.0004 L12.0004,14.9994 L19.0004,11.0004 L20.0004,6.9994 L16.9994,5.0004 L14.9994,5.9994 L14.9994,1.0004 L9.0004,1.0004 Z M11.0004,5.9994 L11.0004,3.0004 L13.0004,3.0004 L13.0004,5.9994 L12.0004,6.9994 L11.0004,5.9994 Z M15.9994,8.9994 L12.0004,12.0004 L7.9994,8.9994 L12.0004,10.0004 L15.9994,8.9994 Z M12.0001,16.9997 L16.0001,14.9997 L15.0001,21.0007 L16.9991,21.0007 L16.9991,22.9997 L7.0001,22.9997 L7.0001,21.0007 L9.0001,21.0007 L7.9991,14.9997 L12.0001,16.9997 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat kills inline-block text-center text-lg font-medium w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#4c7184]"
-                  fill="#555d64"
-                  d="M16,3 L9.001,12 L9.001,13.5 L6,10.5 L5,14 L6.501,15.5 L3,19 L3,21 L5,21 L8.5,17.5 L10.001,19 L13.501,18 L10.5,15 L12,15 L21,8 L21,3 L16,3 Z M10.5,12.75 L17.001,6 L18.001,6 L18.001,7 L11.251,13.5 L10.5,13.5 L10.5,12.75 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-          </div>
-          <div className="red-team flex-1 flex justify-between pt-4 pb-0 pr-4 pl-4 mt-4 border-l border-l-[#252c32]">
-            <div className="stat inhibitors inline-block text-center text-lg font-medium w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#844c4c]"
-                  fill="#555d64"
-                  d="M12,2 C17.522,2 22,6.478 22,12 C22,17.522 17.522,22 12,22 C6.477,22 2,17.522 2,12 C2,6.478 6.477,2 12,2 Z M12,4 C7.639,4 4,7.635 4,12 C4,16.365 7.639,20 12,20 C16.362,20 20,16.365 20,12 C20,7.635 16.362,4 12,4 Z M12,8 L16,12 L12,16 L8,12 L12,8 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat barons inline-block text-center text-lg font-bold w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#844c4c]"
-                  fill="#555d64"
-                  d="M17,12.5049 C17,13.3299 16.331,13.9999 15.504,13.9999 L15.496,13.9999 C14.669,13.9999 14,13.3299 14,12.5049 L14,12.4949 C14,11.6699 14.669,10.9999 15.496,10.9999 L15.504,10.9999 C16.331,10.9999 17,11.6699 17,12.4949 L17,12.5049 Z M13,10.0079 C13,10.5559 12.556,10.9999 12.008,10.9999 L11.992,10.9999 C11.444,10.9999 11,10.5559 11,10.0079 L11,9.9919 C11,9.4439 11.444,8.9999 11.992,8.9999 L12.008,8.9999 C12.556,8.9999 13,9.4439 13,9.9919 L13,10.0079 Z M13,15.0099 C13,15.5569 12.557,15.9999 12.01,15.9999 L11.99,15.9999 C11.443,15.9999 11,15.5569 11,15.0099 L11,14.9899 C11,14.4429 11.443,13.9999 11.99,13.9999 L12.01,13.9999 C12.557,13.9999 13,14.4429 13,14.9899 L13,15.0099 Z M10,12.5139 C10,13.3349 9.334,13.9999 8.514,13.9999 L8.486,13.9999 C7.666,13.9999 7,13.3349 7,12.5139 L7,12.4859 C7,11.6659 7.666,10.9999 8.486,10.9999 L8.514,10.9999 C9.334,10.9999 10,11.6659 10,12.4859 L10,12.5139 Z M22,5.9999 L15,1.9999 L15,3.9999 L18,6.9999 L16,8.9999 L12,4.9999 L8,8.9999 L6,6.9999 L9,3.9999 L9,1.9999 L2,5.9999 L6,10.9999 L2,14.9999 L5,18.9999 L5,14.9999 L7,14.9999 L8,19.9999 L10,21.9999 L10,17.9999 L12,19.9999 L14,17.9999 L14,21.9999 L16,19.9999 L17,14.9999 L19,14.9999 L19,18.9999 L22,14.9999 L18,10.9999 L22,5.9999 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat towers inline-block text-center text-lg font-bold w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#844c4c]"
-                  fill="#555d64"
-                  d="M9.0004,1.0004 L9.0004,5.9994 L6.9994,5.0004 L4.0004,6.9994 L4.9994,11.0004 L12.0004,14.9994 L19.0004,11.0004 L20.0004,6.9994 L16.9994,5.0004 L14.9994,5.9994 L14.9994,1.0004 L9.0004,1.0004 Z M11.0004,5.9994 L11.0004,3.0004 L13.0004,3.0004 L13.0004,5.9994 L12.0004,6.9994 L11.0004,5.9994 Z M15.9994,8.9994 L12.0004,12.0004 L7.9994,8.9994 L12.0004,10.0004 L15.9994,8.9994 Z M12.0001,16.9997 L16.0001,14.9997 L15.0001,21.0007 L16.9991,21.0007 L16.9991,22.9997 L7.0001,22.9997 L7.0001,21.0007 L9.0001,21.0007 L7.9991,14.9997 L12.0001,16.9997 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-            <div className="stat kills inline-block text-center text-lg font-bold w-6 h-12">
-              <svg
-                className="icon"
-                width="24px"
-                height="24px"
-                viewBox="0 0 24 24"
-                xmlns="https://www.w3.org/2000/svg"
-              >
-                <path
-                  className="shape fill-[#844c4c]"
-                  fill="#555d64"
-                  d="M16,3 L9.001,12 L9.001,13.5 L6,10.5 L5,14 L6.501,15.5 L3,19 L3,21 L5,21 L8.5,17.5 L10.001,19 L13.501,18 L10.5,15 L12,15 L21,8 L21,3 L16,3 Z M10.5,12.75 L17.001,6 L18.001,6 L18.001,7 L11.251,13.5 L10.5,13.5 L10.5,12.75 Z"
-                ></path>
-              </svg>
-              0
-            </div>
-          </div>
-        </div>
-      </section>
-      <ul>
-        {/* {matchRounds.map((round) => (
-          <div key={round.id}>
-            <p>Round Id: {round.id}</p>
-            <p>Tournament Code: {round.tournamentCode}</p>
-            <p>Winning team: {round.winningTeamName}</p>
-            <p>Losing team: {round.losingTeamName}</p>
-          </div>
-        ))} */}
-      </ul>
-      <h2>Match Results</h2>
-      {/* <div className="flex w-1/2 justify-between">
-        {matchRoundTeamStats.map((gameResults, i) => {
-          return gameResults.map((teamStats, j) => (
-            <TeamResults key={j} teamStats={teamStats} />
-          ));
-        })}
-      </div> */}
     </MatchContainer>
   );
 }

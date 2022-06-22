@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["cdn.discordapp.com", "tailwindui.com"],
+    domains: [
+      "cdn.discordapp.com",
+      "tailwindui.com",
+      "ddragon.leagueoflegends.com",
+    ],
     formats: ["image/avif", "image/webp"],
   },
 };
