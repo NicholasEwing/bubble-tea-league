@@ -7,13 +7,18 @@ export default function TeamSummary({ matchRoundTeamStats }) {
   // expect an array with two items, blue / red team stats
   const blueTeam = matchRoundTeamStats[0];
   const redTeam = matchRoundTeamStats[1];
+
   return (
     <section className="team-summary pt-4 pb-0 pr-4 pl-4 w-screen bg-[#0a0e13] text-white text-md items-center border-b-gray-300 border-b-1">
       <DragonComparison
         blueDragonsKilled={blueTeam.dragonsKilled}
         redDragonsKilled={redTeam.dragonsKilled}
       />
-      <GoldComparison />
+      <GoldComparison
+        blueGoldEarned={blueTeam.goldEarned}
+        redGoldEarned={redTeam.goldEarned}
+      />
+      {/* make objective comparison component here */}
       <div className="details flex">
         <TeamObjectives teamSide="blue" />
         {/* <div className="blue-team flex-1 flex justify-between pt-4 pb-0 pr-4 pl-4 mt-4 border-r border-r-[#252c32]">
