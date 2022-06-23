@@ -24,8 +24,7 @@ export default async function handler(req, res) {
         break;
       case "POST":
         // where a lot of the magic happens
-        const { matchResults } = req.body;
-        const { metaData, gameId, winningTeam, losingTeam } = matchResults;
+        const { metaData, gameId, winningTeam, losingTeam } = req.body;
         const { MatchId, riotAuth } = JSON.parse(metaData);
 
         // make sure Riot callback includes our API key
@@ -39,7 +38,7 @@ export default async function handler(req, res) {
         let matchRoundResults = await v5getMatch(gameId);
 
         // parse useful info
-        const teamIds = await findTeamIdsFromMatchResults(matchResults);
+        const teamIds = await findTeamIdsFromMatchResults(req.body);
         const { winningTeamId, losingTeamId } = teamIds;
         const winningPlayers = await Player.findAll({
           where: {
@@ -55,7 +54,10 @@ export default async function handler(req, res) {
         });
 
         // mutate matchRoundResults to use correct PUUIDs when testing
-        if (process.env.NODE_ENV === "test") {
+        if (
+          process.env.NODE_ENV === "test" ||
+          process.env.NODE_ENV === "development"
+        ) {
           matchRoundResults = await replaceFakePlayerInfo(
             matchRoundResults,
             winningPlayers,

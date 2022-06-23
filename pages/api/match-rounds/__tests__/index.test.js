@@ -35,7 +35,7 @@ describe("/api/match-rounds", () => {
     // make fake object riot will send us based off some ACTUAL teams in the database
 
     // build post object
-    const matchResults = {
+    const body = {
       startTime: 1234567890000,
       winningTeam: [
         // team 4
@@ -54,17 +54,13 @@ describe("/api/match-rounds", () => {
         { summonerName: "Wıred" },
       ],
       shortCode: "NA2728-TOURNAMENTCODE0001",
-      metaData: '{"MatchId":1}',
+      metaData: `{"MatchId":1, "riotAuth":${process.env.BTL_API_KEY}}`,
       gameId: "4304210544",
       gameName: "a123bc45-ab1c-1a23-ab12-12345a67b89c",
       gameType: "Practice",
       gameMap: 11,
       gameMode: "CLASSIC",
       region: "NA1",
-    };
-
-    const body = {
-      matchResults,
     };
 
     const { req, res } = createMocks({ method: "POST", body });
