@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function InhibitorIcon({ fillColor, children }) {
+export default function KillIcon({ fillColor, children }) {
   return (
     <>
       <svg
@@ -13,7 +13,7 @@ export default function InhibitorIcon({ fillColor, children }) {
         <path
           className={`shape ${fillColor}`}
           fill="#555d64"
-          d="M12,2 C17.522,2 22,6.478 22,12 C22,17.522 17.522,22 12,22 C6.477,22 2,17.522 2,12 C2,6.478 6.477,2 12,2 Z M12,4 C7.639,4 4,7.635 4,12 C4,16.365 7.639,20 12,20 C16.362,20 20,16.365 20,12 C20,7.635 16.362,4 12,4 Z M12,8 L16,12 L12,16 L8,12 L12,8 Z"
+          d="M16,3 L9.001,12 L9.001,13.5 L6,10.5 L5,14 L6.501,15.5 L3,19 L3,21 L5,21 L8.5,17.5 L10.001,19 L13.501,18 L10.5,15 L12,15 L21,8 L21,3 L16,3 Z M10.5,12.75 L17.001,6 L18.001,6 L18.001,7 L11.251,13.5 L10.5,13.5 L10.5,12.75 Z"
         ></path>
       </svg>
       {children}

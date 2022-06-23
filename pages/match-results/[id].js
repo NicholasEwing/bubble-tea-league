@@ -118,7 +118,6 @@ export default function MatchResults({
       </MatchSection>
       <MatchSection bgClass="bg-[#0a0e13]">
         <span className="label text-[#8fa3b0] font-semibold pr-8">GAME</span>
-        {/* for each matchRound, make an <a> selector */}
         <a
           href="#"
           className="px-8 text-[#00c8c8] active pointer-events-none font-semibold"

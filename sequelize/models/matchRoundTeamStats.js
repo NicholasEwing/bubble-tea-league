@@ -22,7 +22,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    inhibitorsKilled: {
+    inhibitorsDestroyed: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    baronsKilled: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },

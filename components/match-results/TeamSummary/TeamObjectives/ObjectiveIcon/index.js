@@ -1,8 +1,10 @@
 import React from "react";
 import BaronIcon from "./BaronIcon";
 import InhibitorIcon from "./InhibitorIcon";
+import KillIcon from "./KillIcon";
+import TowerIcon from "./TowerIcon";
 
-export default function ObjectiveIcon({ teamSide, icon }) {
+export default function ObjectiveIcon({ teamSide, icon, count }) {
   let fillColor = "fill-[#FFFFFF]";
 
   if (teamSide === "blue") {
@@ -11,11 +13,22 @@ export default function ObjectiveIcon({ teamSide, icon }) {
     fillColor = "fill-[#844c4c]";
   }
 
+  function renderObjectiveIcon(icon) {
+    switch (icon) {
+      case "inhibitorsDestroyed":
+        return <InhibitorIcon fillColor={fillColor}>{count}</InhibitorIcon>;
+      case "towersDestroyed":
+        return <TowerIcon fillColor={fillColor}>{count}</TowerIcon>;
+      case "baronsKilled":
+        return <BaronIcon fillColor={fillColor}>{count}</BaronIcon>;
+      case "kills":
+        return <KillIcon fillColor={fillColor}>{count}</KillIcon>;
+    }
+  }
+
   return (
-    <div className="inline-block text-center text-lg font-medium w-6 h-12">
-      <InhibitorIcon fillColor={fillColor} />
-      0
-      <BaronIcon fillColor={fillColor} />0
+    <div className="inline-block text-center font-medium w-6 h-12">
+      {renderObjectiveIcon(icon)}
     </div>
   );
 }
