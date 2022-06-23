@@ -159,6 +159,7 @@ describe("/api/match-rounds", () => {
           towersDestroyed: expect.any(Number),
           heraldsKilled: expect.any(Number),
           dragonsKilled: expect.any(Number),
+          inhibitorsKilled: expect.any(Number),
           MatchRoundId: expect.any(Number),
           TeamId: expect.any(Number),
         }),

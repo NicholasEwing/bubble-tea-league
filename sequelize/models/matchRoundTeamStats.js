@@ -22,5 +22,9 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
+    inhibitorsKilled: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   });
 };
