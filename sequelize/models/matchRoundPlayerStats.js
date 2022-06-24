@@ -111,5 +111,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING, // I don't care if this repeats for now I have better things to do than hit my own db 50 times for a name
       allowNull: false,
     },
+    teamSide: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
 };

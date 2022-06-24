@@ -54,7 +54,7 @@ describe("/api/match-rounds", () => {
         { summonerName: "Wıred" },
       ],
       shortCode: "NA2728-TOURNAMENTCODE0001",
-      metaData: `{"MatchId":1, "riotAuth":${process.env.BTL_API_KEY}}`,
+      metaData: `{"MatchId":1, "riotAuth":"${process.env.BTL_API_KEY}"}`,
       gameId: "4304210544",
       gameName: "a123bc45-ab1c-1a23-ab12-12345a67b89c",
       gameType: "Practice",
@@ -68,12 +68,8 @@ describe("/api/match-rounds", () => {
     assertStatusResponse(res, 201);
 
     // get PUUIDs of all 10 players since summoner names can change
-    const winningPlayers = matchResults.winningTeam.map(
-      (obj) => obj.summonerName
-    );
-    const losingPlayers = matchResults.losingTeam.map(
-      (obj) => obj.summonerName
-    );
+    const winningPlayers = body.winningTeam.map((obj) => obj.summonerName);
+    const losingPlayers = body.losingTeam.map((obj) => obj.summonerName);
     const players = [...winningPlayers, ...losingPlayers];
     const playerIds = [
       ...(await Player.findAll({

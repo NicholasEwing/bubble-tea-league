@@ -137,7 +137,9 @@ export default async function handler(req, res) {
         const matchRoundPlayerStatsRecords = await parsePlayerStats(
           allPlayers,
           MatchRoundId,
-          matchRoundResults
+          matchRoundResults,
+          blueTeamId,
+          redTeamId
         );
         await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
 
