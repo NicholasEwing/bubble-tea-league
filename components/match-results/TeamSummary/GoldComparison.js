@@ -1,12 +1,7 @@
 import React from "react";
+import { kFormatter } from "../../../lib/utils";
 
 export default function GoldComparison({ blueGoldEarned, redGoldEarned }) {
-  function kFormatter(num) {
-    return Math.abs(num) > 999
-      ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + " K"
-      : Math.sign(num) * Math.abs(num);
-  }
-
   return (
     <div className="gold">
       <div className="bar flex">
