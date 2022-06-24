@@ -3,23 +3,12 @@ import React from "react";
 import PlayerStats from "./PlayerStats";
 
 export default function TeamPlayerStats({ matchRoundPlayerStats }) {
-  // split players into blue / red teams
   const bluePlayers = matchRoundPlayerStats.filter(
     (player) => player.teamSide === "blue"
   );
   const redPlayers = matchRoundPlayerStats.filter(
     (player) => player.teamSide === "red"
   );
-
-  console.log("BLUE PLAYERS", bluePlayers);
-  console.log("RED pLYAERS", redPlayers);
-
-  // sort by role
-  // top
-  // jg
-  // mid
-  // bottom
-  // supp
 
   return (
     <section className="player-stats relative flex bg-[#0a0e13] text-white cursor-pointer">
