@@ -29,7 +29,7 @@ export default function PlayerStats({
             style={{ transform: "scale3d(1.1,1.1,1.1)" }}
           />
         </div>
-        <div className="level absolute -left-[2px] -bottom-[2px] bg-black rounded-3xl text-center w-6 h-6 font-medium border border-t-2 border-[#252c32] overflow-hidden z-2">
+        <div className="level absolute -left-[2px] -bottom-[2px] bg-black rounded-3xl text-center w-6 h-6 font-thin border border-t-2 border-[#252c32] overflow-hidden z-2">
           {champLevel}
         </div>
       </div>

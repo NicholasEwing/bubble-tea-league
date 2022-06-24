@@ -3,12 +3,20 @@ import DragonComparison from "./DragonComparison";
 import GoldComparison from "./GoldComparison";
 import TeamObjectives from "./TeamObjectives";
 
-export default function TeamSummary({ matchRoundTeamStats }) {
+export default function TeamSummary({
+  matchRoundTeamStats,
+  toggleState,
+  count,
+}) {
   const blueTeam = matchRoundTeamStats[0];
   const redTeam = matchRoundTeamStats[1];
 
   return (
-    <section className="team-summary pt-4 pb-0 pr-4 pl-4 w-screen bg-[#0a0e13] text-white text-sm items-center border-b-gray-300 border-b-1">
+    <section
+      className={`${
+        toggleState === count ? "block" : "hidden"
+      } team-summary pt-4 pb-0 pr-4 pl-4 w-screen bg-[#0a0e13] text-white text-sm items-center border-b-gray-300 border-b-1`}
+    >
       <DragonComparison
         blueDragonsKilled={blueTeam.dragonsKilled}
         redDragonsKilled={redTeam.dragonsKilled}
@@ -22,6 +30,7 @@ export default function TeamSummary({ matchRoundTeamStats }) {
           <TeamObjectives
             key={teamStats.TeamId}
             teamSide={i === 0 ? "blue" : "red"}
+            count={i + 1}
             {...teamStats}
           />
         ))}

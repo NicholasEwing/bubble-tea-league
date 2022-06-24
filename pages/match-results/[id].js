@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { Op } from "sequelize";
 import MatchContainer from "../../components/match-results/Containers/MatchContainer";
 import MatchSection from "../../components/match-results/Containers/MatchSection";
+import MatchNav from "../../components/match-results/MatchNav";
 import TeamHeader from "../../components/match-results/TeamHeader";
 import TeamPlayerStats from "../../components/match-results/TeamPlayerStats";
 import TeamSummary from "../../components/match-results/TeamSummary";
@@ -108,29 +110,38 @@ export default function MatchResults({
   matchRoundTeamStats,
   matchRoundPlayerStats,
 }) {
+  const [toggleState, setToggleState] = useState(1);
+
+  const toggleTab = (i) => {
+    setToggleState(i);
+  };
   return (
     <MatchContainer matchId={match.id}>
       <MatchSection>
-        <TeamHeader tricode={matchRounds[0].blueTeamTricode} teamSide="blue" />
+        <TeamHeader
+          tricode={matchRounds[0].blueTeamTricode}
+          teamId={matchRounds[0].blueTeamId}
+          teamSide="blue"
+          toggleState={toggleState}
+          matchRounds={matchRounds}
+        />
         <span className="separator px-2 text-sm text-gray-400 font-semibold">
           VS
         </span>
-        <TeamHeader tricode={matchRounds[0].redTeamTricode} teamSide="red" />
+        <TeamHeader
+          tricode={matchRounds[0].redTeamTricode}
+          teamId={matchRounds[0].redTeamId}
+          teamSide="red"
+          toggleState={toggleState}
+          matchRounds={matchRounds}
+        />
       </MatchSection>
       <MatchSection bgClass="bg-[#0a0e13]">
-        <span className="label text-[#8fa3b0] font-semibold pr-8">GAME</span>
-        <a
-          href="#"
-          className="px-8 text-[#00c8c8] active pointer-events-none font-semibold"
-        >
-          1
-        </a>
-        <a href="#" className="px-8 text-[#687077] font-semibold">
-          2
-        </a>
-        <a href="#" className="px-8 text-[#687077] font-semibold">
-          3
-        </a>
+        <MatchNav
+          matchRounds={matchRounds}
+          toggleState={toggleState}
+          toggleTab={toggleTab}
+        />
       </MatchSection>
       <MatchSection left>
         <ul className="menu list-none	pt-1 px-2 h-full">
@@ -143,8 +154,22 @@ export default function MatchResults({
         </ul>
       </MatchSection>
       <section className="team-stats bg-[#0a0e13] flex flex-col">
-        <TeamSummary matchRoundTeamStats={matchRoundTeamStats[0]} />
-        <TeamPlayerStats matchRoundPlayerStats={matchRoundPlayerStats[0]} />
+        {matchRounds.map((round, i) => (
+          <React.Fragment key={i}>
+            <TeamSummary
+              key={`${i}-teamSummary`}
+              matchRoundTeamStats={matchRoundTeamStats[i]}
+              toggleState={toggleState}
+              count={round.id}
+            />
+            <TeamPlayerStats
+              key={`${i}-playerStats`}
+              matchRoundPlayerStats={matchRoundPlayerStats[i]}
+              toggleState={toggleState}
+              count={round.id}
+            />
+          </React.Fragment>
+        ))}
       </section>
     </MatchContainer>
   );
