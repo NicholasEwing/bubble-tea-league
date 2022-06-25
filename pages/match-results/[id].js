@@ -7,6 +7,7 @@ import MatchSection from "../../components/match-results/Containers/MatchSection
 import MatchNav from "../../components/match-results/MatchNav";
 import TeamHeader from "../../components/match-results/TeamHeader";
 import TeamPlayerStats from "../../components/match-results/TeamPlayerStats";
+import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFocus";
 import TeamSummary from "../../components/match-results/TeamSummary";
 const sequelize = require("../../sequelize/index");
 const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats, Team } =
@@ -153,9 +154,11 @@ export default function MatchResults({
           </li>
         </ul>
       </MatchSection>
-      <section className="team-stats bg-[#0a0e13] flex flex-col">
+      <section className="team-stats relative bg-[#0a0e13] flex flex-col">
+        <PlayerFocus />
         {matchRounds.map((round, i) => (
           <React.Fragment key={i}>
+            <PlayerFocus key={round.id} />
             <TeamSummary
               key={`${i}-teamSummary`}
               matchRoundTeamStats={matchRoundTeamStats[i]}
