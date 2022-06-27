@@ -5,7 +5,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "champion-attributes": "url('/sprite-attribute-champion.png')",
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms")],
 };

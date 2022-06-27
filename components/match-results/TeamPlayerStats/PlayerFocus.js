@@ -260,9 +260,9 @@ export default function PlayerFocus() {
               </div>
             </div> */}
           </div>
-          <div className="StatsMatchupAttributes flex relative border-t border-t-[#252c32] bg-[#0f1519]">
-            <div className="player primary flex-1 pt-8">
-              <div className="stat attackDamage ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+          <div className="StatsMatchupAttributes flex border-t border-t-[#252c32] bg-[#0f1519]">
+            <div className="player primary flex-1 py-8">
+              <div className="stat attackDamage ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-4px] before:[background-position-y:-28px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
@@ -270,7 +270,7 @@ export default function PlayerFocus() {
                   Attack Damage
                 </div>
               </div>
-              <div className="stat abilityPower ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+              <div className="stat abilityPower ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-28px] before:[background-position-y:-28px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
@@ -278,7 +278,7 @@ export default function PlayerFocus() {
                   Ability Power
                 </div>
               </div>
-              <div className="stat attackSpeed ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+              <div className="stat attackSpeed ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-4px] before:[background-position-y:-100px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
@@ -286,7 +286,7 @@ export default function PlayerFocus() {
                   Attack Speed
                 </div>
               </div>
-              <div className="stat lifeSteal ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+              <div className="stat lifeSteal ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-4px] before:[background-position-y:-148px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
@@ -294,7 +294,7 @@ export default function PlayerFocus() {
                   Life Steal
                 </div>
               </div>
-              <div className="stat armor ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+              <div className="stat armor ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-4px] before:[background-position-y:-52px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
@@ -302,7 +302,7 @@ export default function PlayerFocus() {
                   Armor
                 </div>
               </div>
-              <div className="stat magicResistance ml-8 flex pt-3 pr-3 pb-3 pl-9 h-9 relative">
+              <div className="stat magicResistance ml-8 flex items-center pt-3 pr-3 pb-3 pl-9 h-9 relative before:absolute before:[background-position-x:-28px] before:[background-position-y:-52px] before:left-0 before:top-[9px] before:w-[20px] before:h-[20px] before:border-[2px] before:border-[#252c32] before:bg-black before:bg-[length:48px_auto] before:bg-champion-attributes">
                 <div className="value flex-1 text-white font-medium text-2xl p-0">
                   0
                 </div>
