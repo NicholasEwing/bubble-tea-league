@@ -112,9 +112,14 @@ export default function MatchResults({
   matchRoundPlayerStats,
 }) {
   const [toggleState, setToggleState] = useState(1);
+  const [focusedPlayer, setFocusedPlayer] = useState();
 
   const toggleTab = (i) => {
     setToggleState(i);
+  };
+
+  const selectPlayer = (p) => {
+    setFocusedPlayer(p);
   };
   return (
     <MatchContainer matchId={match.id}>
@@ -155,10 +160,17 @@ export default function MatchResults({
         </ul>
       </MatchSection>
       <section className="team-stats relative bg-[#0a0e13] flex flex-col">
-        <PlayerFocus />
         {matchRounds.map((round, i) => (
           <React.Fragment key={i}>
-            <PlayerFocus key={round.id} />
+            {focusedPlayer ? (
+              <PlayerFocus
+                key={round.id}
+                player={focusedPlayer}
+                selectPlayer={selectPlayer}
+              />
+            ) : (
+              ""
+            )}
             <TeamSummary
               key={`${i}-teamSummary`}
               matchRoundTeamStats={matchRoundTeamStats[i]}
@@ -170,6 +182,7 @@ export default function MatchResults({
               matchRoundPlayerStats={matchRoundPlayerStats[i]}
               toggleState={toggleState}
               count={round.id}
+              selectPlayer={selectPlayer}
             />
           </React.Fragment>
         ))}

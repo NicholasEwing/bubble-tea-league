@@ -6,6 +6,7 @@ import {
 import { replaceFakePlayerInfo } from "../../../lib/jest-api-helpers";
 import {
   findTeamIdsFromMatchResults,
+  getTimelineEvents,
   v5getMatch,
 } from "../../../lib/riot-games-api-helpers";
 
@@ -53,13 +54,18 @@ export default async function handler(req, res) {
           raw: true,
         });
 
+        // Get timeline events
+        let timelineEvents = await getTimelineEvents(gameId);
+
         // mutate matchRoundResults to use correct PUUIDs when testing
+        // mutate timelineResults to use correct PUUIDs when testing
         if (
           process.env.NODE_ENV === "test" ||
           process.env.NODE_ENV === "development"
         ) {
-          matchRoundResults = await replaceFakePlayerInfo(
+          [matchRoundResults, timelineEvents] = await replaceFakePlayerInfo(
             matchRoundResults,
+            timelineEvents,
             winningPlayers,
             losingPlayers
           );
@@ -139,7 +145,11 @@ export default async function handler(req, res) {
           MatchRoundId,
           matchRoundResults,
           blueTeamId,
-          redTeamId
+          redTeamId,
+          matchRoundTeamStatsRecords,
+          timelineEvents,
+          winningTeamId,
+          losingTeamId
         );
         await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
 

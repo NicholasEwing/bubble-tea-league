@@ -107,6 +107,22 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING, // for a stringified object
       allowNull: false,
     },
+    killParticipation: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    teamDamagePercentage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    wardsPlaced: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    wardTakedowns: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
     summonerName: {
       type: DataTypes.STRING, // I don't care if this repeats for now I have better things to do than hit my own db 50 times for a name
       allowNull: false,

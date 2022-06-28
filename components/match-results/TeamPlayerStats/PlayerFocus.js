@@ -1,17 +1,21 @@
 import Image from "next/image";
 import React from "react";
+import { kFormatter } from "../../../lib/utils";
 
-export default function PlayerFocus() {
-  // should look like
-  // div.playerinfo
-  // div.matchupselector
-  // div.info
-
+export default function PlayerFocus({ player, selectPlayer }) {
   return (
-    <div className="StatsMatchup absolute left-0 top-0 z-50 h-full w-full bg-[#0f1519]">
+    <div
+      className={`StatsMatchup ${
+        player ? "block" : "hidden"
+      } absolute left-0 top-0 z-50 h-full w-full bg-[#0f1519]`}
+    >
       {/* make this a component */}
       <div className="player-info flex flex-row items-center border-b bg-[#0a0e13] border-b-[#252c32] h-24">
-        <div className="hide-matchup-button relative w-16 h-full flex items-center justify-center after:block after:absolute after:h-[4.5rem] after:w-[1px] after:right-0 after:top-3 after:bg-[#252c32]">
+        <div
+          onClick={(e) => selectPlayer()}
+          role="button"
+          className="hide-matchup-button pointer-events-auto relative w-16 h-full flex items-center justify-center after:block after:absolute after:h-[4.5rem] after:w-[1px] after:right-0 after:top-3 after:bg-[#252c32]"
+        >
           <svg
             className="icon w-5 h-5"
             width="10px"
@@ -39,16 +43,22 @@ export default function PlayerFocus() {
         <div className="StatsMatchupPlayers flex font-semibold text-[#8fa3b0] bg-[#0a0e13] flex-1">
           <div className="player primary pl-4 flex flex-row-reverse items-center flex-1">
             <div className="details flex-1 items-center pl-4">
-              <div className="name text-white text-lg pb-1">100 Ssumday</div>
-              <div className="champion inline text-sm uppercase">Ornn</div>
+              <div className="name text-white text-lg pb-1">
+                {player.summonerName}
+              </div>
+              <div className="champion inline text-sm uppercase">
+                {player.championName}
+              </div>
               <span className="separator px-1">–</span>
-              <div className="role inline text-sm uppercase">top</div>
+              <div className="role inline text-sm uppercase">
+                {player.teamPosition}
+              </div>
             </div>
-            <div className="portrait basis-16 h-[60px] relative">
+            <div className="portrait basis-[60px] h-[60px] relative">
               <div className="wrapper w-full h-full rounded-[30px] overflow-hidden">
                 <Image
                   className="image"
-                  src="https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/Ornn.png"
+                  src={`https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/${player.championName}.png`}
                   alt=""
                   layout="fixed"
                   width="60"
@@ -57,7 +67,7 @@ export default function PlayerFocus() {
                 />
               </div>
               <div className="level absolute -right-1 -bottom-1 w-7 h-7 pt-[3px] font-medium text-sm text-center border border-[#252c32] bg-black text-white rounded-[20px]">
-                1
+                {player.champLevel}
               </div>
             </div>
           </div>
@@ -168,31 +178,36 @@ export default function PlayerFocus() {
             <div className="player primary flex-1 pt-5 pr-0 pb-6 pl-6">
               <div className="stat kda pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
                 <div className="value text-2xl font-medium text-white">
-                  <span className="kills">0</span>
+                  <span className="kills">{player.kills}</span>
                   <span className="slash"> / </span>
-                  <span className="deaths">0</span>
+                  <span className="deaths">{player.deaths}</span>
                   <span className="slash"> / </span>
-                  <span className="assists">0</span>
+                  <span className="assists">{player.assists}</span>
                 </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   K / D / A
                 </div>
               </div>
               <div className="stat goldEarned pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
-                <div className="value text-2xl font-medium text-white">0</div>
+                <div className="value text-2xl font-medium text-white">
+                  {kFormatter(player.goldEarned)}
+                </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Gold Earned
                 </div>
               </div>
               <div className="stat minionKills pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
-                <div className="value text-2xl font-medium text-white">0</div>
+                <div className="value text-2xl font-medium text-white">
+                  {player.totalMinionsKilled}
+                </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Minion Kills (CS)
                 </div>
               </div>
               <div className="stat killParticipation pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
                 <div className="value text-2xl font-medium text-white">
-                  0<span className="percent text-sm align-super">%</span>
+                  {player.killParticipation}
+                  <span className="percent text-sm align-super">%</span>
                 </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Kill Participation
@@ -200,20 +215,25 @@ export default function PlayerFocus() {
               </div>
               <div className="stat championDamageShare pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
                 <div className="value text-2xl font-medium text-white">
-                  0<span className="percent text-sm align-super">%</span>
+                  {player.teamDamagePercentage}
+                  <span className="percent text-sm align-super">%</span>
                 </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Champion Damage Share
                 </div>
               </div>
               <div className="stat wardsPlaced pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
-                <div className="value text-2xl font-medium text-white">0</div>
+                <div className="value text-2xl font-medium text-white">
+                  {player.wardsPlaced}
+                </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Wards Placed
                 </div>
               </div>
               <div className="stat wardsDestroyed pt-3 pr-8 pb-0 pl-0 w-1/2 float-left">
-                <div className="value text-2xl font-medium text-white">0</div>
+                <div className="value text-2xl font-medium text-white">
+                  {player.wardTakedowns}
+                </div>
                 <div className="title pt-1 text-[#8fa3b0] tracking-widest font-medium text-sm uppercase break-words">
                   Wards Destroyed
                 </div>

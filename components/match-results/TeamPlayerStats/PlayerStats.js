@@ -2,19 +2,20 @@ import Image from "next/image";
 import React from "react";
 import { kFormatter } from "../../../lib/utils";
 
-export default function PlayerStats({
-  summonerName,
-  championName,
-  champLevel,
-  kills,
-  deaths,
-  assists,
-  totalMinionsKilled,
-  goldEarned,
-}) {
+export default function PlayerStats({ player, selectPlayer }) {
+  const {
+    summonerName,
+    championName,
+    champLevel,
+    kills,
+    deaths,
+    assists,
+    totalMinionsKilled,
+    goldEarned,
+  } = player;
   return (
     <div
-      role="button"
+      onClick={(e) => selectPlayer(player)}
       className="player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]"
     >
       <div className="name basis-full pb-1 font-bold">{summonerName}</div>

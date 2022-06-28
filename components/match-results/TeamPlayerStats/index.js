@@ -6,6 +6,7 @@ export default function TeamPlayerStats({
   matchRoundPlayerStats,
   toggleState,
   count,
+  selectPlayer,
 }) {
   const bluePlayers = matchRoundPlayerStats.filter(
     (player) => player.teamSide === "blue"
@@ -22,12 +23,20 @@ export default function TeamPlayerStats({
     >
       <div className="blue-team flex-1 border-r border-r-[#252c32]">
         {bluePlayers.map((p) => (
-          <PlayerStats key={`${p.summonerName}-${toggleState}-blue`} {...p} />
+          <PlayerStats
+            key={`${p.summonerName}-${toggleState}-blue`}
+            player={p}
+            selectPlayer={selectPlayer}
+          />
         ))}
       </div>
       <div className="red-team flex-1 items-end">
         {redPlayers.map((p) => (
-          <PlayerStats key={`${p.summonerName}-${toggleState}-red`} {...p} />
+          <PlayerStats
+            key={`${p.summonerName}-${toggleState}-red`}
+            player={p}
+            selectPlayer={selectPlayer}
+          />
         ))}
       </div>
     </section>
