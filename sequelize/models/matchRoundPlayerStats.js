@@ -127,6 +127,30 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING, // I don't care if this repeats for now I have better things to do than hit my own db 50 times for a name
       allowNull: false,
     },
+    attackDamage: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    abilityPower: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    attackSpeed: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    lifesteal: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    armor: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    magicResist: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
     teamSide: {
       type: DataTypes.STRING,
       allowNull: false,
