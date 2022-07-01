@@ -34,7 +34,7 @@ export const getStaticProps = async (context) => {
   const { id } = context.params;
   const match = await Match.findByPk(id, { raw: true });
 
-  const matchRounds = await MatchRound.findAll({
+  let matchRounds = await MatchRound.findAll({
     where: {
       MatchId: id,
       winningTeamId: { [Op.not]: null },
@@ -44,8 +44,8 @@ export const getStaticProps = async (context) => {
     raw: true,
   });
 
-  // find team names
-  const roundsWithTeamNames = await Promise.all(
+  // add team names to matchRounds
+  matchRounds = await Promise.all(
     matchRounds.map(async (round) => {
       const { blueTeamId, redTeamId, winningTeamId } = round;
       const teams = await Team.findAll({
@@ -97,8 +97,9 @@ export const getStaticProps = async (context) => {
     })
   );
 
-  const roundsWithTeamsAndDragons = await Promise.all(
-    roundsWithTeamNames.map(async (round, i) => {
+  // add dragon kills to matchRounds
+  matchRounds = await Promise.all(
+    matchRounds.map(async (round, i) => {
       const timelineEvents = await getTimelineEvents(round.gameId);
 
       const dragonEvents = timelineEvents.info.frames.flatMap((currentFrame) =>
@@ -114,7 +115,7 @@ export const getStaticProps = async (context) => {
   return {
     props: {
       match: JSON.parse(JSON.stringify(match)),
-      matchRounds: JSON.parse(JSON.stringify(roundsWithTeamsAndDragons)),
+      matchRounds: JSON.parse(JSON.stringify(matchRounds)),
       matchRoundTeamStats: JSON.parse(JSON.stringify(matchRoundTeamStats)),
       matchRoundPlayerStats: JSON.parse(JSON.stringify(matchRoundPlayerStats)),
     },
