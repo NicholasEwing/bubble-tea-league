@@ -9,6 +9,8 @@ import TeamHeader from "../../components/match-results/TeamHeader";
 import TeamPlayerStats from "../../components/match-results/TeamPlayerStats";
 import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFocus";
 import TeamSummary from "../../components/match-results/TeamSummary";
+import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
+
 const sequelize = require("../../sequelize/index");
 const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats, Team } =
   sequelize.models;
@@ -95,10 +97,24 @@ export const getStaticProps = async (context) => {
     })
   );
 
+  const roundsWithTeamsAndDragons = await Promise.all(
+    roundsWithTeamNames.map(async (round, i) => {
+      const timelineEvents = await getTimelineEvents(round.gameId);
+
+      const dragonEvents = timelineEvents.info.frames.flatMap((currentFrame) =>
+        currentFrame.events.filter(
+          (e) => e.type === "ELITE_MONSTER_KILL" && e.monsterType === "DRAGON"
+        )
+      );
+
+      return { ...round, dragonEvents };
+    })
+  );
+
   return {
     props: {
       match: JSON.parse(JSON.stringify(match)),
-      matchRounds: JSON.parse(JSON.stringify(roundsWithTeamNames)),
+      matchRounds: JSON.parse(JSON.stringify(roundsWithTeamsAndDragons)),
       matchRoundTeamStats: JSON.parse(JSON.stringify(matchRoundTeamStats)),
       matchRoundPlayerStats: JSON.parse(JSON.stringify(matchRoundPlayerStats)),
     },
@@ -176,6 +192,7 @@ export default function MatchResults({
               matchRoundTeamStats={matchRoundTeamStats[i]}
               toggleState={toggleState}
               count={round.id}
+              dragonEvents={round.dragonEvents}
             />
             <TeamPlayerStats
               key={`${i}-playerStats`}
