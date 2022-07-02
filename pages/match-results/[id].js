@@ -9,11 +9,18 @@ import TeamHeader from "../../components/match-results/TeamHeader";
 import TeamPlayerStats from "../../components/match-results/TeamPlayerStats";
 import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFocus";
 import TeamSummary from "../../components/match-results/TeamSummary";
+import { replaceTimelinePUUIDs } from "../../lib/jest-api-helpers";
 import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
 
 const sequelize = require("../../sequelize/index");
-const { Match, MatchRound, MatchRoundTeamStats, MatchRoundPlayerStats, Team } =
-  sequelize.models;
+const {
+  Match,
+  MatchRound,
+  MatchRoundTeamStats,
+  MatchRoundPlayerStats,
+  Team,
+  Player,
+} = sequelize.models;
 
 export const getStaticPaths = async () => {
   const matches = await Match.findAll({ raw: true });
@@ -86,7 +93,7 @@ export const getStaticProps = async (context) => {
     })
   );
 
-  const matchRoundPlayerStats = await Promise.all(
+  let matchRoundPlayerStats = await Promise.all(
     matchRounds.map(async (round) => {
       const playerStats = await MatchRoundPlayerStats.findAll({
         where: { MatchRoundId: round.id },
@@ -97,10 +104,38 @@ export const getStaticProps = async (context) => {
     })
   );
 
-  // add dragon kills to matchRounds
+  // use timeline events for dragons, items, and abilities
+
+  // simulate getting result from JSON which contains correct PUUIDs
+
+  // add dragon kills and items to matchRounds
   matchRounds = await Promise.all(
     matchRounds.map(async (round, i) => {
       const timelineEvents = await getTimelineEvents(round.gameId);
+      if (
+        process.env.NODE_ENV === "development" ||
+        process.env.NODE_ENV === "test"
+      ) {
+        // get player ids
+        const playerIds = matchRoundPlayerStats[0].map((player) => {
+          return player.PlayerId;
+        });
+
+        // get puuids from db
+        const playerPUUIDs = (
+          await Player.findAll({
+            where: {
+              id: {
+                [Op.or]: playerIds,
+              },
+            },
+            attributes: ["PUUID"],
+            raw: true,
+          })
+        ).map((p) => p.PUUID);
+
+        replaceTimelinePUUIDs(timelineEvents, playerPUUIDs);
+      }
 
       const dragonEvents = timelineEvents.info.frames.flatMap((currentFrame) =>
         currentFrame.events.filter(
@@ -108,7 +143,32 @@ export const getStaticProps = async (context) => {
         )
       );
 
-      return { ...round, dragonEvents };
+      const itemEvents = timelineEvents.info.frames.flatMap((currentFrame) =>
+        currentFrame.events.filter(
+          (e) => e.type === "ITEM_PURCHASED" || e.type === "ITEM_SOLD"
+        )
+      );
+
+      const abilityLevelEvents = timelineEvents.info.frames.flatMap(
+        (currentFrame) =>
+          currentFrame.events.filter((e) => e.type === "SKILL_LEVEL_UP")
+      );
+
+      matchRoundPlayerStats[i].forEach((player, j) => {
+        player.participantId = j + 1;
+        const playerItemEvents = itemEvents.filter(
+          (e) => e.participantId === player.participantId
+        );
+
+        const playerAbilityLevelEvents = abilityLevelEvents.filter(
+          (e) => e.participantId === player.participantId
+        );
+
+        player.playerItemEvents = playerItemEvents;
+        player.playerAbilityLevelEvents = playerAbilityLevelEvents;
+      });
+
+      return { ...round, dragonEvents, itemEvents, abilityLevelEvents };
     })
   );
 

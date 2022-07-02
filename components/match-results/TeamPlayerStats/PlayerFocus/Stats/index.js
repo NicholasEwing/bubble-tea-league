@@ -1,5 +1,5 @@
 import React from "react";
-import { kFormatter } from "../../../../lib/utils";
+import { kFormatter } from "../../../../../lib/utils";
 
 export default function Stats({ player }) {
   return (
