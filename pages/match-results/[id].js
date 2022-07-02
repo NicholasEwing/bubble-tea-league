@@ -104,11 +104,6 @@ export const getStaticProps = async (context) => {
     })
   );
 
-  // use timeline events for dragons, items, and abilities
-
-  // simulate getting result from JSON which contains correct PUUIDs
-
-  // add dragon kills and items to matchRounds
   matchRounds = await Promise.all(
     matchRounds.map(async (round, i) => {
       const timelineEvents = await getTimelineEvents(round.gameId);

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React, { useState } from "react";
+import Abilities from "./Abilities";
 import ComparisonDetailsSelector from "./ComparisonDetailsSelector";
 import HideMatchupButton from "./HideMatchupButton";
 import Items from "./Items";
@@ -20,7 +21,13 @@ export default function PlayerFocus({ player, selectPlayer }) {
       case "items":
         return <Items playerItemEvents={player.playerItemEvents} {...player} />;
       case "abilities":
-        return <p className="text-white">abilities</p>;
+        return (
+          <Abilities
+            playerAbilityLevelEvents={player.playerAbilityLevelEvents}
+            championName={player.championName}
+            champLevel={player.champLevel}
+          />
+        );
       case "runes":
         return <p className="text-white">runes</p>;
       default:

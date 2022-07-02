@@ -22,7 +22,6 @@ export default function Items({
       );
 
       const items = await res.json();
-      console.log("ITEMS", items.data);
 
       setItems(items);
       setLoading(false);
@@ -45,7 +44,7 @@ export default function Items({
                 <span className="mx-5">
                   <Image
                     src={`http://ddragon.leagueoflegends.com/cdn/12.12.1/img/item/${item}.png`}
-                    alt=""
+                    alt={`${items.data[item].name} item image`}
                     height="64"
                     width="64"
                   />
