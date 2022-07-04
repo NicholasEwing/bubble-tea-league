@@ -36,7 +36,7 @@ export default function Items({
           {/* {playerItemEvents.map((e) => (
             <p key={e.itemId}>item event</p>
           ))} */}
-          {isLoading ? (
+          {isLoading && !items.length ? (
             <></>
           ) : (
             endGameItems.reverse().map((item) => (

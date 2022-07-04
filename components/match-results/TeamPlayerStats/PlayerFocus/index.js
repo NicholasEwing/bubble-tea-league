@@ -5,6 +5,7 @@ import ComparisonDetailsSelector from "./ComparisonDetailsSelector";
 import HideMatchupButton from "./HideMatchupButton";
 import Items from "./Items";
 import PlayerComparison from "./PlayerComparison";
+import Runes from "./Runes";
 import Stats from "./Stats";
 
 export default function PlayerFocus({ player, selectPlayer }) {
@@ -29,7 +30,14 @@ export default function PlayerFocus({ player, selectPlayer }) {
           />
         );
       case "runes":
-        return <p className="text-white">runes</p>;
+        return (
+          <Runes
+            primaryRunePath={player.primaryRunePath}
+            primaryRunePerks={player.primaryRunePerks}
+            secondaryRunePath={player.secondaryRunePath}
+            secondaryRunePerks={player.secondaryRunePerks}
+          />
+        );
       default:
         return (
           <p className="text-white">
