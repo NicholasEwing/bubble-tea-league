@@ -8,7 +8,7 @@ export default function PlayerComparison({
   champLevel,
 }) {
   return (
-    <div className="StatsMatchupPlayers flex font-semibold text-[#8fa3b0] bg-[#0a0e13] flex-1">
+    <div className="StatsMatchupPlayers flex font-semibold text-[#8fa3b0] bg-[#0a0e13] flex-1 h-full">
       <div className="player primary pl-4 flex flex-row-reverse items-center flex-1">
         <div className="details flex-1 items-center pl-4">
           <div className="name text-white text-lg pb-1">{summonerName}</div>
@@ -35,7 +35,7 @@ export default function PlayerComparison({
           </div>
         </div>
       </div>
-      <div className="player secondary hidden md:block">
+      <div className="player secondary hidden">
         <div className="details">
           <div className="name">TL Bwipo</div>
           <div className="champion">Aatrox</div>

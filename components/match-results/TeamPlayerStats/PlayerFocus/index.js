@@ -1,5 +1,6 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import MatchSection from "../../Containers/MatchSection";
 import Abilities from "./Abilities";
 import ComparisonDetailsSelector from "./ComparisonDetailsSelector";
 import HideMatchupButton from "./HideMatchupButton";
@@ -8,7 +9,7 @@ import PlayerComparison from "./PlayerComparison";
 import Runes from "./Runes";
 import Stats from "./Stats";
 
-export default function PlayerFocus({ player, selectPlayer }) {
+export default function PlayerFocus({ player, selectPlayer, isMobile }) {
   const [activeTab, setActiveTab] = useState("stats");
 
   const selectTab = (tab) => {
@@ -47,23 +48,39 @@ export default function PlayerFocus({ player, selectPlayer }) {
     }
   }
 
+  // if mobile, use absolute
+
   return (
-    <section
-      className={`StatsMatchup ${
-        player ? "block" : "hidden"
-      } absolute left-0 top-0 z-50 h-full w-full bg-[#0f1519] text-white`}
-    >
-      <div className="flex flex-row items-center border-b bg-[#0a0e13] border-b-[#252c32] h-24">
-        <HideMatchupButton selectPlayer={selectPlayer} />
-        <PlayerComparison {...player} />
-      </div>
-      <div className="text-left border-b bg-[#0a0e13] border-b-[#252c32] h-16 text-[#8fa3b0]">
-        <ComparisonDetailsSelector
-          selectTab={selectTab}
-          activeTab={activeTab}
-        />
-      </div>
-      {renderTabSection(activeTab)}
-    </section>
+    <div className="flex-1">
+      {!isMobile && (
+        <MatchSection left>
+          <ul className="menu list-none	pt-1 px-2 h-full">
+            <li
+              className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
+              role="button"
+            >
+              STATS
+            </li>
+          </ul>
+        </MatchSection>
+      )}
+      <section
+        className={`StatsMatchup ${player ? "block" : "hidden"} ${
+          isMobile ? "absolute" : ""
+        } left-0 top-0 z-50  bg-[#0f1519] text-white`}
+      >
+        <div className="flex flex-row items-center border-b bg-[#0a0e13] border-b-[#252c32] h-24">
+          {isMobile && <HideMatchupButton selectPlayer={selectPlayer} />}
+          <PlayerComparison {...player} />
+        </div>
+        <div className="text-left border-b bg-[#0a0e13] border-b-[#252c32] h-16 text-[#8fa3b0]">
+          <ComparisonDetailsSelector
+            selectTab={selectTab}
+            activeTab={activeTab}
+          />
+        </div>
+        {renderTabSection(activeTab)}
+      </section>
+    </div>
   );
 }

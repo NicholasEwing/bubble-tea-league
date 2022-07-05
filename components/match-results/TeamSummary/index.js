@@ -16,7 +16,7 @@ export default function TeamSummary({
     <section
       className={`${
         toggleState === count ? "block" : "hidden"
-      } team-summary pt-4 pb-0 pr-4 pl-4 w-screen bg-[#0a0e13] text-white text-sm items-center border-b-gray-300 border-b-1`}
+      } team-summary pt-4 pb-0 pr-4 pl-4 bg-[#0a0e13] text-white text-sm items-center border-b-gray-300 border-b-1`}
     >
       <DragonComparison dragonEvents={dragonEvents} />
       <GoldComparison

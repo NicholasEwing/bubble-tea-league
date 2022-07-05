@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Op } from "sequelize";
 import MatchContainer from "../../components/match-results/Containers/MatchContainer";
 import MatchSection from "../../components/match-results/Containers/MatchSection";
@@ -185,6 +185,45 @@ export default function MatchResults({
 }) {
   const [toggleState, setToggleState] = useState(1);
   const [focusedPlayer, setFocusedPlayer] = useState();
+  const [isMobile, setIsMobile] = useState();
+
+  // if mobile, hide player focus until someone is clicked
+
+  // if desktop, always show player focus!
+
+  useEffect(() => {
+    if (window.innerWidth > 640) {
+      // on dtop
+      console.log("ON DESKTOP");
+      setIsMobile(false);
+      setFocusedPlayer(matchRoundPlayerStats[0][0]);
+    } else if (window.innerWidth < 640) {
+      // on mobile
+      console.log("ON MOBILE");
+      setIsMobile(true);
+    }
+  }, [matchRoundPlayerStats]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 640) {
+        // on dtop
+        console.log("ON DESKTOP");
+        setIsMobile(false);
+        setFocusedPlayer(matchRoundPlayerStats[0][0]);
+      } else if (window.innerWidth < 640) {
+        // on mobile
+        console.log("ON MOBILE");
+        setIsMobile(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [matchRoundPlayerStats]);
 
   const toggleTab = (i) => {
     setToggleState(i);
@@ -194,72 +233,75 @@ export default function MatchResults({
     setFocusedPlayer(p);
   };
   return (
-    <MatchContainer matchId={match.id}>
-      <MatchSection>
-        <TeamHeader
-          tricode={matchRounds[0].blueTeamTricode}
-          teamId={matchRounds[0].blueTeamId}
-          teamSide="blue"
-          toggleState={toggleState}
-          matchRounds={matchRounds}
-        />
-        <span className="separator px-2 text-sm text-gray-400 font-semibold">
-          VS
-        </span>
-        <TeamHeader
-          tricode={matchRounds[0].redTeamTricode}
-          teamId={matchRounds[0].redTeamId}
-          teamSide="red"
-          toggleState={toggleState}
-          matchRounds={matchRounds}
-        />
-      </MatchSection>
-      <MatchSection bgClass="bg-[#0a0e13]">
-        <MatchNav
-          matchRounds={matchRounds}
-          toggleState={toggleState}
-          toggleTab={toggleTab}
-        />
-      </MatchSection>
-      <MatchSection left>
-        <ul className="menu list-none	pt-1 px-2 h-full">
-          <li
-            className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
-            role="button"
-          >
-            STATS
-          </li>
-        </ul>
-      </MatchSection>
-      <section className="team-stats relative bg-[#0a0e13] flex flex-col">
-        {matchRounds.map((round, i) => (
-          <React.Fragment key={i}>
-            {focusedPlayer ? (
-              <PlayerFocus
-                key={round.id}
-                player={focusedPlayer}
+    <div className="flex bg-[#0f1519]">
+      <MatchContainer matchId={match.id} isMobile={isMobile}>
+        <MatchSection>
+          <TeamHeader
+            tricode={matchRounds[0].blueTeamTricode}
+            teamId={matchRounds[0].blueTeamId}
+            teamSide="blue"
+            toggleState={toggleState}
+            matchRounds={matchRounds}
+          />
+          <span className="separator px-2 text-sm text-gray-400 font-semibold">
+            VS
+          </span>
+          <TeamHeader
+            tricode={matchRounds[0].redTeamTricode}
+            teamId={matchRounds[0].redTeamId}
+            teamSide="red"
+            toggleState={toggleState}
+            matchRounds={matchRounds}
+          />
+        </MatchSection>
+        <MatchSection bgClass="bg-[#0a0e13]">
+          <MatchNav
+            matchRounds={matchRounds}
+            toggleState={toggleState}
+            toggleTab={toggleTab}
+          />
+        </MatchSection>
+        {isMobile && (
+          <MatchSection left>
+            <ul className="menu list-none	pt-1 px-2 h-full">
+              <li
+                className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
+                role="button"
+              >
+                STATS
+              </li>
+            </ul>
+          </MatchSection>
+        )}
+        <section className="team-stats relative bg-[#0a0e13] flex flex-col">
+          {matchRounds.map((round, i) => (
+            <React.Fragment key={i}>
+              <TeamSummary
+                key={`${i}-teamSummary`}
+                matchRoundTeamStats={matchRoundTeamStats[i]}
+                toggleState={toggleState}
+                count={round.id}
+                dragonEvents={round.dragonEvents}
+              />
+              <TeamPlayerStats
+                key={`${i}-playerStats`}
+                matchRoundPlayerStats={matchRoundPlayerStats[i]}
+                toggleState={toggleState}
+                count={round.id}
                 selectPlayer={selectPlayer}
               />
-            ) : (
-              ""
-            )}
-            <TeamSummary
-              key={`${i}-teamSummary`}
-              matchRoundTeamStats={matchRoundTeamStats[i]}
-              toggleState={toggleState}
-              count={round.id}
-              dragonEvents={round.dragonEvents}
-            />
-            <TeamPlayerStats
-              key={`${i}-playerStats`}
-              matchRoundPlayerStats={matchRoundPlayerStats[i]}
-              toggleState={toggleState}
-              count={round.id}
-              selectPlayer={selectPlayer}
-            />
-          </React.Fragment>
-        ))}
-      </section>
-    </MatchContainer>
+            </React.Fragment>
+          ))}
+        </section>
+      </MatchContainer>
+      {focusedPlayer && (
+        <PlayerFocus
+          key={focusedPlayer.summonerName}
+          player={focusedPlayer}
+          selectPlayer={selectPlayer}
+          isMobile={isMobile}
+        />
+      )}
+    </div>
   );
 }

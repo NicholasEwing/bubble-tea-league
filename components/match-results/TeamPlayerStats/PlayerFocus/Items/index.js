@@ -39,28 +39,34 @@ export default function Items({
           {isLoading && !items.length ? (
             <></>
           ) : (
-            endGameItems.reverse().map((item) => (
-              <div key={item} className="flex pb-4 font-medium">
-                <span className="mx-5">
-                  <Image
-                    src={`http://ddragon.leagueoflegends.com/cdn/12.12.1/img/item/${item}.png`}
-                    alt={`${items.data[item].name} item image`}
-                    height="64"
-                    width="64"
-                  />
-                </span>
-                <div>
-                  <p className="text-white">{items.data[item].name}</p>
-                  {items.data[item].tags.includes("Trinket") ? (
-                    <p className="text-[#8fa3b0]">Trinket</p>
-                  ) : (
-                    <p className="text-[#8fa3b0]">
-                      {items.data[item].gold.base} G
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))
+            endGameItems.reverse().map((item, i) => {
+              if (item === 0) {
+                return <React.Fragment key={`${item}-${i}`}></React.Fragment>;
+              } else {
+                return (
+                  <div key={item} className="flex pb-4 font-medium">
+                    <span className="mx-5">
+                      <Image
+                        src={`http://ddragon.leagueoflegends.com/cdn/12.12.1/img/item/${item}.png`}
+                        alt={`${items.data[item].name} item image`}
+                        height="64"
+                        width="64"
+                      />
+                    </span>
+                    <div>
+                      <p className="text-white">{items.data[item].name}</p>
+                      {items.data[item].tags.includes("Trinket") ? (
+                        <p className="text-[#8fa3b0]">Trinket</p>
+                      ) : (
+                        <p className="text-[#8fa3b0]">
+                          {items.data[item].gold.base} G
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+            })
           )}
         </div>
         {/* <div className="hidden player secondary flex-1 py-10">

@@ -29,7 +29,10 @@ export default function Navbar() {
   const { data: session, status } = useSession();
 
   return (
-    <Disclosure as="nav" className="bg-[#0a0e13] border-b-1 border-b-[#252c32]">
+    <Disclosure
+      as="nav"
+      className="bg-[#0a0e13] border-b-2 border-b-[rgba(51,51,51,.25)]"
+    >
       {({ open }) => (
         <>
           <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
