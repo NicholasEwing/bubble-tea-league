@@ -133,16 +133,12 @@ export default function Runes({
           {runeState.secondaryRunes &&
             runeState.secondaryRunes.map((rune, i) => (
               <div key={rune.id} className="flex items-center mb-6">
-                <div
-                  className={`${
-                    i === 0 ? "min-w-[75px] mx-2" : "min-w-[45px] mx-6"
-                  }`}
-                >
+                <div className="min-w-[45px] mx-6">
                   <Image
                     src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
                     alt=""
-                    height={`${i === 0 ? "75" : "45"}`}
-                    width={`${i === 0 ? "75" : "45"}`}
+                    height="45"
+                    width="45"
                   />
                 </div>
                 <div>

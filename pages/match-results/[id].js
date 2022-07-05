@@ -184,57 +184,34 @@ export default function MatchResults({
   matchRoundPlayerStats,
 }) {
   const [toggleState, setToggleState] = useState(1);
-  const [focusedPlayer, setFocusedPlayer] = useState();
-  const [isMobile, setIsMobile] = useState();
-
-  // if mobile, hide player focus until someone is clicked
-
-  // if desktop, always show player focus!
-
-  useEffect(() => {
-    if (window.innerWidth > 640) {
-      // on dtop
-      console.log("ON DESKTOP");
-      setIsMobile(false);
-      setFocusedPlayer(matchRoundPlayerStats[0][0]);
-    } else if (window.innerWidth < 640) {
-      // on mobile
-      console.log("ON MOBILE");
-      setIsMobile(true);
-    }
-  }, [matchRoundPlayerStats]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 640) {
-        // on dtop
-        console.log("ON DESKTOP");
-        setIsMobile(false);
-        setFocusedPlayer(matchRoundPlayerStats[0][0]);
-      } else if (window.innerWidth < 640) {
-        // on mobile
-        console.log("ON MOBILE");
-        setIsMobile(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [matchRoundPlayerStats]);
+  const [focusedPlayer, setFocusedPlayer] = useState(
+    matchRoundPlayerStats[0][0]
+  );
+  const [comparedPlayer, setComparedPlayer] = useState(
+    matchRoundPlayerStats[0][6]
+  );
+  const [mobileFocus, setMobileFocus] = useState(false);
 
   const toggleTab = (i) => {
     setToggleState(i);
   };
 
+  const toggleMobileFocus = () => {
+    setMobileFocus(!mobileFocus);
+  };
+
   const selectPlayer = (p) => {
     setFocusedPlayer(p);
   };
+
+  // reset player focus on desktop when changing rounds
+  const resetPlayer = (roundNum) => {
+    setFocusedPlayer(matchRoundPlayerStats[roundNum - 1][0]);
+  };
+
   return (
-    <div className="flex bg-[#0f1519]">
-      <MatchContainer matchId={match.id} isMobile={isMobile}>
+    <div className="flex bg-[#0f1519] relative">
+      <MatchContainer matchId={match.id}>
         <MatchSection>
           <TeamHeader
             tricode={matchRounds[0].blueTeamTricode}
@@ -259,20 +236,20 @@ export default function MatchResults({
             matchRounds={matchRounds}
             toggleState={toggleState}
             toggleTab={toggleTab}
+            resetPlayer={resetPlayer}
           />
         </MatchSection>
-        {isMobile && (
-          <MatchSection left>
-            <ul className="menu list-none	pt-1 px-2 h-full">
-              <li
-                className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
-                role="button"
-              >
-                STATS
-              </li>
-            </ul>
-          </MatchSection>
-        )}
+
+        <MatchSection left hideOnDesktop>
+          <ul className="menu list-none	pt-1 px-2 h-full">
+            <li
+              className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
+              role="button"
+            >
+              STATS
+            </li>
+          </ul>
+        </MatchSection>
         <section className="team-stats relative bg-[#0a0e13] flex flex-col">
           {matchRounds.map((round, i) => (
             <React.Fragment key={i}>
@@ -289,19 +266,20 @@ export default function MatchResults({
                 toggleState={toggleState}
                 count={round.id}
                 selectPlayer={selectPlayer}
+                toggleMobileFocus={toggleMobileFocus}
               />
             </React.Fragment>
           ))}
         </section>
       </MatchContainer>
-      {focusedPlayer && (
-        <PlayerFocus
-          key={focusedPlayer.summonerName}
-          player={focusedPlayer}
-          selectPlayer={selectPlayer}
-          isMobile={isMobile}
-        />
-      )}
+      <PlayerFocus
+        key={focusedPlayer.summonerName}
+        player={focusedPlayer}
+        selectPlayer={selectPlayer}
+        comparedPlayer={comparedPlayer}
+        mobileFocus={mobileFocus}
+        toggleMobileFocus={toggleMobileFocus}
+      />
     </div>
   );
 }

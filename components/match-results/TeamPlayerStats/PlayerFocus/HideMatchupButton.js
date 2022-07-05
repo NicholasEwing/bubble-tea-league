@@ -1,11 +1,11 @@
 import React from "react";
 
-export default function HideMatchupButton({ selectPlayer }) {
+export default function HideMatchupButton({ mobileFocus, toggleMobileFocus }) {
   return (
     <div
-      onClick={(e) => selectPlayer()}
+      onClick={() => toggleMobileFocus()}
       role="button"
-      className="hide-matchup-button pointer-events-auto relative w-16 h-full flex items-center justify-center after:block after:absolute after:h-[4.5rem] after:w-[1px] after:right-0 after:top-3 after:bg-[#252c32]"
+      className="sm:hidden pointer-events-auto relative w-16 h-full flex items-center justify-center after:block after:absolute after:h-[4.5rem] after:w-[1px] after:right-0 after:top-3 after:bg-[#252c32]"
     >
       <svg
         className="icon w-5 h-5"

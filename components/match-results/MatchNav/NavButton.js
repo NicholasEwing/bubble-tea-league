@@ -1,6 +1,11 @@
 import React from "react";
 
-export default function NavButton({ count, toggleState, toggleTab }) {
+export default function NavButton({
+  count,
+  toggleState,
+  toggleTab,
+  resetPlayer,
+}) {
   return (
     <a
       href="#"
@@ -9,7 +14,10 @@ export default function NavButton({ count, toggleState, toggleTab }) {
           ? "active-game pointer-events-none text-[#00c8c8]"
           : "text-[#687077]"
       }`}
-      onClick={() => toggleTab(count)}
+      onClick={() => {
+        toggleTab(count);
+        resetPlayer(count);
+      }}
     >
       {count}
     </a>

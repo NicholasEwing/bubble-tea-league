@@ -12,7 +12,9 @@ export default function MatchSection(props) {
 
   return (
     <section
-      className={`flex ${justifyClass} ${props.bgClass} text-white text-lg items-center h-16 border-b border-b-[#252c32]`}
+      className={`flex ${justifyClass} ${props.bgClass} ${
+        props.hideOnDesktop ? "sm:hidden" : ""
+      } text-white text-lg items-center h-16 border-b border-b-[#252c32]`}
     >
       {props.children}
     </section>

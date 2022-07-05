@@ -7,6 +7,7 @@ export default function TeamPlayerStats({
   toggleState,
   count,
   selectPlayer,
+  toggleMobileFocus,
 }) {
   const bluePlayers = matchRoundPlayerStats.filter(
     (player) => player.teamSide === "blue"
@@ -27,6 +28,7 @@ export default function TeamPlayerStats({
             key={`${p.summonerName}-${toggleState}-blue`}
             player={p}
             selectPlayer={selectPlayer}
+            toggleMobileFocus={toggleMobileFocus}
           />
         ))}
       </div>
@@ -36,6 +38,7 @@ export default function TeamPlayerStats({
             key={`${p.summonerName}-${toggleState}-red`}
             player={p}
             selectPlayer={selectPlayer}
+            toggleMobileFocus={toggleMobileFocus}
           />
         ))}
       </div>

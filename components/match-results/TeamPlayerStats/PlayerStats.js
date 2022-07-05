@@ -2,7 +2,11 @@ import Image from "next/image";
 import React from "react";
 import { kFormatter } from "../../../lib/utils";
 
-export default function PlayerStats({ player, selectPlayer }) {
+export default function PlayerStats({
+  player,
+  selectPlayer,
+  toggleMobileFocus,
+}) {
   const {
     summonerName,
     championName,
@@ -15,7 +19,10 @@ export default function PlayerStats({ player, selectPlayer }) {
   } = player;
   return (
     <div
-      onClick={(e) => selectPlayer(player)}
+      onClick={(e) => {
+        selectPlayer(player);
+        toggleMobileFocus();
+      }}
       className="player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]"
     >
       <div className="name basis-full pb-1 font-bold">{summonerName}</div>

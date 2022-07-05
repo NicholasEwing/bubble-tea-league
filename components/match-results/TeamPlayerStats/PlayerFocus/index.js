@@ -5,11 +5,17 @@ import Abilities from "./Abilities";
 import ComparisonDetailsSelector from "./ComparisonDetailsSelector";
 import HideMatchupButton from "./HideMatchupButton";
 import Items from "./Items";
-import PlayerComparison from "./PlayerComparison";
+import PlayerFocusHeaders from "./PlayerFocusHeaders";
 import Runes from "./Runes";
 import Stats from "./Stats";
 
-export default function PlayerFocus({ player, selectPlayer, isMobile }) {
+export default function PlayerFocus({
+  player,
+  selectPlayer,
+  mobileFocus,
+  toggleMobileFocus,
+  comparedPlayer,
+}) {
   const [activeTab, setActiveTab] = useState("stats");
 
   const selectTab = (tab) => {
@@ -19,7 +25,7 @@ export default function PlayerFocus({ player, selectPlayer, isMobile }) {
   function renderTabSection(activeTab) {
     switch (activeTab) {
       case "stats":
-        return <Stats player={player} />;
+        return <Stats player={player} comparedPlayer={comparedPlayer} />;
       case "items":
         return <Items playerItemEvents={player.playerItemEvents} {...player} />;
       case "abilities":
@@ -48,30 +54,28 @@ export default function PlayerFocus({ player, selectPlayer, isMobile }) {
     }
   }
 
-  // if mobile, use absolute
-
   return (
-    <div className="flex-1">
-      {!isMobile && (
-        <MatchSection left>
-          <ul className="menu list-none	pt-1 px-2 h-full">
-            <li
-              className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
-              role="button"
-            >
-              STATS
-            </li>
-          </ul>
-        </MatchSection>
-      )}
+    <div
+      className={`${
+        mobileFocus ? "absolute" : "hidden"
+      }  sm:static sm:block flex-1 w-full sm:w-auto sm:h-auto left-0 top-0 z-50 h-[calc(100%-64px)]`}
+    >
+      <MatchSection left>
+        <ul className="menu list-none	pt-1 px-2">
+          <li
+            className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
+            role="button"
+          >
+            STATS
+          </li>
+        </ul>
+      </MatchSection>
       <section
-        className={`StatsMatchup ${player ? "block" : "hidden"} ${
-          isMobile ? "absolute" : ""
-        } left-0 top-0 z-50  bg-[#0f1519] text-white`}
+        className={`StatsMatchup block bg-[#0f1519] text-white h-full sm:h-auto`}
       >
         <div className="flex flex-row items-center border-b bg-[#0a0e13] border-b-[#252c32] h-24">
-          {isMobile && <HideMatchupButton selectPlayer={selectPlayer} />}
-          <PlayerComparison {...player} />
+          <HideMatchupButton toggleMobileFocus={toggleMobileFocus} />
+          <PlayerFocusHeaders player={player} comparedPlayer={comparedPlayer} />
         </div>
         <div className="text-left border-b bg-[#0a0e13] border-b-[#252c32] h-16 text-[#8fa3b0]">
           <ComparisonDetailsSelector
