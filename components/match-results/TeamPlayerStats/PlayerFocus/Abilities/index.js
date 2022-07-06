@@ -143,7 +143,7 @@ export default function Abilities({
             </>
           )}
         </div>
-        <div className="flex flex-col p-8 border-b border-b-[#252c32] hidden xl:block xl:flex-1">
+        <div className="flex-col p-8 border-b border-b-[#252c32] hidden xl:flex xl:flex-1">
           {!isLoading && secondaryChampInfo && (
             <>
               <PlayerAbilities
