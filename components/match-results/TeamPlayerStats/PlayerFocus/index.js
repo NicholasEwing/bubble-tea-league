@@ -51,10 +51,14 @@ export default function PlayerFocus({
       case "runes":
         return (
           <Runes
-            primaryRunePath={player.primaryRunePath}
-            primaryRunePerks={player.primaryRunePerks}
-            secondaryRunePath={player.secondaryRunePath}
-            secondaryRunePerks={player.secondaryRunePerks}
+            playerPrimaryRunePath={player.primaryRunePath}
+            playerPrimaryRunePerks={player.primaryRunePerks}
+            playerSecondaryRunePath={player.secondaryRunePath}
+            playerSecondaryRunePerks={player.secondaryRunePerks}
+            comparedPlayerPrimaryRunePath={comparedPlayer.primaryRunePath}
+            comparedPlayerPrimaryRunePerks={comparedPlayer.primaryRunePerks}
+            comparedPlayerSecondaryRunePath={comparedPlayer.secondaryRunePath}
+            comparedPlayerSecondaryRunePerks={comparedPlayer.secondaryRunePerks}
           />
         );
       default:

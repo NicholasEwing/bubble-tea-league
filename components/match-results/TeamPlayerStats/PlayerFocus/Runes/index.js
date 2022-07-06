@@ -1,16 +1,25 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import RuneList from "./RuneList";
 
 export default function Runes({
-  primaryRunePath,
-  primaryRunePerks,
-  secondaryRunePath,
-  secondaryRunePerks,
+  playerPrimaryRunePath,
+  playerPrimaryRunePerks,
+  playerSecondaryRunePath,
+  playerSecondaryRunePerks,
+  comparedPlayerPrimaryRunePath,
+  comparedPlayerPrimaryRunePerks,
+  comparedPlayerSecondaryRunePath,
+  comparedPlayerSecondaryRunePerks,
 }) {
   // reach out to ddragon for rune information
   const [isLoading, setLoading] = useState(true);
   const [runeInfo, setRuneInfo] = useState({});
-  const [runeState, setRuneState] = useState({});
+
+  const [playerRunes, setPlayerRunes] = useState({});
+  const [comparedPlayerRunes, setComparedPlayerRunes] = useState({});
+
+  // get compared player info
 
   useEffect(() => {
     fetch(
@@ -25,11 +34,13 @@ export default function Runes({
 
   useEffect(() => {
     if (!isLoading) {
-      const primaryRuneObj = runeInfo.find((r) => r.id === primaryRunePath);
+      const primaryRuneObj = runeInfo.find(
+        (r) => r.id === playerPrimaryRunePath
+      );
       const primaryRuneName = primaryRuneObj.name;
       const primaryRuneImage = primaryRuneObj.icon;
 
-      const primaryPerks = JSON.parse(primaryRunePerks);
+      const primaryPerks = JSON.parse(playerPrimaryRunePerks);
 
       const primaryRunes = primaryPerks.flatMap((rune) => {
         return primaryRuneObj.slots.flatMap((slot) =>
@@ -37,11 +48,13 @@ export default function Runes({
         );
       });
 
-      const secondaryRuneObj = runeInfo.find((r) => r.id === secondaryRunePath);
+      const secondaryRuneObj = runeInfo.find(
+        (r) => r.id === playerSecondaryRunePath
+      );
       const secondaryRuneName = secondaryRuneObj.name;
       const secondaryRuneImage = secondaryRuneObj.icon;
 
-      const secondaryPerks = JSON.parse(secondaryRunePerks);
+      const secondaryPerks = JSON.parse(playerSecondaryRunePerks);
 
       const secondaryRunes = secondaryPerks.flatMap((rune) => {
         return secondaryRuneObj.slots.flatMap((slot) =>
@@ -57,99 +70,71 @@ export default function Runes({
         secondaryRuneImage,
         secondaryRunes,
       };
-      setRuneState(runeStateObj);
+      setPlayerRunes(runeStateObj);
     }
   }, [
     isLoading,
-    primaryRunePath,
-    primaryRunePerks,
-    secondaryRunePath,
-    secondaryRunePerks,
+    playerPrimaryRunePath,
+    playerPrimaryRunePerks,
+    playerSecondaryRunePath,
+    playerSecondaryRunePerks,
     runeInfo,
   ]);
 
-  // parse perks info since it comes as a string
-  const secondaryPerks = JSON.parse(secondaryRunePerks);
+  useEffect(() => {
+    if (!isLoading) {
+      const primaryRuneObj = runeInfo.find(
+        (r) => r.id === comparedPlayerPrimaryRunePath
+      );
+      const primaryRuneName = primaryRuneObj.name;
+      const primaryRuneImage = primaryRuneObj.icon;
+
+      const primaryPerks = JSON.parse(comparedPlayerPrimaryRunePerks);
+
+      const primaryRunes = primaryPerks.flatMap((rune) => {
+        return primaryRuneObj.slots.flatMap((slot) =>
+          slot.runes.filter((r) => r.id === rune.perk)
+        );
+      });
+
+      const secondaryRuneObj = runeInfo.find(
+        (r) => r.id === comparedPlayerSecondaryRunePath
+      );
+      const secondaryRuneName = secondaryRuneObj.name;
+      const secondaryRuneImage = secondaryRuneObj.icon;
+
+      const secondaryPerks = JSON.parse(comparedPlayerSecondaryRunePerks);
+
+      const secondaryRunes = secondaryPerks.flatMap((rune) => {
+        return secondaryRuneObj.slots.flatMap((slot) =>
+          slot.runes.filter((r) => r.id === rune.perk)
+        );
+      });
+
+      const runeStateObj = {
+        primaryRuneName,
+        primaryRuneImage,
+        primaryRunes,
+        secondaryRuneName,
+        secondaryRuneImage,
+        secondaryRunes,
+      };
+      setComparedPlayerRunes(runeStateObj);
+    }
+  }, [
+    isLoading,
+    comparedPlayerPrimaryRunePath,
+    comparedPlayerPrimaryRunePerks,
+    comparedPlayerSecondaryRunePath,
+    comparedPlayerSecondaryRunePerks,
+    runeInfo,
+  ]);
 
   return (
     <div className="flex text-white min-h-[800px] bg-[#0f1519]">
-      <div className="flex-1">
-        <div className="rune-list mx-8 my-6">
-          <div className="rune-category flex items-center border-b border-b-[#252c32] pb-3 mb-6">
-            {Object.keys(runeState).length && (
-              <>
-                <Image
-                  src={`https://ddragon.leagueoflegends.com/cdn/img/${runeState.primaryRuneImage}`}
-                  alt={`${runeState.primaryRuneName} rune image`}
-                  height="24"
-                  width="24"
-                />
-                <p className="block text-md mx-4 font-medium">
-                  {runeState.primaryRuneName}
-                </p>
-              </>
-            )}
-          </div>
-          {runeState.primaryRunes &&
-            runeState.primaryRunes.map((rune, i) => (
-              <div key={rune.id} className="flex items-center mb-6">
-                <div
-                  className={`${
-                    i === 0 ? "min-w-[75px] mx-2" : "min-w-[45px] mx-6"
-                  }`}
-                >
-                  <Image
-                    src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
-                    alt=""
-                    height={`${i === 0 ? "75" : "45"}`}
-                    width={`${i === 0 ? "75" : "45"}`}
-                  />
-                </div>
-                <div>
-                  <p className="block text-md font-medium">{rune.name}</p>
-                  <p className="max-w-[90%] text-sm font-light">
-                    {rune.shortDesc.replaceAll(/<(.*?)>/g, " ")}
-                  </p>
-                </div>
-              </div>
-            ))}
-        </div>
-        <div className="rune-list mx-8 my-6">
-          <div className="rune-category flex items-center border-b border-b-[#252c32] pb-3 mb-6">
-            {Object.keys(runeState).length && (
-              <>
-                <Image
-                  src={`https://ddragon.leagueoflegends.com/cdn/img/${runeState.secondaryRuneImage}`}
-                  alt={`${runeState.secondaryRuneName} rune image`}
-                  height="24"
-                  width="24"
-                />
-                <p className="block text-md mx-4 font-medium">
-                  {runeState.secondaryRuneName}
-                </p>
-              </>
-            )}
-          </div>
-          {runeState.secondaryRunes &&
-            runeState.secondaryRunes.map((rune, i) => (
-              <div key={rune.id} className="flex items-center mb-6">
-                <div className="min-w-[45px] mx-6">
-                  <Image
-                    src={`https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`}
-                    alt=""
-                    height="45"
-                    width="45"
-                  />
-                </div>
-                <div>
-                  <p className="block text-md font-medium">{rune.name}</p>
-                  <p className="max-w-[90%] text-sm font-light">
-                    {rune.shortDesc.replaceAll(/<(.*?)>/g, "")}
-                  </p>
-                </div>
-              </div>
-            ))}
-        </div>
+      <div className="flex-1 xl:flex">
+        <RuneList runes={playerRunes} isPrimary />
+        <RuneList runes={comparedPlayerRunes} />
       </div>
     </div>
   );
