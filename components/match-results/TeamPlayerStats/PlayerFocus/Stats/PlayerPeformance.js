@@ -14,7 +14,11 @@ export default function PlayerPeformance({
   isPrimary,
 }) {
   return (
-    <div className="player primary flex-1 pt-5 pr-0 pb-6 pl-6 xl:border-r-[#252c32] xl:border-r">
+    <div
+      className={`${
+        isPrimary ? "block" : "hidden xl:block"
+      } player flex-1 pt-5 pr-0 pb-6 pl-6 xl:border-r-[#252c32] xl:border-r`}
+    >
       <div
         className={`stat kda pt-3 pr-8 pb-0 pl-0 w-1/2 float-left ${
           isPrimary ? "xl:float-right" : ""
