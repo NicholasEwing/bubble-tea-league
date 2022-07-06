@@ -27,7 +27,14 @@ export default function PlayerFocus({
       case "stats":
         return <Stats player={player} comparedPlayer={comparedPlayer} />;
       case "items":
-        return <Items playerItemEvents={player.playerItemEvents} {...player} />;
+        return (
+          <Items
+            player={player}
+            playerItemEvents={player.playerItemEvents}
+            comparedPlayer={comparedPlayer}
+            comparedPlayerItemEvents={comparedPlayer.playerItemEvents}
+          />
+        );
       case "abilities":
         return (
           <Abilities
