@@ -51,7 +51,7 @@ export default function Items({
           <div
             key={item}
             className={`flex pb-4 font-medium ${
-              isPrimary ? "xl:flex-row-reverse" : ""
+              isPrimary ? "xl:flex-row-reverse xl:text-right" : ""
             }`}
           >
             <span className="mx-5">
@@ -78,7 +78,7 @@ export default function Items({
   return (
     <section className="bg-[#0f1519]">
       <div className="flex relative">
-        <div className="player primary flex-1 py-10">
+        <div className="player primary flex-1 py-10 xl:border-r xl:border-[#252c32]">
           {isLoading && !items.length ? (
             <></>
           ) : (

@@ -39,8 +39,13 @@ export default function PlayerFocus({
         return (
           <Abilities
             playerAbilityLevelEvents={player.playerAbilityLevelEvents}
-            championName={player.championName}
-            champLevel={player.champLevel}
+            playerChampionName={player.championName}
+            playerChampLevel={player.champLevel}
+            comparedPlayerAbilityLevelEvents={
+              comparedPlayer.playerAbilityLevelEvents
+            }
+            comparedPlayerChampionName={comparedPlayer.championName}
+            comparedPlayerChampLevel={comparedPlayer.champLevel}
           />
         );
       case "runes":
