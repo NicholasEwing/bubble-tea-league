@@ -9,6 +9,8 @@ export default function PlayerStats({
   toggleMobileFocus,
   isBlue,
   isRed,
+  isSelectedByRow,
+  isSelectedIndividually,
 }) {
   const {
     summonerName,
@@ -32,10 +34,24 @@ export default function PlayerStats({
         toggleMobileFocus();
       }}
       role="button"
-      className="player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]"
+      className={`${
+        isSelectedByRow ? "xl:pointer-events-none xl:bg-black" : ""
+      } ${
+        isSelectedIndividually ? "pointer-events-none bg-black" : ""
+      } player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]`}
     >
       <div className="name basis-full pb-1 font-bold">{summonerName}</div>
-      <div className="portrait relative basis-16 h-16 w-16 before:block before:absolute before:-left-[3px] before:-top-[3px] before:-right-[3px] before:-bottom-[3px] before:z-1 before:rounded-[33px] before:border-[3px] before:border-[#0a0e13]">
+      <div
+        className={`portrait relative basis-16 h-16 w-16 before:block before:absolute before:-left-[3px] before:-top-[3px] before:-right-[3px] before:-bottom-[3px] before:z-1 before:rounded-[33px] before:border-[3px] before:border-[#0a0e13] ${
+          isSelectedByRow
+            ? "xl:before:border-[#00c8c8] xl:before:shadow-inner"
+            : ""
+        } ${
+          isSelectedIndividually
+            ? "before:border-[#00c8c8] before:shadow-inner"
+            : ""
+        }`}
+      >
         <div className="wrapper text-center h-full w-full bg-[#333] rounded-[30px] overflow-hidden relative z-1">
           <Image
             className="image inline-block h-full w-full m-0"
@@ -59,7 +75,16 @@ export default function PlayerStats({
             viewBox="0 0 16 16"
             xmlns="https://www.w3.org/2000/svg"
           >
-            <g className="shape" fill="#555d64" fillRule="evenodd">
+            <g
+              className={`shape ${
+                isSelectedByRow
+                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  : "fill-[#555d64]"
+              } ${
+                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+              }`}
+              fillRule="evenodd"
+            >
               <polygon points="8 9.43 13 5.78 13 3 10.22 3 6.57 8 6.57 8 6.57 8 6.57 9.43 4.43 7.29 3.71 9.43 4.63 10.34 3 11.97 4.03 13 5.66 11.37 6.57 12.29 8.71 11.57 6.57 9.43 8 9.43 8 9.43"></polygon>
             </g>
           </svg>
@@ -76,8 +101,13 @@ export default function PlayerStats({
             xmlns="https://www.w3.org/2000/svg"
           >
             <path
-              className="shape"
-              fill="#555d64"
+              className={`shape ${
+                isSelectedByRow
+                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  : "fill-[#555d64]"
+              } ${
+                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+              }`}
               d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
             ></path>
           </svg>
@@ -91,7 +121,16 @@ export default function PlayerStats({
             viewBox="0 0 16 16"
             xmlns="https://www.w3.org/2000/svg"
           >
-            <g className="shape" fill="#555d64" fillRule="evenodd">
+            <g
+              className={`shape ${
+                isSelectedByRow
+                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  : "fill-[#555d64]"
+              } ${
+                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+              }`}
+              fillRule="evenodd"
+            >
               <path d="M13,6.86C13,8,11.21,9,9,9S5,8,5,6.86V5.14C5,4 ,6.79,3,9,3s4,1,4,2.14Z"></path>
               <path d="M7,7.71a4,4,0,0,1,2.4.64v1.3a4,4,0,0,1-2.4.64,4 ,4,0,0,1-2.4-.64V8.35A4,4,0,0,1,7,7.71M7,6C4.79,6,3,7,3 ,8.14V9.86C3,11,4.79,12,7,12s4-1,4-2.14V8.14C11,7,9.21,6,7,6Z"></path>
             </g>

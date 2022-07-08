@@ -7,6 +7,8 @@ export default function TeamPlayerStats({
   toggleState,
   count,
   selectFocusedPlayerRow,
+  focusedPlayerRow,
+  focusedPlayer,
   toggleMobileFocus,
 }) {
   const bluePlayers = matchRoundPlayerStats.filter(
@@ -31,6 +33,8 @@ export default function TeamPlayerStats({
             opposingPlayer={redPlayers[i]}
             toggleMobileFocus={toggleMobileFocus}
             isBlue
+            isSelectedByRow={focusedPlayerRow.find((r) => r.id === p.id)}
+            isSelectedIndividually={focusedPlayer.id === p.id}
           />
         ))}
       </div>
@@ -43,6 +47,8 @@ export default function TeamPlayerStats({
             opposingPlayer={bluePlayers[i]}
             toggleMobileFocus={toggleMobileFocus}
             isRed
+            isSelectedByRow={focusedPlayerRow.find((r) => r.id === p.id)}
+            isSelectedIndividually={focusedPlayer.id === p.id}
           />
         ))}
       </div>

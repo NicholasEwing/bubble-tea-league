@@ -275,6 +275,8 @@ export default function MatchResults({
                 toggleState={toggleState}
                 count={round.id}
                 selectFocusedPlayerRow={selectFocusedPlayerRow}
+                focusedPlayerRow={focusedPlayerRow}
+                focusedPlayer={focusedPlayer}
                 toggleMobileFocus={toggleMobileFocus}
               />
             </React.Fragment>
