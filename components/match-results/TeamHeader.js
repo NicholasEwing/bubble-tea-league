@@ -37,17 +37,11 @@ export default function TeamHeader({
 
   if (teamSide === "blue") {
     return (
-      <div
-        className={`team flex items-center p-3 ${
-          thisTeamWon
-            ? "border border-green-700 rounded-3xl relative p-[11px]"
-            : ""
-        }`}
-      >
+      <div className="team flex items-center p-3 relative">
         {thisTeamWon ? (
           <span className="text-green-700 font-bold absolute -left-7">W</span>
         ) : (
-          ""
+          <span className="text-red-700 font-bold absolute -left-7">L</span>
         )}
         <Tricode />
         <TeamLogo />
@@ -55,17 +49,11 @@ export default function TeamHeader({
     );
   } else if (teamSide === "red") {
     return (
-      <div
-        className={`team flex items-center p-3 ${
-          thisTeamWon
-            ? "box-border border border-green-700 rounded-3xl relative p-[11px]"
-            : ""
-        }`}
-      >
+      <div className="team flex items-center p-3 relative">
         {thisTeamWon ? (
           <span className="text-green-700 font-bold absolute -right-7">W</span>
         ) : (
-          ""
+          <span className="text-red-700 font-bold absolute -right-7">L</span>
         )}
         <TeamLogo />
         <Tricode />
