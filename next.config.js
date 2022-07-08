@@ -6,6 +6,7 @@ const nextConfig = {
       "cdn.discordapp.com",
       "tailwindui.com",
       "ddragon.leagueoflegends.com",
+      "www.fillmurray.com",
     ],
     formats: ["image/avif", "image/webp"],
   },
