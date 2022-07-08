@@ -4,7 +4,7 @@ export default function NavButton({
   count,
   toggleState,
   toggleTab,
-  resetPlayer,
+  resetPlayers,
 }) {
   return (
     <a
@@ -16,7 +16,7 @@ export default function NavButton({
       }`}
       onClick={() => {
         toggleTab(count);
-        resetPlayer(count);
+        resetPlayers(count);
       }}
     >
       {count}

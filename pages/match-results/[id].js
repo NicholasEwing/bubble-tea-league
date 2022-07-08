@@ -184,12 +184,18 @@ export default function MatchResults({
   matchRoundPlayerStats,
 }) {
   const [toggleState, setToggleState] = useState(1);
+
+  // on bigger screens, compare both players
+  const [focusedPlayerRow, setFocusedPlayerRow] = useState([
+    matchRoundPlayerStats[0][0],
+    matchRoundPlayerStats[0][5],
+  ]);
+
+  // on smaller screens, show the individually CLICKED player
   const [focusedPlayer, setFocusedPlayer] = useState(
     matchRoundPlayerStats[0][0]
   );
-  const [comparedPlayer, setComparedPlayer] = useState(
-    matchRoundPlayerStats[0][6]
-  );
+
   const [mobileFocus, setMobileFocus] = useState(false);
 
   const toggleTab = (i) => {
@@ -200,13 +206,16 @@ export default function MatchResults({
     setMobileFocus(!mobileFocus);
   };
 
-  const selectPlayer = (p) => {
-    setFocusedPlayer(p);
+  const selectFocusedPlayerRow = (player, players) => {
+    setFocusedPlayer(player); // track clicked player
+    setFocusedPlayerRow(players); // track row of click players
   };
 
   // reset player focus on desktop when changing rounds
-  const resetPlayer = (roundNum) => {
-    setFocusedPlayer(matchRoundPlayerStats[roundNum - 1][0]);
+  const resetPlayers = (roundNum) => {
+    const firstBluePlayer = matchRoundPlayerStats[roundNum - 1][0];
+    const firstRedPlayer = matchRoundPlayerStats[roundNum - 1][5];
+    selectFocusedPlayerRow(firstBluePlayer, [firstBluePlayer, firstRedPlayer]);
   };
 
   return (
@@ -236,7 +245,7 @@ export default function MatchResults({
             matchRounds={matchRounds}
             toggleState={toggleState}
             toggleTab={toggleTab}
-            resetPlayer={resetPlayer}
+            resetPlayers={resetPlayers}
           />
         </MatchSection>
 
@@ -265,21 +274,23 @@ export default function MatchResults({
                 matchRoundPlayerStats={matchRoundPlayerStats[i]}
                 toggleState={toggleState}
                 count={round.id}
-                selectPlayer={selectPlayer}
+                selectFocusedPlayerRow={selectFocusedPlayerRow}
                 toggleMobileFocus={toggleMobileFocus}
               />
             </React.Fragment>
           ))}
         </section>
       </MatchContainer>
-      <PlayerFocus
-        key={focusedPlayer.summonerName}
-        player={focusedPlayer}
-        selectPlayer={selectPlayer}
-        comparedPlayer={comparedPlayer}
-        mobileFocus={mobileFocus}
-        toggleMobileFocus={toggleMobileFocus}
-      />
+      {focusedPlayerRow[0] && (
+        <PlayerFocus
+          key={focusedPlayerRow[0].summonerName}
+          focusedPlayer={focusedPlayer}
+          focusedPlayerRow={focusedPlayerRow}
+          selectFocusedPlayerRow={selectFocusedPlayerRow}
+          mobileFocus={mobileFocus}
+          toggleMobileFocus={toggleMobileFocus}
+        />
+      )}
     </div>
   );
 }

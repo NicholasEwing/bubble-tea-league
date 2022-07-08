@@ -5,7 +5,7 @@ export default function MatchNav({
   matchRounds,
   toggleState,
   toggleTab,
-  resetPlayer,
+  resetPlayers,
 }) {
   return (
     <>
@@ -16,7 +16,7 @@ export default function MatchNav({
           toggleState={toggleState}
           toggleTab={toggleTab}
           count={round.id}
-          resetPlayer={resetPlayer}
+          resetPlayers={resetPlayers}
         />
       ))}
     </>
