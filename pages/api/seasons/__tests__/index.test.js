@@ -33,6 +33,7 @@ describe("/api/seasons", () => {
     expect(season).toBeArray();
     const body = {
       name: "BTL Test Tournament!",
+      year: 2042,
     };
 
     if (season.length) return; // if we have a season, skip test

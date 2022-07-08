@@ -10,7 +10,9 @@ export default async function handler(req, res) {
       res.status(200).json(seasons);
       break;
     case "POST":
-      const { name } = req.body;
+      const { name, year } = req.body;
+
+      console.log("YEAR:", year);
 
       // Ensure we have only one provider record
       const providers = await Provider.findAll();
@@ -25,9 +27,16 @@ export default async function handler(req, res) {
       const tournamentId = await createTournamentId(providerId, name);
 
       if (req.body?.number) {
-        await Season.create({ number, tournamentId });
+        await Season.create({
+          number,
+          tournamentId,
+          year: year || new Date().getFullYear(),
+        });
       } else {
-        await Season.create({ tournamentId });
+        await Season.create({
+          tournamentId,
+          year: year || new Date().getFullYear(),
+        });
       }
 
       res.status(201).send({ tournamentId });

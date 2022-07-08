@@ -14,5 +14,9 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
+    year: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   });
 };
