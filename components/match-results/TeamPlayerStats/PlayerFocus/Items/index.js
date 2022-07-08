@@ -6,6 +6,8 @@ export default function Items({
   playerItemEvents,
   comparedPlayer,
   comparedPlayerItemEvents,
+  focusedPlayer,
+  focusedPlayerItemEvents,
 }) {
   const [isLoading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
@@ -26,6 +28,15 @@ export default function Items({
     comparedPlayer.item4,
     comparedPlayer.item5,
     comparedPlayer.item6,
+  ];
+  const focusedPlayerEndGameItems = [
+    focusedPlayer.item0,
+    focusedPlayer.item1,
+    focusedPlayer.item2,
+    focusedPlayer.item3,
+    focusedPlayer.item4,
+    focusedPlayer.item5,
+    focusedPlayer.item6,
   ];
 
   useEffect(() => {
@@ -49,7 +60,7 @@ export default function Items({
       } else {
         return (
           <div
-            key={item}
+            key={`${item}-${i}-${isPrimary}`}
             className={`flex pb-4 font-medium ${
               isPrimary ? "xl:flex-row-reverse xl:text-right" : ""
             }`}
@@ -77,7 +88,7 @@ export default function Items({
 
   return (
     <section className="bg-[#0f1519]">
-      <div className="flex relative">
+      <div className="hidden xl:flex relative">
         <div className="player primary flex-1 py-10 xl:border-r xl:border-[#252c32]">
           {isLoading && !items.length ? (
             <></>
@@ -90,6 +101,15 @@ export default function Items({
             <></>
           ) : (
             <ItemsList itemList={comparedPlayerEndGameItems} />
+          )}
+        </div>
+      </div>
+      <div className="flex xl:hidden relative ">
+        <div className="player primary flex-1 py-10">
+          {isLoading && !items.length ? (
+            <></>
+          ) : (
+            <ItemsList itemList={focusedPlayerEndGameItems} isPrimary />
           )}
         </div>
       </div>

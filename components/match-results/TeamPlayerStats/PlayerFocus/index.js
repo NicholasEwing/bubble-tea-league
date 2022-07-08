@@ -10,11 +10,11 @@ import Runes from "./Runes";
 import Stats from "./Stats";
 
 export default function PlayerFocus({
-  player,
-  selectPlayer,
+  focusedPlayer,
+  focusedPlayerRow,
+  selectFocusedPlayerRow,
   mobileFocus,
   toggleMobileFocus,
-  comparedPlayer,
 }) {
   const [activeTab, setActiveTab] = useState("stats");
 
@@ -22,10 +22,18 @@ export default function PlayerFocus({
     setActiveTab(tab);
   };
 
+  const [player, comparedPlayer] = focusedPlayerRow;
+
   function renderTabSection(activeTab) {
     switch (activeTab) {
       case "stats":
-        return <Stats player={player} comparedPlayer={comparedPlayer} />;
+        return (
+          <Stats
+            player={player}
+            comparedPlayer={comparedPlayer}
+            focusedPlayer={focusedPlayer}
+          />
+        );
       case "items":
         return (
           <Items
@@ -33,6 +41,8 @@ export default function PlayerFocus({
             playerItemEvents={player.playerItemEvents}
             comparedPlayer={comparedPlayer}
             comparedPlayerItemEvents={comparedPlayer.playerItemEvents}
+            focusedPlayer={focusedPlayer}
+            focusedPlayerItemEvents={focusedPlayer.playerItemEvents}
           />
         );
       case "abilities":
@@ -46,6 +56,11 @@ export default function PlayerFocus({
             }
             comparedPlayerChampionName={comparedPlayer.championName}
             comparedPlayerChampLevel={comparedPlayer.champLevel}
+            focusedPlayerAbilityLevelEvents={
+              focusedPlayer.playerAbilityLevelEvents
+            }
+            focusedPlayerChampionName={focusedPlayer.championName}
+            focusedPlayerChampLevel={focusedPlayer.champLevel}
           />
         );
       case "runes":
@@ -59,6 +74,10 @@ export default function PlayerFocus({
             comparedPlayerPrimaryRunePerks={comparedPlayer.primaryRunePerks}
             comparedPlayerSecondaryRunePath={comparedPlayer.secondaryRunePath}
             comparedPlayerSecondaryRunePerks={comparedPlayer.secondaryRunePerks}
+            focusedPlayerPrimaryRunePath={focusedPlayer.primaryRunePath}
+            focusedPlayerPrimaryRunePerks={focusedPlayer.primaryRunePerks}
+            focusedPlayerSecondaryRunePath={focusedPlayer.secondaryRunePath}
+            focusedPlayerSecondaryRunePerks={focusedPlayer.secondaryRunePerks}
           />
         );
       default:
@@ -91,7 +110,11 @@ export default function PlayerFocus({
       >
         <div className="flex flex-row items-center border-b bg-[#0a0e13] border-b-[#252c32] h-24">
           <HideMatchupButton toggleMobileFocus={toggleMobileFocus} />
-          <PlayerFocusHeaders player={player} comparedPlayer={comparedPlayer} />
+          <PlayerFocusHeaders
+            player={player}
+            comparedPlayer={comparedPlayer}
+            focusedPlayer={focusedPlayer}
+          />
         </div>
         <div className="text-left border-b bg-[#0a0e13] border-b-[#252c32] h-16 text-[#8fa3b0]">
           <ComparisonDetailsSelector

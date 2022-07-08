@@ -6,7 +6,7 @@ export default function TeamPlayerStats({
   matchRoundPlayerStats,
   toggleState,
   count,
-  selectPlayer,
+  selectFocusedPlayerRow,
   toggleMobileFocus,
 }) {
   const bluePlayers = matchRoundPlayerStats.filter(
@@ -23,22 +23,26 @@ export default function TeamPlayerStats({
       } player-stats relative bg-[#0a0e13] text-white`}
     >
       <div className="blue-team flex-1 border-r border-r-[#252c32]">
-        {bluePlayers.map((p) => (
+        {bluePlayers.map((p, i) => (
           <PlayerStats
             key={`${p.summonerName}-${toggleState}-blue`}
             player={p}
-            selectPlayer={selectPlayer}
+            selectFocusedPlayerRow={selectFocusedPlayerRow}
+            opposingPlayer={redPlayers[i]}
             toggleMobileFocus={toggleMobileFocus}
+            isBlue
           />
         ))}
       </div>
       <div className="red-team flex-1 items-end">
-        {redPlayers.map((p) => (
+        {redPlayers.map((p, i) => (
           <PlayerStats
             key={`${p.summonerName}-${toggleState}-red`}
             player={p}
-            selectPlayer={selectPlayer}
+            selectFocusedPlayerRow={selectFocusedPlayerRow}
+            opposingPlayer={bluePlayers[i]}
             toggleMobileFocus={toggleMobileFocus}
+            isRed
           />
         ))}
       </div>

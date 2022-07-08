@@ -4,8 +4,11 @@ import { kFormatter } from "../../../lib/utils";
 
 export default function PlayerStats({
   player,
-  selectPlayer,
+  selectFocusedPlayerRow,
+  opposingPlayer,
   toggleMobileFocus,
+  isBlue,
+  isRed,
 }) {
   const {
     summonerName,
@@ -17,12 +20,18 @@ export default function PlayerStats({
     totalMinionsKilled,
     goldEarned,
   } = player;
+
   return (
     <div
       onClick={(e) => {
-        selectPlayer(player);
+        if (isRed) {
+          selectFocusedPlayerRow(player, [opposingPlayer, player]);
+        } else {
+          selectFocusedPlayerRow(player, [player, opposingPlayer]);
+        }
         toggleMobileFocus();
       }}
+      role="button"
       className="player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]"
     >
       <div className="name basis-full pb-1 font-bold">{summonerName}</div>
