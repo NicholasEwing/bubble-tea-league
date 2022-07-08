@@ -1,4 +1,4 @@
-const sequelize = require("../sequelize/index");
+const sequelize = require("../../sequelize/index");
 const { Team } = sequelize.models;
 
 export const getStaticProps = async () => {
