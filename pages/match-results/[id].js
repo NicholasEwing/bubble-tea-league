@@ -48,6 +48,7 @@ export const getStaticProps = async (context) => {
       blueTeamId: { [Op.not]: null },
       redTeamId: { [Op.not]: null },
     },
+    attributes: { exclude: ["metaData"] },
     raw: true,
   });
 
