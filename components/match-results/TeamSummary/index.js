@@ -28,7 +28,7 @@ export default function TeamSummary({
           <TeamObjectives
             key={teamStats.TeamId}
             teamSide={i === 0 ? "blue" : "red"}
-            count={i + 1}
+            count={count}
             {...teamStats}
           />
         ))}

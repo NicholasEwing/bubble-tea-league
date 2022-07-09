@@ -48,7 +48,7 @@ export default function PlayerStats({
             : ""
         } ${
           isSelectedIndividually
-            ? "before:border-[#00c8c8] before:shadow-inner"
+            ? "sm:before:border-[#00c8c8] sm:before:shadow-inner"
             : ""
         }`}
       >
@@ -81,7 +81,7 @@ export default function PlayerStats({
                   ? "xl:fill-[#00c8c8] fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
               }`}
               fillRule="evenodd"
             >
@@ -106,7 +106,7 @@ export default function PlayerStats({
                   ? "xl:fill-[#00c8c8] fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
               }`}
               d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
             ></path>
@@ -127,7 +127,7 @@ export default function PlayerStats({
                   ? "xl:fill-[#00c8c8] fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
               }`}
               fillRule="evenodd"
             >

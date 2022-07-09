@@ -114,7 +114,7 @@ export default function DragonComparison({ dragonEvents }) {
         return <OceanIcon />;
       case "FIRE_DRAGON":
         return <InfernalIcon />;
-      case "CLOUD_DRAGON":
+      case "AIR_DRAGON":
         return <CloudIcon />;
       case "EARTH_DRAGON":
         return <MountainIcon />;
