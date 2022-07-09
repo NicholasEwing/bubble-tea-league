@@ -153,8 +153,6 @@ export default async function handler(req, res) {
                 (m) => m.winningTeamId == teamId
               );
 
-              console.log("TEAM ID WINS", teamIdWins);
-
               if (teamIdWins.length === 2) {
                 return teamId;
               } else {
@@ -173,7 +171,6 @@ export default async function handler(req, res) {
           // 3) fix that random dragon icon bug on /match-rounds/
 
           // we know it's a bo1, just update Match in the db with the winner of this round
-          console.log("updating best of 1....");
           await match.update({ matchWinnerTeamId: winningTeamId });
         }
 
