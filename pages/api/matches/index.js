@@ -9,7 +9,11 @@ export default async function handler(req, res) {
     switch (req.method) {
       case "POST":
         const { season, bestOf } = req.body;
-        const match = await Match.create({ season });
+        const match = await Match.create({
+          season,
+          isPlayoffsMatch: bestOf === 3,
+        });
+
         const MatchId = match.dataValues.id;
         const metadata = {
           MatchId,

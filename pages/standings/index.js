@@ -16,7 +16,7 @@ export const getStaticProps = async () => {
   // for testing, delete this later
   seasons.push({ number: 2, tournamentId: 1234, year: 1905 });
 
-  // calculate team wins and attach to team object
+  // TODO: calculate team wins and attach to team object
 
   return {
     props: {
@@ -72,8 +72,8 @@ export default function Standings({ teams, seasons }) {
         </div>
         <div className="max-w-full">
           <div className="title m-4 font-medium text-xl">Standings</div>
-          {/* for each team, display a standing item */}
-          {/* calculate ordinal inline or something idk */}
+          {/* TODO: for each team, display a standing item */}
+          {/* TODO: calculate ordinal inline or something idk */}
           <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
           <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
           <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />

@@ -12,8 +12,13 @@ import {
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const sequelize = require("../../../sequelize");
-const { MatchRound, Player, MatchRoundTeamStats, MatchRoundPlayerStats } =
-  sequelize.models;
+const {
+  Match,
+  MatchRound,
+  Player,
+  MatchRoundTeamStats,
+  MatchRoundPlayerStats,
+} = sequelize.models;
 const { default: fetch } = require("node-fetch");
 
 export default async function handler(req, res) {
@@ -117,7 +122,7 @@ export default async function handler(req, res) {
           raw: false,
           where: {
             MatchId,
-            winningTeamID: {
+            winningTeamId: {
               [Op.is]: null,
             },
             gameId: {
@@ -129,7 +134,50 @@ export default async function handler(req, res) {
         const matchRound = await emptyMatchRound.update(matchRoundObj);
         const MatchRoundId = matchRound.dataValues.id;
 
-        // // Create 2 MatchRoundTeamStats records
+        // track actual match winner
+        const match = await Match.findByPk(MatchId);
+
+        if (match.isPlayoffsMatch) {
+          const matchRounds = await MatchRound.findAll({ raw: true });
+
+          const playoffsMatches = matchRounds.filter(
+            (mr) => mr.MatchId === MatchId && mr.winningTeamId
+          );
+
+          if (playoffsMatches.length > 1) {
+            const { redTeamId, blueTeamId } = playoffsMatches[0];
+            const teamIds = [redTeamId, blueTeamId];
+
+            const matchWinner = teamIds.find((teamId) => {
+              const teamIdWins = playoffsMatches.filter(
+                (m) => m.winningTeamId == teamId
+              );
+
+              console.log("TEAM ID WINS", teamIdWins);
+
+              if (teamIdWins.length === 2) {
+                return teamId;
+              } else {
+                return false;
+              }
+            });
+
+            if (matchWinner) {
+              await match.update({ matchWinnerTeamId: winningTeamId });
+            }
+          }
+        } else {
+          // TODO on Saturday:
+          // 1) make sure Bo1s update correctly
+          // 2) show the wins / losses correctly on the standings page
+          // 3) fix that random dragon icon bug on /match-rounds/
+
+          // we know it's a bo1, just update Match in the db with the winner of this round
+          console.log("updating best of 1....");
+          await match.update({ matchWinnerTeamId: winningTeamId });
+        }
+
+        // Create 2 MatchRoundTeamStats records
         const matchRoundTeamStatsRecords = await parseTeamStats(
           matchRoundResults,
           winningTeamId,
