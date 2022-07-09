@@ -25,11 +25,29 @@ const {
 export const getStaticPaths = async () => {
   const matches = await Match.findAll({ raw: true });
 
-  const paths = matches.map((match) => {
-    return {
-      params: { id: match.id.toString() },
-    };
+  // Only generate match pages that have
+  // FINISHED match rounds associated with them
+  const matchIds = matches.map((m) => m.id);
+
+  const results = await MatchRound.findAll({
+    where: {
+      MatchId: { [Op.in]: matchIds },
+      winningTeamId: { [Op.not]: null },
+      blueTeamId: { [Op.not]: null },
+      redTeamId: { [Op.not]: null },
+    },
+    attributes: { exclude: ["metaData"] },
+    raw: true,
   });
+
+  const pagesToGenerate = [
+    ...new Set(results.flatMap((result) => result.MatchId)),
+  ];
+
+  const paths = pagesToGenerate.reduce((acc, elem) => {
+    acc.push({ params: { id: elem.toString() } });
+    return acc;
+  }, []);
 
   return {
     paths,
@@ -267,14 +285,14 @@ export default function MatchResults({
                 key={`${i}-teamSummary`}
                 matchRoundTeamStats={matchRoundTeamStats[i]}
                 toggleState={toggleState}
-                count={round.id}
+                count={i + 1}
                 dragonEvents={round.dragonEvents}
               />
               <TeamPlayerStats
                 key={`${i}-playerStats`}
                 matchRoundPlayerStats={matchRoundPlayerStats[i]}
                 toggleState={toggleState}
-                count={round.id}
+                count={i + 1}
                 selectFocusedPlayerRow={selectFocusedPlayerRow}
                 focusedPlayerRow={focusedPlayerRow}
                 focusedPlayer={focusedPlayer}
