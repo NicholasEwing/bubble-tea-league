@@ -1,5 +1,7 @@
 import Image from "next/image";
 import React from "react";
+import TeamLogo from "./TeamLogo";
+import Tricode from "./Tricode";
 
 export default function TeamHeader({
   tricode,
@@ -8,29 +10,6 @@ export default function TeamHeader({
   matchRounds,
   teamId,
 }) {
-  function Tricode() {
-    return (
-      <span
-        className={`tricode ${
-          teamSide === "blue" ? "text-left" : "text-right"
-        } font-semibold px-2`}
-      >
-        {tricode}
-      </span>
-    );
-  }
-
-  function TeamLogo() {
-    return (
-      <Image
-        src={`/teams/${tricode}.png`}
-        alt="Team Logo"
-        width="36"
-        height="36"
-      />
-    );
-  }
-
   const roundIndex = toggleState - 1;
 
   const thisTeamWon = matchRounds[roundIndex].winningTeamId === teamId;
@@ -43,8 +22,8 @@ export default function TeamHeader({
         ) : (
           <span className="text-red-700 font-bold absolute -left-7">L</span>
         )}
-        <Tricode />
-        <TeamLogo />
+        <Tricode tricode={tricode} teamSide={teamSide} />
+        <TeamLogo tricode={tricode} />
       </div>
     );
   } else if (teamSide === "red") {
@@ -55,8 +34,8 @@ export default function TeamHeader({
         ) : (
           <span className="text-red-700 font-bold absolute -right-7">L</span>
         )}
-        <TeamLogo />
-        <Tricode />
+        <TeamLogo tricode={tricode} />
+        <Tricode tricode={tricode} teamSide={teamSide} />
       </div>
     );
   }
