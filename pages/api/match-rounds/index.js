@@ -161,16 +161,13 @@ export default async function handler(req, res) {
             });
 
             if (matchWinner) {
-              await match.update({ matchWinnerTeamId: winningTeamId });
+              await match.update({
+                matchWinnerTeamId: winningTeamId,
+                matchLoserTeamId: losingTeamId,
+              });
             }
           }
         } else {
-          // TODO on Saturday:
-          // 1) make sure Bo1s update correctly
-          // 2) show the wins / losses correctly on the standings page
-          // 3) fix that random dragon icon bug on /match-rounds/
-
-          // we know it's a bo1, just update Match in the db with the winner of this round
           await match.update({ matchWinnerTeamId: winningTeamId });
         }
 

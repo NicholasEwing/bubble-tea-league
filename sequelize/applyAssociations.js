@@ -26,6 +26,9 @@ const applyAssociations = (sequelize) => {
   Team.hasMany(Match, { foreignKey: { name: "matchWinnerTeamId" } });
   Match.belongsTo(Team, { foreignKey: { name: "matchWinnerTeamId" } });
 
+  Team.hasMany(Match, { foreignKey: { name: "matchLoserTeamId" } });
+  Match.belongsTo(Team, { foreignKey: { name: "matchLoserTeamId" } });
+
   // Associate winning / losing teams with match rounds
   Team.hasMany(MatchRound, {
     foreignKey: { name: "winningTeamId" },
