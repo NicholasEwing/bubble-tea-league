@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
+import { Op } from "sequelize";
 import SeasonItem from "../../components/standings/SeasonItem";
 import SeasonSelector from "../../components/standings/SeasonSelector";
 import StageSelector from "../../components/standings/StageSelector";
@@ -7,16 +8,33 @@ import StageSelector from "../../components/standings/StageSelector";
 import StandingItem from "../../components/standings/StandingItem";
 
 const sequelize = require("../../sequelize/index");
-const { Team, Season } = sequelize.models;
+const { Team, Season, Match } = sequelize.models;
 
 export const getStaticProps = async () => {
-  const teams = await Team.findAll({ raw: true });
+  let teams = await Team.findAll({ raw: true });
   const seasons = await Season.findAll({ raw: true });
 
   // for testing, delete this later
   seasons.push({ number: 2, tournamentId: 1234, year: 1905 });
 
-  // TODO: calculate team wins and attach to team object
+  const matches = await Match.findAll({
+    where: {
+      matchWinnerTeamId: { [Op.not]: null },
+      matchLoserTeamId: { [Op.not]: null },
+    },
+    raw: true,
+  });
+
+  teams = teams.map((team) => {
+    // return team object WITH new info
+    const wins = matches.filter(
+      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+    );
+    const losses = matches.filter(
+      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+    );
+    return { ...team, wins, losses };
+  });
 
   return {
     props: {
@@ -29,6 +47,27 @@ export const getStaticProps = async () => {
 export default function Standings({ teams, seasons }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeSeason, setActiveSeason] = useState(1);
+
+  // Sort from wins to losses
+  const seasonTeams = teams
+    .filter((t) => t.season === activeSeason)
+    .sort((a, b) => {
+      const placeZerosLast = (num) => {
+        let x = num;
+        return x === 0 ? -Infinity : x;
+      };
+
+      const teamAMatchSum = placeZerosLast(a.wins.length - a.losses.length);
+      const teamBMatchSum = placeZerosLast(b.wins.length - b.wins.length);
+
+      if (teamAMatchSum < teamBMatchSum) {
+        return 1;
+      } else if (teamBMatchSum < teamAMatchSum) {
+        return -1;
+      } else {
+        return 1;
+      }
+    });
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
@@ -74,20 +113,20 @@ export default function Standings({ teams, seasons }) {
           <div className="title m-4 font-medium text-xl">Standings</div>
           {/* TODO: for each team, display a standing item */}
           {/* TODO: calculate ordinal inline or something idk */}
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
-          <StandingItem team="Deep Dive" ordinal={1} wins={4} losses={2} />
+          {/* for each tema THIS SEASON, display Standing */}
+          {seasonTeams &&
+            seasonTeams.map((team, i) => (
+              <StandingItem
+                key={`season-${activeSeason}-team-${team.teamName}`}
+                tricode={team.tricode}
+                teamName={team.teamName}
+                ordinal={
+                  team.wins?.length || team.losses?.length ? `${i + 1}` : "-"
+                } // if no W/Ls yet, show a dash
+                wins={team.wins?.length}
+                losses={team.losses?.length}
+              />
+            ))}
         </div>
       </div>
     </div>
