@@ -85,13 +85,18 @@ export default function Standings({ teams, seasons }) {
   return (
     <div className="Standings flex relative overflow-hidden min-h-full bg-[#0f1519] text-white">
       <div
-        className={`sidebar min-h-full min-w-[360px] bg-[#0a0e13] fixed z-30 left-0 top-[calc(54px+80px)] h-full w-full ${
+        className={`sidebar min-w-[360px] lg:w-[calc(((100%-442px)/12)*3+102px)] bg-[#0a0e13] fixed lg:static z-30 lg:transform-none left-0 top-[calc(54px+80px)] h-full lg:min-h-full w-full ${
           openDropdown ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } lg:border-r lg:border-r-[#252c32]`}
       >
+        <div className="h-13 border-b border-b-[#252c32] hidden lg:block">
+          <SeasonSelector
+            openDropdown={openDropdown}
+            handleDropdown={handleDropdown}
+          />
+        </div>
         <section className="season-filter">
-          <h2 className="title hidden uppercase">SEASONS</h2>
-          <ul className="seasons h-full overflow-x-hidden overflow-y-auto pb-20">
+          <ul className="seasons min-h-full overflow-x-hidden overflow-y-auto pb-20 lg:h-[calc(100%-75px)] lg:static lg:min-w-[360px] lg:border-r lg:border-r-[#252c32]">
             {seasons &&
               seasons.map((season) => (
                 <SeasonItem
@@ -104,9 +109,9 @@ export default function Standings({ teams, seasons }) {
           </ul>
         </section>
       </div>
-      <div className="results w-full mb-12">
+      <div className="results w-full mb-12 lg:w-[calc(((100%-360px-340px)/9)*9+340px)] xl:calc(((100%-442px)/12)*9+340px)">
         <div className="StandingsTopNav bg-[#0a0e13]">
-          <div className="h-13 border-b border-b-[#252c32]">
+          <div className="h-13 border-b border-b-[#252c32] lg:hidden">
             <SeasonSelector
               openDropdown={openDropdown}
               handleDropdown={handleDropdown}

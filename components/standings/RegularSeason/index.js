@@ -3,8 +3,10 @@ import StandingItem from "./StandingItem";
 
 export default function RegularSeason({ activeSeason, seasonTeams }) {
   return (
-    <div className="max-w-full">
-      <div className="title m-4 font-medium text-xl">Standings</div>
+    <div className="max-w-full lg:w-full lg:h-full">
+      <div className="title m-4 lg:m-9 lg:mb-4 font-medium text-xl">
+        Standings
+      </div>
       {seasonTeams &&
         seasonTeams.map((team, i) => (
           <StandingItem

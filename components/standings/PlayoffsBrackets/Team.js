@@ -38,7 +38,13 @@ export default function Team({
             alt=""
           />
         </div>
-        <div className="name hidden sm:block">{teamName}</div>
+        <div
+          className={`name hidden sm:block font-light w-full ${
+            isLoser ? "text-[#8fa3b0]" : "text-white"
+          }`}
+        >
+          {teamName}
+        </div>
         <div
           className={`tricode w-full font-light sm:hidden ${
             isLoser ? "text-[#8fa3b0]" : "text-white"

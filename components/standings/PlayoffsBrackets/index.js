@@ -46,13 +46,13 @@ export default function PlayoffsBrackets() {
               teamId: 1,
               teamName: "Panic in Our Oceans",
               tricode: "PIO",
-              wins: 0,
+              wins: 1,
             },
             teamTwo: {
               teamId: 2,
               teamName: "The Student Council",
               tricode: "TSC",
-              wins: 0,
+              wins: 2,
             },
           },
           { teamOne: {}, teamTwo: {} },
@@ -122,7 +122,7 @@ export default function PlayoffsBrackets() {
 
   return (
     <div className="stage max-w-full">
-      <div className="StandingsBracketV2 pl-4 overflow-x-auto overflow-y-hidden relative select-none w-full">
+      <div className="StandingsBracketV2 pl-4 overflow-x-auto overflow-y-hidden relative select-none w-full sm:pl-6">
         <div className={styles.bracket}>
           <div className="UpperBracket row">
             <ColumnContainer>

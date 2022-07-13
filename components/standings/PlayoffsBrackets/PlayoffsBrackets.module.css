@@ -1,5 +1,21 @@
 .bracket {
   width: calc(
-    calc(calc((calc(100vw - (13 * 15px)) / 12) * 10) + (15px * 10)) * 7
+    calc(calc((calc(100vw - (13 * 15px)) / 12) * 10) + (15px * 10)) * 6
   );
+}
+
+@media screen(md) {
+  .bracket {
+    width: calc(
+      calc(calc((calc(100vw - (13 * 24px)) / 12) * 4) + (24px * 4)) * 8
+    );
+  }
+}
+
+@media screen(lg) {
+  .bracket {
+    width: calc(
+      calc(calc((calc(100vw - (13 * 34px)) / 12) * 3) + (34px * 3)) * 8
+    );
+  }
 }

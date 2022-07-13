@@ -6,7 +6,7 @@ import UpArrowIcon from "./icons/UpArrowIcon";
 export default function SeasonSelector({ openDropdown, handleDropdown }) {
   return (
     <div
-      className="league-selector h-14 relative list-none text-[#8fa3b0] flex cursor-pointer"
+      className="league-selector h-14 relative list-none text-[#8fa3b0] flex cursor-pointer lg:pointer-events-none"
       role="button"
       onClick={() => handleDropdown()}
     >
@@ -14,7 +14,9 @@ export default function SeasonSelector({ openDropdown, handleDropdown }) {
         <div className="league flex h-full items-center mx-5">
           <CalendarIcon />
           <p className="text-white uppercase mx-5">BTL Seasons</p>
-          {openDropdown ? <UpArrowIcon /> : <DownArrowIcon />}
+          <span className="lg:hidden">
+            {openDropdown ? <UpArrowIcon /> : <DownArrowIcon />}
+          </span>
         </div>
       </a>
     </div>
