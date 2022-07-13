@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Op } from "sequelize";
+import PlayoffsBrackets from "../../components/standings/PlayoffsBrackets";
+import RegularSeason from "../../components/standings/RegularSeason";
 import SeasonItem from "../../components/standings/SeasonItem";
 import SeasonSelector from "../../components/standings/SeasonSelector";
 import StageSelector from "../../components/standings/StageSelector";
-
-import StandingItem from "../../components/standings/StandingItem";
 
 const sequelize = require("../../sequelize/index");
 const { Team, Season, Match } = sequelize.models;
@@ -46,6 +46,7 @@ export const getStaticProps = async () => {
 
 export default function Standings({ teams, seasons }) {
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [showPlayoffs, setShowPlayoffs] = useState(false);
   const [activeSeason, setActiveSeason] = useState(1);
 
   // Sort from wins to losses
@@ -71,6 +72,10 @@ export default function Standings({ teams, seasons }) {
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
+  };
+
+  const toggleSetPlayoffs = (value) => {
+    setShowPlayoffs(value);
   };
 
   const handleActiveSeason = (number) => {
@@ -107,27 +112,19 @@ export default function Standings({ teams, seasons }) {
               handleDropdown={handleDropdown}
             />
           </div>
-          <StageSelector />
+          <StageSelector
+            showPlayoffs={showPlayoffs}
+            toggleSetPlayoffs={toggleSetPlayoffs}
+          />
         </div>
-        <div className="max-w-full">
-          <div className="title m-4 font-medium text-xl">Standings</div>
-          {/* TODO: for each team, display a standing item */}
-          {/* TODO: calculate ordinal inline or something idk */}
-          {/* for each tema THIS SEASON, display Standing */}
-          {seasonTeams &&
-            seasonTeams.map((team, i) => (
-              <StandingItem
-                key={`season-${activeSeason}-team-${team.teamName}`}
-                tricode={team.tricode}
-                teamName={team.teamName}
-                ordinal={
-                  team.wins?.length || team.losses?.length ? `${i + 1}` : "-"
-                } // if no W/Ls yet, show a dash
-                wins={team.wins?.length}
-                losses={team.losses?.length}
-              />
-            ))}
-        </div>
+        {showPlayoffs ? (
+          <PlayoffsBrackets />
+        ) : (
+          <RegularSeason
+            activeSeason={activeSeason}
+            seasonTeams={seasonTeams}
+          />
+        )}
       </div>
     </div>
   );

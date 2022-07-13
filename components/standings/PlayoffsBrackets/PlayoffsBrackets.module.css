@@ -1,0 +1,5 @@
+.bracket {
+  width: calc(
+    calc(calc((calc(100vw - (13 * 15px)) / 12) * 10) + (15px * 10)) * 7
+  );
+}

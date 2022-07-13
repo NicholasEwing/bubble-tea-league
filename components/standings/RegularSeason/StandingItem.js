@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import TeamLogo from "../match-results/TeamHeader/TeamLogo";
+import TeamLogo from "../../match-results/TeamHeader/TeamLogo";
 
 export default function StandingItem({
   teamName,
