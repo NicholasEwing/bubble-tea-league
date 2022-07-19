@@ -6,5 +6,14 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    isUpperBracket: {
+      type: DataTypes.BOOLEAN,
+    },
+    bracketRound: {
+      type: DataTypes.INTEGER.UNSIGNED,
+    },
+    scheduledTime: {
+      type: DataTypes.DATE,
+    },
   });
 };

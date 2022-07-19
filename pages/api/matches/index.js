@@ -24,10 +24,9 @@ export default async function handler(req, res) {
 
         // generate X number of tournament codes via Riot Games API
         const tournamentCodes = await generateTournamentCodes(
-          season,
           bestOf,
           tournamentId,
-          metadata
+          [...MatchId]
         );
 
         // For every code made, make a match round record and slap a tourny code on it

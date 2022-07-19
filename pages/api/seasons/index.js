@@ -1,6 +1,13 @@
-import { createTournamentId } from "../../../lib/riot-games-api-helpers";
+import {
+  createGroupStageMatches,
+  createPlayoffsMatches,
+} from "../../../lib/general-api-helpers";
+import {
+  createTournamentId,
+  generateTournamentCodes,
+} from "../../../lib/riot-games-api-helpers";
 const sequelize = require("../../../sequelize");
-const { Season, Provider } = sequelize.models;
+const { Match, MatchRound, Season, Provider } = sequelize.models;
 
 export default async function handler(req, res) {
   const seasons = await Season.findAll();
@@ -10,10 +17,7 @@ export default async function handler(req, res) {
       res.status(200).json(seasons);
       break;
     case "POST":
-      const { name, year } = req.body;
-
-      console.log("YEAR:", year);
-
+      const { name, year, number } = req.body;
       // Ensure we have only one provider record
       const providers = await Provider.findAll();
 
@@ -26,21 +30,29 @@ export default async function handler(req, res) {
       // Hit Riot Games API to create a "tournament" for the Season
       const tournamentId = await createTournamentId(providerId, name);
 
+      let season;
       if (req.body?.number) {
-        await Season.create({
+        season = await Season.create({
           number,
           tournamentId,
           year: year || new Date().getFullYear(),
         });
       } else {
-        await Season.create({
+        season = await Season.create({
           tournamentId,
           year: year || new Date().getFullYear(),
         });
       }
 
-      res.status(201).send({ tournamentId });
+      const seasonNumber = season.number;
 
+      // make 100 group stage matches / match rounds
+      createGroupStageMatches(seasonNumber, tournamentId);
+
+      // make 14 playoff matches / 42 match rounds
+      createPlayoffsMatches(seasonNumber, tournamentId);
+
+      res.status(201).send({ tournamentId });
       break;
   }
 }
