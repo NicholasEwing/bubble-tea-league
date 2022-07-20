@@ -17,37 +17,46 @@ export const getStaticProps = async () => {
   // for testing, delete this later
   seasons.push({ number: 2, tournamentId: 1234, year: 1905 });
 
-  const matches = await Match.findAll({
+  const groupStageMatches = await Match.findAll({
     where: {
       matchWinnerTeamId: { [Op.not]: null },
-      matchLoserTeamId: { [Op.not]: null },
+      isPlayoffsMatch: false,
     },
     raw: true,
   });
 
   teams = teams.map((team) => {
     // return team object WITH new info
-    const wins = matches.filter(
+    const wins = groupStageMatches.filter(
       (m) => m.matchWinnerTeamId === team.id && m.season === team.season
     );
-    const losses = matches.filter(
+    const losses = groupStageMatches.filter(
       (m) => m.matchLoserTeamId === team.id && m.season === team.season
     );
     return { ...team, wins, losses };
+  });
+
+  // need all Playoffs matches, don't need individual matches
+  const playoffsMatches = await Match.findAll({
+    where: {
+      isPlayoffsMatch: true,
+    },
+    raw: true,
   });
 
   return {
     props: {
       teams: JSON.parse(JSON.stringify(teams)),
       seasons: JSON.parse(JSON.stringify(seasons)),
+      playoffsMatches: JSON.parse(JSON.stringify(playoffsMatches)),
     },
   };
 };
 
-export default function Standings({ teams, seasons }) {
+export default function Standings({ teams, seasons, playoffsMatches }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
-  const [activeSeason, setActiveSeason] = useState(1);
+  const [activeSeason, setActiveSeason] = useState(seasons[0].number);
 
   // Sort from wins to losses
   const seasonTeams = teams
@@ -69,6 +78,10 @@ export default function Standings({ teams, seasons }) {
         return 1;
       }
     });
+
+  const seasonPlayoffsMatches = playoffsMatches.filter(
+    (pom) => pom.season === activeSeason
+  );
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
@@ -123,7 +136,7 @@ export default function Standings({ teams, seasons }) {
           />
         </div>
         {showPlayoffs ? (
-          <PlayoffsBrackets />
+          <PlayoffsBrackets seasonPlayoffsMatches={seasonPlayoffsMatches} />
         ) : (
           <RegularSeason
             activeSeason={activeSeason}

@@ -7,7 +7,7 @@ export default function RegularSeason({ activeSeason, seasonTeams }) {
       <div className="title m-4 lg:m-9 lg:mb-4 font-medium text-xl">
         Standings
       </div>
-      {seasonTeams &&
+      {seasonTeams.length ? (
         seasonTeams.map((team, i) => (
           <StandingItem
             key={`season-${activeSeason}-team-${team.teamName}`}
@@ -20,7 +20,12 @@ export default function RegularSeason({ activeSeason, seasonTeams }) {
             wins={team.wins?.length}
             losses={team.losses?.length}
           />
-        ))}
+        ))
+      ) : (
+        <h1 className="flex justify-center text-white font-thin text-5xl m-8">
+          No teams registered for this season yet.
+        </h1>
+      )}
     </div>
   );
 }

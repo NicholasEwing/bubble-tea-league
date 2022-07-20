@@ -8,7 +8,7 @@ import Team from "./Team";
 import BracketColumn from "./BracketColumn";
 import ColumnContainer from "./ColumnContainer";
 
-export default function PlayoffsBrackets() {
+export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
   // for each round, create a column
 
   // upper bracket - rounds 1 -> 3
@@ -32,93 +32,168 @@ export default function PlayoffsBrackets() {
   // reach out to database for all playoffs matches
 
   // form data into shape below
+  // console.log("season playoff matches", seasonPlayoffsMatches);
+
+  let bracket = {};
+  const upperBracketMatches = seasonPlayoffsMatches.filter(
+    (m) => m.isUpperBracket
+  );
+  const lowerBracketMatches = seasonPlayoffsMatches.filter(
+    (m) => !m.isUpperBracket
+  );
+  bracket.upperBracket = upperBracketMatches;
+  bracket.lowerBracket = lowerBracketMatches;
+
+  // we want to turn our playoffs matches info into this shape
+  // upperBracket: [
+  //   {
+  //     title: "Upper Bracket Round 1",
+  //     matches: [
+  //       {..some match info},
+  //       {...etc}
+  //     ]
+  //   },
+  //   {
+  //    title: "Upper Bracket Round 2",
+  //    matches: [...]
+  //   }
+  // ],
+  // lowerBracket: {
+  //  ...and so on
+  // }
+
+  // use this outer reduce to group upperBracket / lowerBracket together
+  bracket = Object.keys(bracket).reduce((acc, bracketName) => {
+    // use this inner reduce to create an object for every bracket round
+    const groupedRounds = bracket[bracketName].reduce((group, match) => {
+      const groupNeedsBracketRoundObj =
+        !group.filter((o) => o.bracketRound === match.bracketRound).length > 0;
+
+      if (groupNeedsBracketRoundObj) {
+        let roundName = "";
+        if (match.isUpperBracket) {
+          if (match.bracketRound < 3) roundName = `Round ${match.bracketRound}`;
+
+          if (match.bracketRound === 3) roundName = "Semifinals";
+
+          if (match.bracketRound === 4) roundName = "Finals";
+        } else {
+          if (match.bracketRound < 4) roundName = `Round ${match.bracketRound}`;
+
+          if (match.bracketRound === 5) roundName = "Semifinals";
+        }
+
+        const title = match.isUpperBracket
+          ? `Upper Bracket ${roundName}`
+          : `Lower Bracket ${roundName}`;
+        group.push({
+          bracketRound: match.bracketRound,
+          title: title, // make the title when initially creating the object for this bracket round
+          matches: [match],
+        });
+      } else {
+        // add match to its appropriate bracket round object
+        const bracketRoundObj = group.find(
+          (o) => o.bracketRound === match.bracketRound
+        );
+        bracketRoundObj.matches.push(match);
+      }
+      return group;
+    }, []);
+
+    acc[bracketName] = groupedRounds;
+
+    return acc;
+  }, {});
+
+  console.log("results", bracket);
 
   // one team in Round object means it's a bye
   // bracket -> round -> match
-  const bracket = {
-    upperBracket: [
-      {
-        title: "Upper Bracket Round 1",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [
-          {
-            teamOne: {
-              teamId: 1,
-              teamName: "Panic in Our Oceans",
-              tricode: "PIO",
-              wins: 1,
-            },
-            teamTwo: {
-              teamId: 2,
-              teamName: "The Student Council",
-              tricode: "TSC",
-              wins: 2,
-            },
-          },
-          { teamOne: {}, teamTwo: {} },
-        ],
-      },
-      {
-        title: "Upper Bracket Round 2",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [
-          { teamOne: {}, teamTwo: {} },
-          { teamOne: {}, teamTwo: {} },
-        ],
-      },
-      {
-        title: "Upper Bracket Semifinals",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [{ teamOne: {}, teamTwo: {} }],
-      },
-      {},
-      {},
-      {},
-      {
-        title: "Finals",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [{ redTeam: {}, blueTeam: {} }],
-      },
-    ],
-    lowerBracket: [
-      {},
-      {
-        title: "Lower Bracket Round 1",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [
-          { teamOne: {}, teamTwo: {} },
-          { teamOne: {}, teamTwo: {} },
-        ],
-      },
-      {
-        title: "Lower Bracket Round 2",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [
-          { teamOne: {}, teamTwo: {} },
-          { teamOne: {}, teamTwo: {} },
-        ],
-      },
-      {
-        title: "Lower Bracket Round 3",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [
-          { teamOne: {}, teamTwo: {} },
-          { teamOne: {}, teamTwo: {} },
-        ],
-      },
-      {
-        title: "Lower Bracket Round 4",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [{ teamOne: {}, teamTwo: {} }],
-      },
-      {
-        title: "Lower Bracket Semifinals",
-        scheduledTime: "6/18 - 7:00 PM PST",
-        matches: [{ teamOne: {}, teamTwo: {} }],
-      },
-      {},
-    ],
-  };
+  // const bracket = {
+  //   upperBracket: [
+  //     {
+  //       title: "Upper Bracket Round 1",
+  //       // scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [
+  //         {
+  //           teamOne: {
+  //             teamId: 1,
+  //             teamName: "Panic in Our Oceans",
+  //             tricode: "PIO",
+  //             wins: 1,
+  //           },
+  //           teamTwo: {
+  //             teamId: 2,
+  //             teamName: "The Student Council",
+  //             tricode: "TSC",
+  //             wins: 2,
+  //           },
+  //         },
+  //         { teamOne: {}, teamTwo: {} },
+  //       ],
+  //     },
+  //     {
+  //       title: "Upper Bracket Round 2",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [
+  //         { teamOne: {}, teamTwo: {} },
+  //         { teamOne: {}, teamTwo: {} },
+  //       ],
+  //     },
+  //     {
+  //       title: "Upper Bracket Semifinals",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [{ teamOne: {}, teamTwo: {} }],
+  //     },
+  //     {},
+  //     {},
+  //     {},
+  //     {
+  //       title: "Finals",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [{ redTeam: {}, blueTeam: {} }],
+  //     },
+  //   ],
+  //   lowerBracket: [
+  //     {},
+  //     {
+  //       title: "Lower Bracket Round 1",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [
+  //         { teamOne: {}, teamTwo: {} },
+  //         { teamOne: {}, teamTwo: {} },
+  //       ],
+  //     },
+  //     {
+  //       title: "Lower Bracket Round 2",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [
+  //         { teamOne: {}, teamTwo: {} },
+  //         { teamOne: {}, teamTwo: {} },
+  //       ],
+  //     },
+  //     {
+  //       title: "Lower Bracket Round 3",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [
+  //         { teamOne: {}, teamTwo: {} },
+  //         { teamOne: {}, teamTwo: {} },
+  //       ],
+  //     },
+  //     {
+  //       title: "Lower Bracket Round 4",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [{ teamOne: {}, teamTwo: {} }],
+  //     },
+  //     {
+  //       title: "Lower Bracket Semifinals",
+  //       scheduledTime: "6/18 - 7:00 PM PST",
+  //       matches: [{ teamOne: {}, teamTwo: {} }],
+  //     },
+  //     {},
+  //   ],
+  // };
 
   return (
     <div className="stage max-w-full">
@@ -126,7 +201,7 @@ export default function PlayoffsBrackets() {
         <div className={styles.bracket}>
           <div className="UpperBracket row">
             <ColumnContainer>
-              {bracket.upperBracket.map((round, i) =>
+              {bracket.upperBracket?.map((round, i) =>
                 round.title ? (
                   <BracketColumn key={round.title}>
                     <BracketCell title={round.title}>
@@ -148,7 +223,7 @@ export default function PlayoffsBrackets() {
           </div>
           <div className="LowerBracket row">
             <ColumnContainer>
-              {bracket.lowerBracket.map((round, i) =>
+              {bracket.lowerBracket?.map((round, i) =>
                 round.title ? (
                   <BracketColumn key={round.title}>
                     <BracketCell title={round.title}>
