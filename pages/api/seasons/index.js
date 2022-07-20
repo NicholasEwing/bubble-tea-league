@@ -47,10 +47,10 @@ export default async function handler(req, res) {
       const seasonNumber = season.number;
 
       // make 100 group stage matches / match rounds
-      createGroupStageMatches(seasonNumber, tournamentId);
+      await createGroupStageMatches(seasonNumber, tournamentId);
 
       // make 14 playoff matches / 42 match rounds
-      createPlayoffsMatches(seasonNumber, tournamentId);
+      await createPlayoffsMatches(seasonNumber, tournamentId);
 
       res.status(201).send({ tournamentId });
       break;

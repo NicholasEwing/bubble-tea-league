@@ -20,25 +20,29 @@ describe("/api/teams", () => {
   }, 300000);
 
   it("GET /teams (Get all teams)", async () => {
-    const { req, res } = createMocks();
-    await teamsHandler(req, res);
-    const teams = res._getJSONData();
+    try {
+      const { req, res } = createMocks();
+      await teamsHandler(req, res);
+      const teams = res._getJSONData();
 
-    assertStatusResponse(res, 200);
-    expect(teams).toBeArray();
+      assertStatusResponse(res, 200);
+      expect(teams).toBeArray();
 
-    if (!teams.length) return;
+      if (!teams.length) return;
 
-    expect(teams).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: expect.any(Number),
-          teamName: expect.any(String),
-          description: expect.any(String),
-          season: expect.any(Number),
-        }),
-      ])
-    );
+      expect(teams).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            teamName: expect.any(String),
+            description: expect.any(String),
+            season: expect.any(Number),
+          }),
+        ])
+      );
+    } catch (error) {
+      console.error("Error getting all teams /api/teams test block:", error);
+    }
   });
 
   it("POST /teams", async () => {

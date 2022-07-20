@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         const tournamentCodes = await generateTournamentCodes(
           bestOf,
           tournamentId,
-          [...MatchId]
+          [MatchId]
         );
 
         // For every code made, make a match round record and slap a tourny code on it
