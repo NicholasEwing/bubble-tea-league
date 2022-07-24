@@ -13,6 +13,7 @@ export default function RegularSeason({ activeSeason, seasonTeams }) {
             key={`season-${activeSeason}-team-${team.teamName}`}
             tricode={team.tricode}
             teamName={team.teamName}
+            id={team.id}
             // if no W/Ls yet, show a dash
             ordinal={
               team.groupStageWins?.length || team.groupStageLosses?.length

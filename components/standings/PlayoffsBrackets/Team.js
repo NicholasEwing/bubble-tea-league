@@ -27,9 +27,9 @@ export default function Team({
   const score = noScore ? "-" : teamWins;
 
   return (
-    <Link href={`${tricode === "TBD" ? "#" : `/teams/${teamName}`}`}>
+    <Link href={`${tricode === "TBD" ? "#" : `/teams/${id}`}`}>
       <a
-        className={`team tbd flex flex-row text-white pointer-events-none border-b border-b-[#252c32] items-center bg-black box-content h-14 relative select-none ${
+        className={`team tbd flex flex-row text-white border-b border-b-[#252c32] items-center bg-black box-content h-14 relative select-none ${
           isLoser
             ? "before:bg-[#252c32]"
             : isTBD

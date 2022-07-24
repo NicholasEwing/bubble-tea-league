@@ -6,13 +6,14 @@ import TeamLogo from "../../match-results/TeamHeader/TeamLogo";
 export default function StandingItem({
   teamName,
   tricode,
+  id,
   ordinal,
   wins = 0,
   losses = 0,
 }) {
   return (
     <Link
-      href="/teams/evil-geniuses"
+      href={`/teams/${id}`}
       className="ranking relative items-center before:border-t before:border-[#292d31] before:h-[calc(100%+1px)] before:right-0 before:absolute before:w-full"
     >
       <a className="flex mx-4 h-16 border-t border-t-[#252c32] lg:mx-9 lg:h-28 lg:w-[calc(100%-(2*34px))] after:border-b after:border-b-[#292d31] after:right-0 after:absolute after:w-full after:h-[calc(100%+1px)]">

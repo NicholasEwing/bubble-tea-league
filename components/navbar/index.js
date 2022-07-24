@@ -16,8 +16,7 @@ import MobileNavLink from "./MobileNavLink";
 
 const navigation = [
   { name: "Schedule", href: "#", current: false },
-  { name: "Standings", href: "#", current: false },
-  { name: "Teams", href: "#", current: false },
+  { name: "Standings", href: "/standings", current: false },
   { name: "About", href: "#", current: false },
 ];
 

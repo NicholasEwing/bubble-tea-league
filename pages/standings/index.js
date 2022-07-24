@@ -143,7 +143,7 @@ export default function Standings({
             handleDropdown={handleDropdown}
           />
         </div>
-        <section className="season-filter">
+        <section className="season-filter h-screen">
           <ul className="seasons min-h-full overflow-x-hidden overflow-y-auto pb-20 lg:h-[calc(100%-75px)] lg:static lg:min-w-[360px] lg:border-r lg:border-r-[#252c32]">
             {seasons &&
               seasons.map((season) => (

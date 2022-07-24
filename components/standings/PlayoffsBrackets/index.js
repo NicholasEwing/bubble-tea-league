@@ -95,8 +95,6 @@ export default function PlayoffsBrackets({
           (spomr) => spomr.MatchId === match.id
         );
 
-        console.log("match rounds", matchRounds);
-
         group.push({
           bracketRound: match.bracketRound,
           title: title, // make the title when initially creating the object for this bracket round
@@ -223,9 +221,7 @@ export default function PlayoffsBrackets({
   //   ],
   // };
 
-  console.log("bracket", bracket);
-
-  return (
+  return seasonTeams.length ? (
     <div className="stage max-w-full">
       <div className="StandingsBracketV2 pl-4 overflow-x-auto overflow-y-hidden relative select-none w-full sm:pl-6">
         <div className={styles.bracket}>
@@ -302,5 +298,14 @@ export default function PlayoffsBrackets({
         </div>
       </div>
     </div>
+  ) : (
+    <>
+      <div className="title m-4 lg:m-9 lg:mb-4 font-medium text-xl">
+        Brackets
+      </div>
+      <h1 className="flex justify-center text-white font-thin text-5xl m-8">
+        No teams registered for this season yet.
+      </h1>
+    </>
   );
 }
