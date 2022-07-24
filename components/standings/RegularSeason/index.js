@@ -15,10 +15,12 @@ export default function RegularSeason({ activeSeason, seasonTeams }) {
             teamName={team.teamName}
             // if no W/Ls yet, show a dash
             ordinal={
-              team.wins?.length || team.losses?.length ? `${i + 1}` : "-"
+              team.groupStageWins?.length || team.groupStageLosses?.length
+                ? `${i + 1}`
+                : "-"
             }
-            wins={team.wins?.length}
-            losses={team.losses?.length}
+            wins={team.groupStageWins?.length}
+            losses={team.groupStageLosses?.length}
           />
         ))
       ) : (

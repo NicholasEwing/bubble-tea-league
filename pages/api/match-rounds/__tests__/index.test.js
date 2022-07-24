@@ -34,6 +34,14 @@ describe("/api/match-rounds", () => {
     // docs: https://developer.riotgames.com/docs/lol#riot-games-api_tournament-api
     // make fake object riot will send us based off some ACTUAL teams in the database
 
+    const { tournamentCode } = await MatchRound.findOne({
+      raw: true,
+      where: {
+        tournamentCode: { [Op.not]: null },
+      },
+      attributes: ["tournamentCode"],
+    });
+
     // build post object
     const body = {
       startTime: 1234567890000,
@@ -53,7 +61,7 @@ describe("/api/match-rounds", () => {
         { summonerName: "AIchy" },
         { summonerName: "Wıred" },
       ],
-      shortCode: "NA2728-TOURNAMENTCODE0001",
+      shortCode: tournamentCode, // this needs to reference an actual tourny code in the db
       metaData: `{"MatchId":1, "riotAuth":"${process.env.BTL_API_KEY}"}`,
       gameId: "4304210544",
       gameName: "a123bc45-ab1c-1a23-ab12-12345a67b89c",

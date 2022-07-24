@@ -7,27 +7,27 @@ import {
 } from "../../../../lib/jest-api-helpers";
 
 describe("/api/matches", () => {
-  it("POST /matches (Create a couple Best of 3 matches)", async () => {
-    const season = 1;
-    const bestOf = 3;
+  // it("POST /matches (Create a couple Best of 3 matches)", async () => {
+  //   const season = 1;
+  //   const bestOf = 3;
 
-    const body = {
-      season,
-      bestOf, // use this to generate X number of tourny codes via Riot Games API
-    };
+  //   const body = {
+  //     season,
+  //     bestOf, // use this to generate X number of tourny codes via Riot Games API
+  //   };
 
-    // we'll use this one for testing match-rounds later
-    const { req, res } = createMocks({ method: "POST", body });
-    await matchesHandler(req, res);
-    assertStatusResponse(res, 201);
+  //   // we'll use this one for testing match-rounds later
+  //   const { req, res } = createMocks({ method: "POST", body });
+  //   await matchesHandler(req, res);
+  //   assertStatusResponse(res, 201);
 
-    // we'll use this to test our DELETE /matches/[id] route later
-    const deleteEvents = createMocks({ method: "POST", body });
-    const delReq = deleteEvents.req;
-    const delRes = deleteEvents.res;
-    await matchesHandler(delReq, delRes);
-    assertStatusResponse(delRes, 201);
-  });
+  //   // we'll use this to test our DELETE /matches/[id] route later
+  //   const deleteEvents = createMocks({ method: "POST", body });
+  //   const delReq = deleteEvents.req;
+  //   const delRes = deleteEvents.res;
+  //   await matchesHandler(delReq, delRes);
+  //   assertStatusResponse(delRes, 201);
+  // });
 
   it("GET /matches (Get all matches)", async () => {
     const { req, res } = createMocks();

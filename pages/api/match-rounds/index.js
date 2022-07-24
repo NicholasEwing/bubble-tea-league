@@ -30,8 +30,17 @@ export default async function handler(req, res) {
         break;
       case "POST":
         // where a lot of the magic happens
-        const { metaData, gameId, winningTeam, losingTeam } = req.body;
-        const { MatchId, riotAuth } = JSON.parse(metaData);
+        const { metaData, gameId, winningTeam, losingTeam, shortCode } =
+          req.body;
+        const { riotAuth } = JSON.parse(metaData);
+
+        const { MatchId } = await MatchRound.findOne({
+          raw: true,
+          where: {
+            tournamentCode: shortCode,
+          },
+          attributes: ["MatchId"],
+        });
 
         // make sure Riot callback includes our API key
         if (riotAuth !== process.env.BTL_API_KEY) {
@@ -138,6 +147,14 @@ export default async function handler(req, res) {
         const match = await Match.findByPk(MatchId);
 
         if (match.isPlayoffsMatch) {
+          // add metadata info on teams if this is our first time seeing it
+          if (!match.blueTeamId && !match.redTeamId) {
+            await match.update({
+              teamOne: blueTeamId,
+              teamTwo: redTeamId,
+            });
+          }
+
           const matchRounds = await MatchRound.findAll({ raw: true });
 
           const playoffsMatches = matchRounds.filter(

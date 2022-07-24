@@ -3,12 +3,28 @@ import Link from "next/link";
 import React from "react";
 
 export default function Team({
-  tricode = "TBD",
-  teamName = "TBD",
-  wins = "-",
+  isUpperBracket,
+  matchId,
+  team,
+  matchWinnerTeamId,
+  matchLoserTeamId,
+  matchRounds,
 }) {
-  const isTBD = tricode === "TBD";
-  const isLoser = !isTBD && wins !== "-" && wins < 2;
+  const {
+    id,
+    tricode = "TBD",
+    teamName = "TBD",
+    playoffsWins,
+    playoffsLosses,
+  } = team || {};
+  const isWinner = matchWinnerTeamId === id || false;
+  const isLoser = matchLoserTeamId === id || false;
+  const isTBD = teamName === "TBD" || (!isWinner && !isLoser);
+
+  const noScore = !matchRounds.filter((mr) => mr.winningTeamId).length > 0;
+  const teamWins = matchRounds.filter((mr) => mr.winningTeamId === id).length;
+
+  const score = noScore ? "-" : teamWins;
 
   return (
     <Link href={`${tricode === "TBD" ? "#" : `/teams/${teamName}`}`}>
@@ -57,7 +73,7 @@ export default function Team({
             isLoser ? "text-[#8fa3b0]" : isTBD ? "text-white" : "text-[#c79e57]"
           } font-medium mx-5 my-7 relative`}
         >
-          {wins}
+          {score}
         </div>
       </a>
     </Link>

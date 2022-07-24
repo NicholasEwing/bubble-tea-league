@@ -8,7 +8,7 @@ import SeasonSelector from "../../components/standings/SeasonSelector";
 import StageSelector from "../../components/standings/StageSelector";
 
 const sequelize = require("../../sequelize/index");
-const { Team, Season, Match } = sequelize.models;
+const { Team, Season, Match, MatchRound } = sequelize.models;
 
 export const getStaticProps = async () => {
   let teams = await Team.findAll({ raw: true });
@@ -25,18 +25,18 @@ export const getStaticProps = async () => {
     raw: true,
   });
 
+  // add group stage losses / wins
   teams = teams.map((team) => {
     // return team object WITH new info
-    const wins = groupStageMatches.filter(
+    const groupStageWins = groupStageMatches.filter(
       (m) => m.matchWinnerTeamId === team.id && m.season === team.season
     );
-    const losses = groupStageMatches.filter(
+    const groupStageLosses = groupStageMatches.filter(
       (m) => m.matchLoserTeamId === team.id && m.season === team.season
     );
-    return { ...team, wins, losses };
+    return { ...team, groupStageWins, groupStageLosses };
   });
 
-  // need all Playoffs matches, don't need individual matches
   const playoffsMatches = await Match.findAll({
     where: {
       isPlayoffsMatch: true,
@@ -44,16 +44,41 @@ export const getStaticProps = async () => {
     raw: true,
   });
 
+  const playoffsMatchRounds = await MatchRound.findAll({
+    where: {
+      MatchId: { [Op.in]: playoffsMatches.map((pom) => pom.id) },
+    },
+    raw: true,
+  });
+
+  // add playoffs losses / wins
+  teams = teams.map((team) => {
+    // return team object WITH new info
+    const playoffsWins = playoffsMatches.filter(
+      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+    );
+    const playoffsLosses = playoffsMatches.filter(
+      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+    );
+    return { ...team, playoffsWins, playoffsLosses };
+  });
+
   return {
     props: {
       teams: JSON.parse(JSON.stringify(teams)),
       seasons: JSON.parse(JSON.stringify(seasons)),
       playoffsMatches: JSON.parse(JSON.stringify(playoffsMatches)),
+      playoffsMatchRounds: JSON.parse(JSON.stringify(playoffsMatchRounds)),
     },
   };
 };
 
-export default function Standings({ teams, seasons, playoffsMatches }) {
+export default function Standings({
+  teams,
+  seasons,
+  playoffsMatches,
+  playoffsMatchRounds,
+}) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
   const [activeSeason, setActiveSeason] = useState(seasons[0].number);
@@ -67,8 +92,12 @@ export default function Standings({ teams, seasons, playoffsMatches }) {
         return x === 0 ? -Infinity : x;
       };
 
-      const teamAMatchSum = placeZerosLast(a.wins.length - a.losses.length);
-      const teamBMatchSum = placeZerosLast(b.wins.length - b.wins.length);
+      const teamAMatchSum = placeZerosLast(
+        a.groupStageWins.length - a.groupStageLosses.length
+      );
+      const teamBMatchSum = placeZerosLast(
+        b.groupStageWins.length - b.groupStageLosses.length
+      );
 
       if (teamAMatchSum < teamBMatchSum) {
         return 1;
@@ -81,6 +110,12 @@ export default function Standings({ teams, seasons, playoffsMatches }) {
 
   const seasonPlayoffsMatches = playoffsMatches.filter(
     (pom) => pom.season === activeSeason
+  );
+
+  const seasonPlayoffMatchIds = seasonPlayoffsMatches.map((spom) => spom.id);
+
+  const seasonPlayoffsMatchRounds = playoffsMatchRounds.filter((pomr) =>
+    seasonPlayoffMatchIds.includes(pomr.MatchId)
   );
 
   const handleDropdown = () => {
@@ -136,7 +171,11 @@ export default function Standings({ teams, seasons, playoffsMatches }) {
           />
         </div>
         {showPlayoffs ? (
-          <PlayoffsBrackets seasonPlayoffsMatches={seasonPlayoffsMatches} />
+          <PlayoffsBrackets
+            seasonPlayoffsMatches={seasonPlayoffsMatches}
+            seasonPlayoffsMatchRounds={seasonPlayoffsMatchRounds}
+            seasonTeams={seasonTeams}
+          />
         ) : (
           <RegularSeason
             activeSeason={activeSeason}

@@ -8,7 +8,11 @@ import Team from "./Team";
 import BracketColumn from "./BracketColumn";
 import ColumnContainer from "./ColumnContainer";
 
-export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
+export default function PlayoffsBrackets({
+  seasonPlayoffsMatches,
+  seasonPlayoffsMatchRounds,
+  seasonTeams,
+}) {
   // for each round, create a column
 
   // upper bracket - rounds 1 -> 3
@@ -86,17 +90,34 @@ export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
         const title = match.isUpperBracket
           ? `Upper Bracket ${roundName}`
           : `Lower Bracket ${roundName}`;
+
+        const matchRounds = seasonPlayoffsMatchRounds.filter(
+          (spomr) => spomr.MatchId === match.id
+        );
+
+        console.log("match rounds", matchRounds);
+
         group.push({
           bracketRound: match.bracketRound,
           title: title, // make the title when initially creating the object for this bracket round
-          matches: [match],
+          matches: [
+            {
+              ...match,
+              matchRounds: matchRounds,
+            },
+          ],
         });
       } else {
         // add match to its appropriate bracket round object
         const bracketRoundObj = group.find(
           (o) => o.bracketRound === match.bracketRound
         );
-        bracketRoundObj.matches.push(match);
+
+        const matchRounds = seasonPlayoffsMatchRounds.filter(
+          (spomr) => spomr.id === match.MatchId
+        );
+
+        bracketRoundObj.matches.push({ ...match, matchRounds: matchRounds });
       }
       return group;
     }, []);
@@ -106,7 +127,14 @@ export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
     return acc;
   }, {});
 
-  console.log("results", bracket);
+  // Add empty objects for some spacing since
+  // tying it to logic would be v tedious
+  // and deadlines are a thing
+  bracket.upperBracket.splice(3, 0, {}, {}, {});
+  bracket.lowerBracket.splice(0, 0, {});
+  bracket.lowerBracket.splice(6, 0, {});
+
+  // create team pages and link teams accordingly
 
   // one team in Round object means it's a bye
   // bracket -> round -> match
@@ -195,6 +223,8 @@ export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
   //   ],
   // };
 
+  console.log("bracket", bracket);
+
   return (
     <div className="stage max-w-full">
       <div className="StandingsBracketV2 pl-4 overflow-x-auto overflow-y-hidden relative select-none w-full sm:pl-6">
@@ -207,8 +237,22 @@ export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
                     <BracketCell title={round.title}>
                       {round.matches.map((m, i) => (
                         <Match key={`${round.title}-${i + 1}`}>
-                          <Team {...m.teamOne} />
-                          <Team {...m.teamTwo} />
+                          <Team
+                            isUpperBracket
+                            matchId={m.id}
+                            team={seasonTeams.find((t) => t.id === m.teamOne)}
+                            matchWinnerTeamId={m.matchWinnerTeamId}
+                            matchLoserTeamId={m.matchLoserTeamId}
+                            matchRounds={m.matchRounds}
+                          />
+                          <Team
+                            isUpperBracket
+                            matchId={m.id}
+                            team={seasonTeams.find((t) => t.id === m.teamTwo)}
+                            matchWinnerTeamId={m.matchWinnerTeamId}
+                            matchLoserTeamId={m.matchLoserTeamId}
+                            matchRounds={m.matchRounds}
+                          />
                         </Match>
                       ))}
                     </BracketCell>
@@ -229,8 +273,20 @@ export default function PlayoffsBrackets({ seasonPlayoffsMatches }) {
                     <BracketCell title={round.title}>
                       {round.matches.map((m, i) => (
                         <Match key={`${round.title}-${i + 1}`}>
-                          <Team />
-                          <Team />
+                          <Team
+                            matchId={m.id}
+                            team={seasonTeams.find((t) => t.id === m.teamTwo)}
+                            matchWinnerTeamId={m.matchWinnerTeamId}
+                            matchLoserTeamId={m.matchLoserTeamId}
+                            matchRounds={m.matchRounds}
+                          />
+                          <Team
+                            matchId={m.id}
+                            team={seasonTeams.find((t) => t.id === m.teamTwo)}
+                            matchWinnerTeamId={m.matchWinnerTeamId}
+                            matchLoserTeamId={m.matchLoserTeamId}
+                            matchRounds={m.matchRounds}
+                          />
                         </Match>
                       ))}
                     </BracketCell>
