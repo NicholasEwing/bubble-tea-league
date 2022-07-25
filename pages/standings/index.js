@@ -14,9 +14,6 @@ export const getStaticProps = async () => {
   let teams = await Team.findAll({ raw: true });
   const seasons = await Season.findAll({ raw: true });
 
-  // for testing, delete this later
-  seasons.push({ number: 2, tournamentId: 1234, year: 1905 });
-
   const groupStageMatches = await Match.findAll({
     where: {
       matchWinnerTeamId: { [Op.not]: null },
@@ -81,7 +78,7 @@ export default function Standings({
 }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
-  const [activeSeason, setActiveSeason] = useState(seasons[0].number);
+  const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
 
   // Sort from wins to losses
   const seasonTeams = teams
