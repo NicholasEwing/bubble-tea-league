@@ -44,10 +44,8 @@ export default async function handler(req, res) {
         });
       }
 
-      const seasonNumber = season.number;
-
-      // make 100 group stage matches / match rounds
-      await createGroupStageMatches(seasonNumber, tournamentId);
+      // make 45 group stage matches / match rounds
+      await createGroupStageMatches(season.number, tournamentId);
 
       // make 14 playoff matches / 42 match rounds
       await createPlayoffsMatches(seasonNumber, tournamentId);
