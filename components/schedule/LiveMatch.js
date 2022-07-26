@@ -10,7 +10,7 @@ export default function LiveMatch({ MatchId }) {
       <Link href={`/match-results/${MatchId}`}>
         <a
           href="#"
-          className="text-white bg-gradient-to-t from-[#0f1519] to-black h-20 pt-4 pr-4 pb-0 pl-3 block border-b border-b-[#252c32] border-l-4 border-l-[#de2f2f] overflow-hidden bg-no-repeat bg-cover relative border-y border-y-[#252c32] w-auto"
+          className="text-white bg-gradient-to-t from-[#0f1519] to-black h-20 pt-4 pr-4 pb-0 pl-3 block border-l-4 border-l-[#de2f2f] overflow-hidden bg-no-repeat bg-cover relative border-y border-y-[#252c32] w-auto"
         >
           <div className="top absolute w-[calc(((100%-195px)/12)*12+165px)] table text-[#8fa3b0] tracking-widest font-medium">
             <div className="game table-cell w-1/3 align-top">

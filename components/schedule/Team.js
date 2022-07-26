@@ -1,9 +1,16 @@
 import React from "react";
 import TeamLogo from "../match-results/TeamHeader/TeamLogo";
 
-export default function Team({ teamName, tricode, wins, losses }) {
-  const isWinner = false;
-  const isLoser = false;
+export default function Team({
+  teamName,
+  tricode,
+  wins,
+  losses,
+  isWinner,
+  isLoser,
+}) {
+  // const isWinner = false;
+  // const isLoser = false;
   const isTBD = teamName === "TBD" || (!isWinner && !isLoser);
 
   return (
