@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Op } from "sequelize";
-import PlayoffsBrackets from "../../components/standings/PlayoffsBrackets";
-import RegularSeason from "../../components/standings/RegularSeason";
-import SeasonItem from "../../components/standings/SeasonItem";
-import SeasonSelector from "../../components/standings/SeasonSelector";
-import StageSelector from "../../components/standings/StageSelector";
+import PlayoffsBrackets from "../components/standings/PlayoffsBrackets";
+import RegularSeason from "../components/standings/RegularSeason";
+import SeasonItem from "../components/standings/SeasonItem";
+import SeasonSelector from "../components/standings/SeasonSelector";
+import StageSelector from "../components/standings/StageSelector";
 
-const sequelize = require("../../sequelize/index");
+const sequelize = require("../sequelize/index");
 const { Team, Season, Match, MatchRound } = sequelize.models;
 
 export const getStaticProps = async () => {
