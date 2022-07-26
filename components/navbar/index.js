@@ -15,7 +15,7 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import MobileNavLink from "./MobileNavLink";
 
 const navigation = [
-  { name: "Schedule", href: "#", current: false },
+  { name: "Schedule", href: "/schedule", current: false },
   { name: "Standings", href: "/standings", current: false },
   { name: "About", href: "#", current: false },
 ];
