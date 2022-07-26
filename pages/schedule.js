@@ -11,10 +11,27 @@ import sequelize from "../sequelize";
 // const { Team, Season, Match, MatchRound } = sequelize.models;
 
 export const getStaticProps = async () => {
-  const { Match, MatchRound } = sequelize.models;
+  const { Match, MatchRound, Team } = sequelize.models;
 
   const matches = await Match.findAll({ raw: true });
   const matchRounds = await MatchRound.findAll({ raw: true });
+  let teams = await Team.findAll({ raw: true });
+
+  const groupStageMatches = matches.filter(
+    (m) => m.matchWinnerTeamId && !m.isPlayoffsMatch
+  );
+
+  // add group stage losses / wins
+  teams = teams.map((team) => {
+    // return team object WITH new info
+    const groupStageWins = groupStageMatches.filter(
+      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+    );
+    const groupStageLosses = groupStageMatches.filter(
+      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+    );
+    return { ...team, groupStageWins, groupStageLosses };
+  });
 
   // thanks stack overflow <3
   const groupByKey = (list, key) =>
@@ -28,8 +45,25 @@ export const getStaticProps = async () => {
 
   const groupedMatches = groupByKey(matches, "scheduledTime");
 
-  const schedule = Object.entries(groupedMatches).map(([key, value]) => {
+  let schedule = Object.entries(groupedMatches).map(([key, value]) => {
     return { [key]: value };
+  });
+
+  // smack matchRound info inside each match object so we can count
+  // wins / losses for playoffs matches and get other info we might want later
+  schedule = schedule.map((day) => {
+    const games = Object.values(day).flat();
+
+    const datesWithMatchRounds = games.map((game) => {
+      const matchRoundsForThisGame = matchRounds.filter(
+        (mr) => mr.MatchId === game.id
+      );
+      return { ...game, matchRounds: matchRoundsForThisGame };
+    });
+
+    const dateKey = Object.keys(day)[0];
+
+    return { [dateKey]: datesWithMatchRounds };
   });
 
   // get matches in this shape
@@ -50,11 +84,13 @@ export const getStaticProps = async () => {
   return {
     props: {
       schedule: JSON.parse(JSON.stringify(schedule)),
+      teams: JSON.parse(JSON.stringify(teams)),
     },
   };
 };
 
-export default function Schedule({ schedule }) {
+export default function Schedule({ schedule, teams }) {
+  console.log("schedule", schedule);
   const today = new Date();
 
   const dateInPast = function (firstDate, secondDate) {
@@ -75,6 +111,10 @@ export default function Schedule({ schedule }) {
     return false;
   }
 
+  // 1) fill in PastMatch info from matchRounds scores
+  // 2) fill in LiveMatch info and change it "upcoming today"
+  // 3) fill in FutureMatch info
+
   return (
     <div className="text-white min-h-full bg-[#0a0e13]">
       {schedule.length ? (
@@ -88,7 +128,18 @@ export default function Schedule({ schedule }) {
                 {Object.values(dateObj)
                   .flat()
                   .map((match) => (
-                    <PastMatch key={`Past-${match.id}`} MatchId={match.id} />
+                    <PastMatch
+                      key={`Past-${match.id}`}
+                      MatchId={match.id}
+                      teamOne={teams.find((t) => t.id === match.teamOne)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
+                      seasonNumber={match.seasonNumber}
+                      matchRounds={match.matchRounds}
+                      matchWinnerTeamId={match.matchWinnerTeamId}
+                      matchLoserTeamId={match.matchLoserTeamId}
+                      scheduledTime={match.scheduledTime}
+                    />
                   ))}
               </React.Fragment>
             );
