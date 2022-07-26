@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       await createGroupStageMatches(season.number, tournamentId);
 
       // make 14 playoff matches / 42 match rounds
-      await createPlayoffsMatches(seasonNumber, tournamentId);
+      await createPlayoffsMatches(season.number, tournamentId);
 
       res.status(201).send({ tournamentId });
       break;
