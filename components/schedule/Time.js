@@ -1,6 +1,11 @@
 import React from "react";
 
-export default function Time({ hour = "12", minute = "00", ampm = "AM" }) {
+export default function Time({
+  hour = "12",
+  minute = "00",
+  ampm = "AM",
+  approx,
+}) {
   return (
     <div className="EventTime w-[calc(((100%-165px)/12)*4+60px)] flex-none inline-block">
       <div className="time text-3xl relative font-medium">
@@ -11,6 +16,11 @@ export default function Time({ hour = "12", minute = "00", ampm = "AM" }) {
         <span className="ampm relative text-xs -top-[.85rem] pl-1 tracking-widest">
           {ampm}
         </span>
+        {approx && (
+          <span className="relative block text-xs pl-1 tracking-widest mt-0 text-[#8fa3b0]">
+            APPROX
+          </span>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import SeasonMatchInfo from "./SeasonMatchInfo";
 import Team from "./Team";
 import Time from "./Time";
 
-export default function PastMatch({ MatchId }) {
+export default function PastMatch({ MatchId, teamOne, teamTwo }) {
   return (
     <div className="text-white bg-[#0f1519] border-y border-y-[#252c32]">
       <Link href={`/match-results/${MatchId}`}>
