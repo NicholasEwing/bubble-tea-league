@@ -7,9 +7,6 @@ import EventDate from "../components/schedule/EventDate";
 import DividerLive from "../components/schedule/DividerLive";
 import sequelize from "../sequelize";
 
-// const sequelize = require("../sequelize/index");
-// const { Team, Season, Match, MatchRound } = sequelize.models;
-
 export const getStaticProps = async () => {
   const { Match, MatchRound, Team } = sequelize.models;
 
@@ -66,21 +63,6 @@ export const getStaticProps = async () => {
     return { [dateKey]: datesWithMatchRounds };
   });
 
-  // get matches in this shape
-  // const matches = [
-  //   {
-  //     date: [{ gameInfo: "blah" }, { gameInfo: "blah" }, { gameInfo: "blah" }],
-  //     date: [{ gameInfo: "blah" }],
-  //     date: [{ gameInfo: "blah" }, { gameInfo: "blah" }],
-  //   },
-  // ];
-
-  // sort by past -> future
-  // for each date, make <EventDate />
-  // if date < today, make <PastMatch />
-  // if date === today, make <LiveMatch />
-  // if date > today, make <FutureMatch />
-
   return {
     props: {
       schedule: JSON.parse(JSON.stringify(schedule)),
@@ -109,10 +91,6 @@ export default function Schedule({ schedule, teams }) {
 
     return false;
   }
-
-  // 1) fill in PastMatch info from matchRounds scores
-  // 2) fill in LiveMatch info and change it "upcoming today"
-  // 3) fill in FutureMatch info
 
   return (
     <div className="text-white min-h-full bg-[#0a0e13]">
