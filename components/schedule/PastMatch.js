@@ -55,9 +55,9 @@ export default function PastMatch({
   return (
     <div className="text-white bg-[#0f1519] border-y border-y-[#252c32]">
       <Link href={`/match-results/${MatchId}`}>
-        <a className="single past event mx-4 w-auto h-20 flex flex-row items-center relative">
+        <a className="single past event mx-4 w-auto h-20 lg:h-28 lg:mx-8 flex flex-row items-center relative">
           <Time hour={hour} minute={minute} ampm={ampm} />
-          <div className="teams w-[calc(((100%-165px)/12)*4+60px)] flex flex-col justify-center grow text-center relative">
+          <div className="teams w-[calc(((100%-165px)/12)*4+60px)] flex flex-col lg:flex-row justify-center grow text-center relative lg:w-auto">
             <Team
               teamName={teamOne.teamName}
               tricode={teamOne.tricode}
@@ -76,7 +76,7 @@ export default function PastMatch({
               isLoser={teamTwo.id !== matchWinnerTeamId}
             />
           </div>
-          <div className="w-[calc(((100%-195px)/12)*4+45px)]">
+          <div className="w-[calc(((100%-195px)/12)*4+45px)] lg:w-auto">
             <SeasonMatchInfo seasonNumber={seasonNumber} format={bestOf} />
           </div>
         </a>

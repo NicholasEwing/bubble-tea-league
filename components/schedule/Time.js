@@ -7,16 +7,16 @@ export default function Time({
   approx,
 }) {
   return (
-    <div className="EventTime w-[calc(((100%-165px)/12)*4+60px)] flex-none inline-block">
-      <div className="time text-3xl relative font-medium">
+    <div className="EventTime w-[calc(((100%-165px)/12)*4+60px)] lg:w-40 flex-none inline-block">
+      <div className="time text-3xl lg:text-5xl relative font-medium">
         <span className="hour">{hour}</span>
-        <span className="minute relative text-xs -top-[.85rem] pl-1 tracking-widest">
+        <span className="minute relative text-xs lg:text-base -top-[.85rem] lg:-top-6 pl-1 tracking-widest">
           {minute}
         </span>
-        <span className="ampm relative text-xs -top-[.85rem] pl-1 tracking-widest">
+        <span className="ampm relative text-xs lg:text-base -top-[.85rem] lg:-top-6 pl-1 tracking-widest">
           {ampm}
         </span>
-        <span className="timezone relative text-[9px] text-[#8fa3b0] -left-12 pl-[6px] tracking-widest italic">
+        <span className="timezone relative text-[9px] lg:text-base text-[#8fa3b0] -left-12 lg:-left-[3.75rem] lg:-top-1 pl-[6px] tracking-widest italic">
           EST
         </span>
         {approx && (

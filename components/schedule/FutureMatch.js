@@ -36,15 +36,18 @@ export default function FutureMatch({
   return (
     <div className="text-white bg-[#0f1519] border-y border-y-[#252c32]">
       <Link href={`/match-results/${MatchId}`}>
-        <a className="single past event mx-4 w-auto h-20 flex flex-row items-center relative">
+        <a className="single past event mx-4 w-auto h-20 lg:h-28 lg:mx-8 flex flex-row items-center relative">
           <Time hour={hour} minute={minute} ampm={ampm} approx />
-          <div className="teams w-[calc(((100%-165px)/12)*4+60px)] flex flex-col justify-center grow text-center relative">
+          <div className="teams w-[calc(((100%-165px)/12)*4+60px)] flex flex-col lg:flex-row justify-center grow text-center relative lg:w-auto">
             <Team
               teamName={teamOne?.teamName}
               tricode={teamOne?.tricode}
               wins={teamOneSeasonalGroupStageWins}
               losses={teamOneSeasonalGroupStageLosses}
             />
+            <div className="versus hidden lg:flex items-center justify-center w-20 text-[#8fa3b0] tracking-widest text-sm">
+              VS
+            </div>
             <Team
               teamName={teamTwo?.teamName}
               tricode={teamTwo?.tricode}
@@ -52,7 +55,7 @@ export default function FutureMatch({
               losses={teamTwoSeasonalGroupStageLosses}
             />
           </div>
-          <div className="w-[calc(((100%-195px)/12)*4+45px)]">
+          <div className="w-[calc(((100%-195px)/12)*4+45px)] lg:w-auto">
             <SeasonMatchInfo seasonNumber={seasonNumber} format={bestOf} />
           </div>
         </a>

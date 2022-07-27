@@ -33,8 +33,6 @@ export const getStaticProps = async () => {
     return { ...team, groupStageWins, groupStageLosses };
   });
 
-  console.log("temas", teams);
-
   // thanks stack overflow <3
   const groupByKey = (list, key) =>
     list.reduce(
@@ -92,7 +90,6 @@ export const getStaticProps = async () => {
 };
 
 export default function Schedule({ schedule, teams }) {
-  // console.log("schedule", schedule);
   const today = new Date();
 
   const dateInPast = function (firstDate, secondDate) {
@@ -201,18 +198,6 @@ export default function Schedule({ schedule, teams }) {
           No matches found. Come back later!
         </h2>
       )}
-      {/* <EventDate />
-      <PastMatch />
-      <PastMatch />
-      <PastMatch />
-      <DividerLive />
-      <LiveMatch />
-      <LiveMatch />
-      <LiveMatch />
-      <EventDate weekDay="Tuesday" month="January" date="2" />
-      <FutureMatch />
-      <FutureMatch />
-      <FutureMatch /> */}
     </div>
   );
 }
