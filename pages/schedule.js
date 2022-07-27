@@ -33,6 +33,8 @@ export const getStaticProps = async () => {
     return { ...team, groupStageWins, groupStageLosses };
   });
 
+  console.log("temas", teams);
+
   // thanks stack overflow <3
   const groupByKey = (list, key) =>
     list.reduce(
@@ -90,7 +92,7 @@ export const getStaticProps = async () => {
 };
 
 export default function Schedule({ schedule, teams }) {
-  console.log("schedule", schedule);
+  // console.log("schedule", schedule);
   const today = new Date();
 
   const dateInPast = function (firstDate, secondDate) {
@@ -150,7 +152,18 @@ export default function Schedule({ schedule, teams }) {
                 {Object.values(dateObj)
                   .flat()
                   .map((match) => (
-                    <LiveMatch key={`Live-${match.id}`} MatchId={match.id} />
+                    <LiveMatch
+                      key={`Live-${match.id}`}
+                      MatchId={match.id}
+                      teamOne={teams.find((t) => t.id === match.teamOne)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
+                      seasonNumber={match.seasonNumber}
+                      matchRounds={match.matchRounds}
+                      matchWinnerTeamId={match.matchWinnerTeamId}
+                      matchLoserTeamId={match.matchLoserTeamId}
+                      scheduledTime={match.scheduledTime}
+                    />
                   ))}
               </React.Fragment>
             );
@@ -164,15 +177,21 @@ export default function Schedule({ schedule, teams }) {
                     <FutureMatch
                       key={`Future-${match.id}`}
                       MatchId={match.id}
+                      teamOne={teams.find((t) => t.id === match.teamOne)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
+                      seasonNumber={match.seasonNumber}
+                      matchRounds={match.matchRounds}
+                      scheduledTime={match.scheduledTime}
                     />
                   ))}
               </React.Fragment>
             );
           } else {
             return (
-              <h1 className="text-white text-3xl">
-                A match was found with a null / undefined scheduledTime. Please
-                yell at nick.
+              <h1 className="text-white text-xl">
+                A <code>dateObj</code> was found with a null / undefined / non
+                Date Object key. Please yell at Nick to fix this.
               </h1>
             );
           }

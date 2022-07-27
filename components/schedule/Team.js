@@ -2,8 +2,8 @@ import React from "react";
 import TeamLogo from "../match-results/TeamHeader/TeamLogo";
 
 export default function Team({
-  teamName,
-  tricode,
+  teamName = "TBD",
+  tricode = "TBD",
   wins,
   losses,
   isWinner,
