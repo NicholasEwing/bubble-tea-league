@@ -1,7 +1,24 @@
 import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
+import sequelize from "../sequelize";
 
-export default function Dashboard() {
+import SeasonsTable from "../components/admin/SeasonsTable";
+
+export const getStaticProps = async () => {
+  const { Season, Team } = sequelize.models;
+
+  const seasons = await Season.findAll({ raw: true });
+  const teams = await Season.findAll({ raw: true });
+
+  return {
+    props: {
+      seasons: JSON.parse(JSON.stringify(seasons)),
+      teams: JSON.parse(JSON.stringify(teams)),
+    },
+  };
+};
+
+export default function Dashboard({ seasons, teams }) {
   const { status } = useSession();
 
   useEffect(() => {
@@ -13,8 +30,12 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <div>Dashboard</div>
-    </>
+    <div className="py-8 px-4">
+      <SeasonsTable seasons={seasons} />
+      <h2>Teams</h2>
+      {/* <TeamsTable /> */}
+      <h2>Players</h2>
+      <h2>Free Agents</h2>
+    </div>
   );
 }
