@@ -33,8 +33,8 @@ export default function TeamsTable({ teams }) {
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-white">Teams</h1>
           <p className="mt-2 text-sm text-gray-400">
-            A list of all the teams in your account including their name, title,
-            email and role.
+            A list of all the teams in your account including their team name,
+            tricode, and season.
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">

@@ -6,22 +6,23 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function PlayersTable({ teams, players }) {
+export default function MatchesTable({ teams, matches }) {
+  console.log("matches", matches);
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [selectedMatches, setSelectedMatches] = useState([]);
 
   useLayoutEffect(() => {
     const isIndeterminate =
-      selectedPlayers.length > 0 && selectedPlayers.length < players.length;
-    setChecked(selectedPlayers.length === players.length);
+      selectedMatches.length > 0 && selectedMatches.length < matches.length;
+    setChecked(selectedMatches.length === matches.length);
     setIndeterminate(isIndeterminate);
     checkbox.current.indeterminate = isIndeterminate;
-  }, [selectedPlayers, players.length]);
+  }, [selectedMatches, matches.length]);
 
   function toggleAll() {
-    setSelectedPlayers(checked || indeterminate ? [] : players);
+    setSelectedMatches(checked || indeterminate ? [] : matches);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
@@ -30,26 +31,18 @@ export default function PlayersTable({ teams, players }) {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-white">Players</h1>
+          <h1 className="text-xl font-semibold text-white">Matches</h1>
           <p className="mt-2 text-sm text-gray-400">
-            A list of all the players in the Bubble Tea League including their
-            role and team name.
+            A list of all the matches in the Bubble Tea League including their
+            format, time, teams, and season.
           </p>
-        </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-teal-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-accent focus:outline-none focus:ring-2 focus:ring-teal-accent focus:ring-offset-2 sm:w-auto"
-          >
-            Add player
-          </button>
         </div>
       </div>
       <div className="mt-8 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="relative overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              {selectedPlayers.length > 1 && (
+              {selectedMatches.length > 1 && (
                 <div className="absolute top-0 left-12 flex h-12 items-center space-x-3 bg-gray-50 sm:left-16">
                   <button
                     type="button"
@@ -71,34 +64,38 @@ export default function PlayersTable({ teams, players }) {
                   checked={checked}
                   toggleAll={toggleAll}
                 >
-                  <ColumnHeader name="Summoner Name" />
-                  <ColumnHeader name="Role" small />
-                  <ColumnHeader name="Team" />
+                  <ColumnHeader name="Match Id" small />
+                  <ColumnHeader name="Match Stage" />
+                  <ColumnHeader name="Scheduled Time" />
+                  <ColumnHeader name="Season" small />
+                  <ColumnHeader name="Team One" />
+                  <ColumnHeader name="Team Two" />
+                  <ColumnHeader name="Match Winner" />
                 </TableHead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {players.map((player) => (
+                  {matches.map((match) => (
                     <tr
-                      key={player.id}
+                      key={match.id}
                       className={
-                        selectedPlayers.includes(player)
+                        selectedMatches.includes(match)
                           ? "bg-gray-50"
                           : undefined
                       }
                     >
                       <td className="relative w-6 px-6 sm:w-8 sm:px-8">
-                        {selectedPlayers.includes(player) && (
+                        {selectedMatches.includes(match) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-teal-accent" />
                         )}
                         <input
                           type="checkbox"
                           className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-teal-accent hover:ring-teal-accent sm:left-6"
-                          value={player.number}
-                          checked={selectedPlayers.includes(player)}
+                          value={match.number}
+                          checked={selectedMatches.includes(match)}
                           onChange={(e) =>
-                            setSelectedPlayers(
+                            setSelectedMatches(
                               e.target.checked
-                                ? [...selectedPlayers, player]
-                                : selectedPlayers.filter((p) => p !== player)
+                                ? [...selectedMatches, match]
+                                : selectedMatches.filter((p) => p !== match)
                             )
                           }
                         />
@@ -106,18 +103,46 @@ export default function PlayersTable({ teams, players }) {
                       <td
                         className={classNames(
                           "whitespace-nowrap py-4 px-3 text-sm font-medium",
-                          selectedPlayers.includes(player)
+                          selectedMatches.includes(match)
                             ? "text-teal-accent"
                             : "text-gray-900"
                         )}
                       >
-                        {player.summonerName}
+                        {match.id}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {player.role}
+                        {match.isPlayoffsMatch
+                          ? `Playoffs - ${
+                              match.isUpperBracket ? "Upper -" : "Lower -"
+                            } ${match.bracketRound}`
+                          : "Group Stage"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {teams.find((t) => t.id === player.TeamId)["teamName"]}
+                        {new Date(match.scheduledTime).toDateString()}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {match.season}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {match.teamOne
+                          ? teams.find((t) => t.id === match.teamOne)[
+                              "teamName"
+                            ]
+                          : "N/A"}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {match.teamTwo
+                          ? teams.find((t) => t.id === match.teamTwo)[
+                              "teamName"
+                            ]
+                          : "N/A"}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {match.matchWinnerTeamId
+                          ? teams.find((t) => t.id === match.matchWinnerTeamId)[
+                              "teamName"
+                            ]
+                          : "N/A"}
                       </td>
                       {/* Edit button */}
                       <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -125,7 +150,7 @@ export default function PlayersTable({ teams, players }) {
                           href="#"
                           className="text-teal-accent hover:text-cyan-800"
                         >
-                          Edit<span className="sr-only">, {player.number}</span>
+                          Edit<span className="sr-only">, {match.id}</span>
                         </a>
                       </td>
                     </tr>

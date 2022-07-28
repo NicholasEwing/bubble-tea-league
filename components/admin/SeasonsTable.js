@@ -35,6 +35,19 @@ export default function SeasonsTable({ seasons }) {
             A list of all Bubble Tea League seasons registered including their
             season number, and assigned year.
           </p>
+          <p className="mt-2 text-sm text-gray-400">
+            Creating a season will automatically generate 10 (randomized) teams,
+            45 Group Stage matches, and 14 Playoffs matches.
+          </p>
+          <p className="mt-2 text-sm text-gray-400">
+            Teams will automatically be assigned for the Group Stage. Playoffs
+            bracket will automatically be seeded once Group Stage matches have
+            finished.
+          </p>
+          <p className="mt-2 text-sm text-gray-400">
+            After you&apos;ve made a season, be sure to rename teams, create
+            players / assign them to teams, and assign times to all matches.
+          </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <button

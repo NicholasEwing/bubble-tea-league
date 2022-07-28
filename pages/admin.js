@@ -5,6 +5,7 @@ import sequelize from "../sequelize";
 import SeasonsTable from "../components/admin/SeasonsTable";
 import TeamsTable from "../components/admin/TeamsTable";
 import PlayersTable from "../components/admin/PlayersTable";
+import MatchesTable from "../components/admin/MatchesTable";
 
 export const getStaticProps = async () => {
   const { Season, Team, Player, Match } = sequelize.models;
@@ -12,7 +13,7 @@ export const getStaticProps = async () => {
   const seasons = await Season.findAll({ raw: true });
   const teams = await Team.findAll({ raw: true });
   const players = await Player.findAll({ raw: true });
-  const matches = await Matches.findAll({ raw: true });
+  const matches = await Match.findAll({ raw: true });
 
   return {
     props: {
@@ -40,6 +41,7 @@ export default function Dashboard({ seasons, teams, players, matches }) {
       <SeasonsTable seasons={seasons} />
       <TeamsTable teams={teams} />
       <PlayersTable teams={teams} players={players} />
+      <MatchesTable teams={teams} matches={matches} />
       <h2>Players</h2>
       <h2>Free Agents</h2>
     </div>
