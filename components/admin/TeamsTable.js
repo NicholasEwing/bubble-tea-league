@@ -6,34 +6,35 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function SeasonsTable({ seasons }) {
+export default function TeamsTable({ teams }) {
+  console.log("teams", teams);
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-  const [selectedSeasons, setSelectedSeasons] = useState([]);
+  const [selectedTeams, setSelectedTeams] = useState([]);
 
   useLayoutEffect(() => {
     const isIndeterminate =
-      selectedSeasons.length > 0 && selectedSeasons.length < seasons.length;
-    setChecked(selectedSeasons.length === seasons.length);
+      selectedTeams.length > 0 && selectedTeams.length < teams.length;
+    setChecked(selectedTeams.length === teams.length);
     setIndeterminate(isIndeterminate);
     checkbox.current.indeterminate = isIndeterminate;
-  }, [selectedSeasons, seasons.length]);
+  }, [selectedTeams, teams.length]);
 
   function toggleAll() {
-    setSelectedSeasons(checked || indeterminate ? [] : seasons);
+    setSelectedTeams(checked || indeterminate ? [] : teams);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-white">Seasons</h1>
+          <h1 className="text-xl font-semibold text-white">Teams</h1>
           <p className="mt-2 text-sm text-gray-400">
-            A list of all Bubble Tea League seasons registered including their
-            season number, and assigned year.
+            A list of all the teams in your account including their name, title,
+            email and role.
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -41,7 +42,7 @@ export default function SeasonsTable({ seasons }) {
             type="button"
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-teal-accent px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-accent focus:outline-none focus:ring-2 focus:ring-teal-accent focus:ring-offset-2 sm:w-auto"
           >
-            Add season
+            Add team
           </button>
         </div>
       </div>
@@ -49,7 +50,7 @@ export default function SeasonsTable({ seasons }) {
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="relative overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              {/* {selectedSeasons.length > 0 && (
+              {/* {selectedTeams.length > 0 && (
                 <div className="absolute top-0 left-12 flex h-12 items-center space-x-3 bg-gray-50 sm:left-16">
                   <button
                     type="button"
@@ -71,33 +72,32 @@ export default function SeasonsTable({ seasons }) {
                   checked={checked}
                   toggleAll={toggleAll}
                 >
-                  <ColumnHeader name="Number" small />
-                  <ColumnHeader name="Year" small />
+                  <ColumnHeader name="Team Name" />
+                  <ColumnHeader name="Tricode" small />
+                  <ColumnHeader name="Season" small />
                 </TableHead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {seasons.map((season) => (
+                  {teams.map((team) => (
                     <tr
-                      key={season.id}
+                      key={team.id}
                       className={
-                        selectedSeasons.includes(season)
-                          ? "bg-gray-50"
-                          : undefined
+                        selectedTeams.includes(team) ? "bg-gray-50" : undefined
                       }
                     >
                       <td className="relative w-6 px-6 sm:w-8 sm:px-8">
-                        {selectedSeasons.includes(season) && (
+                        {selectedTeams.includes(team) && (
                           <div className="absolute inset-y-0 left-0 w-0.5 bg-teal-accent" />
                         )}
                         <input
                           type="checkbox"
                           className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-teal-accent hover:ring-teal-accent sm:left-6"
-                          value={season.number}
-                          checked={selectedSeasons.includes(season)}
+                          value={team.number}
+                          checked={selectedTeams.includes(team)}
                           onChange={(e) =>
-                            setSelectedSeasons(
+                            setSelectedTeams(
                               e.target.checked
-                                ? [...selectedSeasons, season]
-                                : selectedSeasons.filter((p) => p !== season)
+                                ? [...selectedTeams, team]
+                                : selectedTeams.filter((p) => p !== team)
                             )
                           }
                         />
@@ -105,15 +105,18 @@ export default function SeasonsTable({ seasons }) {
                       <td
                         className={classNames(
                           "whitespace-nowrap py-4 px-3 text-sm font-medium",
-                          selectedSeasons.includes(season)
+                          selectedTeams.includes(team)
                             ? "text-teal-accent"
                             : "text-gray-900"
                         )}
                       >
-                        {season.number}
+                        {team.teamName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {season.year}
+                        {team.tricode}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {team.season}
                       </td>
                       {/* Edit button */}
                       <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
@@ -121,7 +124,7 @@ export default function SeasonsTable({ seasons }) {
                           href="#"
                           className="text-teal-accent hover:text-cyan-800"
                         >
-                          Edit<span className="sr-only">, {season.number}</span>
+                          Edit<span className="sr-only">, {team.number}</span>
                         </a>
                       </td>
                     </tr>

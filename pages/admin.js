@@ -3,12 +3,13 @@ import { useSession, signIn } from "next-auth/react";
 import sequelize from "../sequelize";
 
 import SeasonsTable from "../components/admin/SeasonsTable";
+import TeamsTable from "../components/admin/TeamsTable";
 
 export const getStaticProps = async () => {
   const { Season, Team } = sequelize.models;
 
   const seasons = await Season.findAll({ raw: true });
-  const teams = await Season.findAll({ raw: true });
+  const teams = await Team.findAll({ raw: true });
 
   return {
     props: {
@@ -32,8 +33,7 @@ export default function Dashboard({ seasons, teams }) {
   return (
     <div className="py-8 px-4">
       <SeasonsTable seasons={seasons} />
-      <h2>Teams</h2>
-      {/* <TeamsTable /> */}
+      <TeamsTable teams={teams} />
       <h2>Players</h2>
       <h2>Free Agents</h2>
     </div>
