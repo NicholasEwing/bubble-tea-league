@@ -4,22 +4,27 @@ import sequelize from "../sequelize";
 
 import SeasonsTable from "../components/admin/SeasonsTable";
 import TeamsTable from "../components/admin/TeamsTable";
+import PlayersTable from "../components/admin/PlayersTable";
 
 export const getStaticProps = async () => {
-  const { Season, Team } = sequelize.models;
+  const { Season, Team, Player, Match } = sequelize.models;
 
   const seasons = await Season.findAll({ raw: true });
   const teams = await Team.findAll({ raw: true });
+  const players = await Player.findAll({ raw: true });
+  const matches = await Matches.findAll({ raw: true });
 
   return {
     props: {
       seasons: JSON.parse(JSON.stringify(seasons)),
       teams: JSON.parse(JSON.stringify(teams)),
+      players: JSON.parse(JSON.stringify(players)),
+      matches: JSON.parse(JSON.stringify(matches)),
     },
   };
 };
 
-export default function Dashboard({ seasons, teams }) {
+export default function Dashboard({ seasons, teams, players, matches }) {
   const { status } = useSession();
 
   useEffect(() => {
@@ -34,6 +39,7 @@ export default function Dashboard({ seasons, teams }) {
     <div className="py-8 px-4">
       <SeasonsTable seasons={seasons} />
       <TeamsTable teams={teams} />
+      <PlayersTable teams={teams} players={players} />
       <h2>Players</h2>
       <h2>Free Agents</h2>
     </div>
