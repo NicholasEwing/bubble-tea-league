@@ -7,7 +7,6 @@ function classNames(...classes) {
 }
 
 export default function TeamsTable({ teams }) {
-  console.log("teams", teams);
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -33,8 +32,8 @@ export default function TeamsTable({ teams }) {
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-white">Teams</h1>
           <p className="mt-2 text-sm text-gray-400">
-            A list of all the teams in your account including their team name,
-            tricode, and season.
+            A list of all the teams in the Bubble Tea League including their
+            team name, tricode, and season.
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -50,7 +49,7 @@ export default function TeamsTable({ teams }) {
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="relative overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              {/* {selectedTeams.length > 0 && (
+              {selectedTeams.length > 1 && (
                 <div className="absolute top-0 left-12 flex h-12 items-center space-x-3 bg-gray-50 sm:left-16">
                   <button
                     type="button"
@@ -65,7 +64,7 @@ export default function TeamsTable({ teams }) {
                     Delete all
                   </button>
                 </div>
-              )} */}
+              )}
               <table className="min-w-full table-fixed divide-y divide-gray-300">
                 <TableHead
                   checkbox={checkbox}

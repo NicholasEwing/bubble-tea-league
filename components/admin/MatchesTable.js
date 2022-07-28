@@ -7,7 +7,6 @@ function classNames(...classes) {
 }
 
 export default function MatchesTable({ teams, matches }) {
-  console.log("matches", matches);
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -35,6 +34,10 @@ export default function MatchesTable({ teams, matches }) {
           <p className="mt-2 text-sm text-gray-400">
             A list of all the matches in the Bubble Tea League including their
             format, time, teams, and season.
+          </p>
+          <p className="mt-2 text-sm text-gray-400">
+            Matches are only generated when creating a new season and can&apos;t
+            be deleted.
           </p>
         </div>
       </div>

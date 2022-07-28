@@ -62,22 +62,6 @@ export default function SeasonsTable({ seasons }) {
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="relative overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              {/* {selectedSeasons.length > 0 && (
-                <div className="absolute top-0 left-12 flex h-12 items-center space-x-3 bg-gray-50 sm:left-16">
-                  <button
-                    type="button"
-                    className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    Bulk edit
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    Delete all
-                  </button>
-                </div>
-              )} */}
               <table className="min-w-full table-fixed divide-y divide-gray-300">
                 <TableHead
                   checkbox={checkbox}
@@ -90,7 +74,7 @@ export default function SeasonsTable({ seasons }) {
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {seasons.map((season) => (
                     <tr
-                      key={season.id}
+                      key={`Season-${season.id}`}
                       className={
                         selectedSeasons.includes(season)
                           ? "bg-gray-50"
@@ -128,7 +112,6 @@ export default function SeasonsTable({ seasons }) {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {season.year}
                       </td>
-                      {/* Edit button */}
                       <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a
                           href="#"
