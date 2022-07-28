@@ -9,6 +9,9 @@ module.exports = {
       backgroundImage: {
         "champion-attributes": "url('/sprite-attribute-champion.png')",
       },
+      colors: {
+        "teal-accent": "#00c8c8",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

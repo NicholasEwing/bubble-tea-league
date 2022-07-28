@@ -11,7 +11,7 @@ export default function NavButton({
       href="#"
       className={`px-8 font-semibold ${
         toggleState === count
-          ? "active-game pointer-events-none text-[#00c8c8]"
+          ? "active-game pointer-events-none text-teal-accent"
           : "text-[#687077]"
       }`}
       onClick={() => {

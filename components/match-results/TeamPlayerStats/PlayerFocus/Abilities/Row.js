@@ -8,28 +8,28 @@ export default function Row({ rowNumber, skillSlot }) {
       </p>
       <p
         className={`key w-1/5 ${
-          skillSlot === 1 ? "text-[#00c8c8] bg-black" : "text-transparent"
+          skillSlot === 1 ? "text-teal-accent bg-black" : "text-transparent"
         } text-center font-medium pt-1 pb-1 border-t border-l border-[#252c32] uppercase`}
       >
         Q
       </p>
       <p
         className={`key w-1/5 ${
-          skillSlot === 2 ? "text-[#00c8c8] bg-black" : "text-transparent"
+          skillSlot === 2 ? "text-teal-accent bg-black" : "text-transparent"
         } text-center font-medium pt-1 pb-1 border-t border-l border-[#252c32] uppercase`}
       >
         W
       </p>
       <p
         className={`key w-1/5 ${
-          skillSlot === 3 ? "text-[#00c8c8] bg-black" : "text-transparent"
+          skillSlot === 3 ? "text-teal-accent bg-black" : "text-transparent"
         } text-center font-medium pt-1 pb-1 border-t border-l border-[#252c32] uppercase`}
       >
         E
       </p>
       <p
         className={`key w-1/5 ${
-          skillSlot === 4 ? "text-[#00c8c8] bg-black" : "text-transparent"
+          skillSlot === 4 ? "text-teal-accent bg-black" : "text-transparent"
         } text-center font-medium pt-1 pb-1 border-t border-l border-[#252c32] uppercase`}
       >
         R

@@ -3,6 +3,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import SequelizeAdapter from "@next-auth/sequelize-adapter";
 import sequelize from "../../../sequelize/index.js";
 
+// I usually have an isAdmin flag or something in the sessions, which is based on the database tag
+
 export default NextAuth({
   providers: [
     DiscordProvider({

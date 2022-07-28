@@ -8,7 +8,7 @@ export default function StageSelector({ showPlayoffs, toggleSetPlayoffs }) {
         <button
           onClick={() => toggleSetPlayoffs(false)}
           className={`button uppercase selected ${
-            showPlayoffs ? "text-white" : "text-[#00c8c8]"
+            showPlayoffs ? "text-white" : "text-teal-accent"
           } items-center flex flex-shrink-0 mr-6 h-full cursor-pointer`}
         >
           Regular Season
@@ -16,7 +16,7 @@ export default function StageSelector({ showPlayoffs, toggleSetPlayoffs }) {
         <button
           onClick={() => toggleSetPlayoffs(true)}
           className={`button uppercase selected ${
-            showPlayoffs ? "text-[#00c8c8]" : "text-white"
+            showPlayoffs ? "text-teal-accent" : "text-white"
           } items-center flex flex-shrink-0 mr-6 h-full cursor-pointer`}
         >
           Playoffs

@@ -7,7 +7,7 @@ export default function SeasonItem({ season, isActive, handleActiveSeason }) {
       className={`season ${
         isActive ? "pointer-events-none" : "cursor-pointer"
       } h-16 relative list-none border-b border-b-[#252c32] text-[#8fa3b0] after:absolute after:left-0 lg:after:left-auto lg:after:right-0 after:top-0 after:w-1 after:h-full after:z-50 ${
-        isActive ? "after:bg-[#00c8c8]" : "after:bg-transparent"
+        isActive ? "after:bg-teal-accent" : "after:bg-transparent"
       }`}
     >
       <button className="button info h-full w-full flex items-center">

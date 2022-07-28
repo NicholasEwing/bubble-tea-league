@@ -16,7 +16,7 @@ export default function ProfileDropdown({
         <Menu.Button
           className={
             status !== "authenticated" && !session
-              ? "relative flex justify-between items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+              ? "relative flex h-12 w-28 justify-between items-center px-2 py-1 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
               : "bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
           }
         >
@@ -28,14 +28,15 @@ export default function ProfileDropdown({
               }}
               className="flex items-center"
             >
-              <Image
-                src={discordLogo}
-                alt="Discord Logo"
-                width="30"
-                height="33.75"
-                layout="fixed"
-              />
-              <p className="mx-3 mb-0.5">Sign In</p>
+              <div className="grid place-items-center w-8 h-10 mx-1">
+                <Image
+                  src={discordLogo}
+                  alt="Discord Logo"
+                  width="30"
+                  height="33.75"
+                />
+              </div>
+              <p className="mx-1 mb-0.5 text-sm">Sign In</p>
             </a>
           ) : (
             <>

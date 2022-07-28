@@ -44,11 +44,11 @@ export default function PlayerStats({
       <div
         className={`portrait relative basis-16 h-16 w-16 before:block before:absolute before:-left-[3px] before:-top-[3px] before:-right-[3px] before:-bottom-[3px] before:z-1 before:rounded-[33px] before:border-[3px] before:border-[#0a0e13] ${
           isSelectedByRow
-            ? "xl:before:border-[#00c8c8] xl:before:shadow-inner"
+            ? "xl:before:border-teal-accent xl:before:shadow-inner"
             : ""
         } ${
           isSelectedIndividually
-            ? "sm:before:border-[#00c8c8] sm:before:shadow-inner"
+            ? "sm:before:border-teal-accent sm:before:shadow-inner"
             : ""
         }`}
       >
@@ -78,10 +78,12 @@ export default function PlayerStats({
             <g
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  ? "xl:fill-teal-accent fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually
+                  ? "sm:fill-teal-accent"
+                  : "fill-[#555d64]"
               }`}
               fillRule="evenodd"
             >
@@ -103,10 +105,12 @@ export default function PlayerStats({
             <path
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  ? "xl:fill-teal-accent fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually
+                  ? "sm:fill-teal-accent"
+                  : "fill-[#555d64]"
               }`}
               d="M8.5,2h-1L3,9l5,5,5-5ZM5,8,6,7,8,9l2-2,1,1L8,12.5Z"
             ></path>
@@ -124,10 +128,12 @@ export default function PlayerStats({
             <g
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-[#00c8c8] fill-[#555d64]"
+                  ? "xl:fill-teal-accent fill-[#555d64]"
                   : "fill-[#555d64]"
               } ${
-                isSelectedIndividually ? "sm:fill-[#00c8c8]" : "fill-[#555d64]"
+                isSelectedIndividually
+                  ? "sm:fill-teal-accent"
+                  : "fill-[#555d64]"
               }`}
               fillRule="evenodd"
             >

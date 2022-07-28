@@ -98,7 +98,7 @@ export default function PlayerFocus({
       <MatchSection left>
         <ul className="menu list-none	pt-1 px-2">
           <li
-            className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-[#00c8c8] h-full grid place-items-center"
+            className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-teal-accent h-full grid place-items-center"
             role="button"
           >
             STATS
