@@ -12,10 +12,6 @@ import TableContainer from "./table/TableContainer";
 import TableHead from "./table/TableHead";
 import TextHeadingContainer from "./table/TextHeadingContainer";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function PlayersTable({ teams, players }) {
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);

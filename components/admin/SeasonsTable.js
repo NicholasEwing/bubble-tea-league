@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { varAsString } from "../../lib/utils";
+import Modal from "../modal";
 import Cell from "./table/Cell";
 import ColumnHeader from "./table/ColumnHeader";
 import EditButton from "./table/EditButton";
@@ -11,15 +12,13 @@ import TableContainer from "./table/TableContainer";
 import TableHead from "./table/TableHead";
 import TextHeadingContainer from "./table/TextHeadingContainer";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function SeasonsTable({ seasons }) {
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const [selectedSeasons, setSelectedSeasons] = useState([]);
+
+  const [open, setOpen] = useState(false);
 
   useLayoutEffect(() => {
     const isIndeterminate =
@@ -37,7 +36,12 @@ export default function SeasonsTable({ seasons }) {
 
   return (
     <SectionContainer>
-      <TextHeadingContainer hasAddButton buttonText="Add season">
+      <Modal open={open} setOpen={setOpen} />
+      <TextHeadingContainer
+        hasAddButton
+        buttonText="Add season"
+        setOpen={setOpen}
+      >
         <h1 className="text-xl font-semibold text-white">Seasons</h1>
         <p className="mt-2 text-sm text-gray-400">
           A list of all Bubble Tea League seasons registered including their
