@@ -42,7 +42,6 @@ export default function Dashboard({ seasons, teams, players, matches }) {
       <TeamsTable teams={teams} />
       <PlayersTable teams={teams} players={players} />
       <MatchesTable teams={teams} matches={matches} />
-      <h2>Players</h2>
       <h2>Free Agents</h2>
     </div>
   );

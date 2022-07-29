@@ -2,7 +2,7 @@ import React from "react";
 
 export default function TableHead({ checkbox, checked, toggleAll, children }) {
   return (
-    <thead className="bg-gray-50">
+    <thead className="bg-gray-900">
       <tr>
         <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8">
           <input

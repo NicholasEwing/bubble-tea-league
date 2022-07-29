@@ -14,5 +14,13 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    function ({ addVariant }) {
+      addVariant("not-first", "&:not(:nth-child(1))");
+    },
+    function ({ addVariant }) {
+      addVariant("not-second", "&:not(:nth-child(2))");
+    },
+  ],
 };
