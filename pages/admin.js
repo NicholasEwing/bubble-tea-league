@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import sequelize from "../sequelize";
 
-import SeasonsTable from "../components/admin/SeasonsTable";
+import SeasonsTable from "../components/admin/SeasonsTable/";
 import TeamsTable from "../components/admin/TeamsTable";
 import PlayersTable from "../components/admin/PlayersTable";
 import MatchesTable from "../components/admin/MatchesTable";

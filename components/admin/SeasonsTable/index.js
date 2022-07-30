@@ -1,16 +1,17 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { varAsString } from "../../lib/utils";
-import Modal from "../modal";
-import Cell from "./table/Cell";
-import ColumnHeader from "./table/ColumnHeader";
-import EditButton from "./table/EditButton";
-import Row from "./table/Row";
-import SectionContainer from "./table/SectionContainer";
-import Table from "./table/Table";
-import TableBody from "./table/TableBody";
-import TableContainer from "./table/TableContainer";
-import TableHead from "./table/TableHead";
-import TextHeadingContainer from "./table/TextHeadingContainer";
+import { varAsString } from "../../../lib/utils";
+import Modal from "../../modal";
+import Cell from "../table/Cell";
+import ColumnHeader from "../table/ColumnHeader";
+import EditButton from "../table/EditButton";
+import Row from "../table/Row";
+import SectionContainer from "../table/SectionContainer";
+import Table from "../table/Table";
+import TableBody from "../table/TableBody";
+import TableContainer from "../table/TableContainer";
+import TableHead from "../table/TableHead";
+import TextHeadingContainer from "../table/TextHeadingContainer";
+import SeasonsModal from "./SeasonsModal";
 
 export default function SeasonsTable({ seasons }) {
   const checkbox = useRef();
@@ -36,7 +37,9 @@ export default function SeasonsTable({ seasons }) {
 
   return (
     <SectionContainer>
-      <Modal open={open} setOpen={setOpen} />
+      <Modal open={open} setOpen={setOpen}>
+        <SeasonsModal />
+      </Modal>
       <TextHeadingContainer
         hasAddButton
         buttonText="Add season"
