@@ -18,7 +18,7 @@ export default function ModalCheckbox({
         />
       </div>
       <div className="ml-3 text-sm">
-        <label htmlFor={inputName} className="font-medium">
+        <label htmlFor={inputName} className="font-medium select-none">
           {label}
           <p className="font-normal">{children}</p>
         </label>

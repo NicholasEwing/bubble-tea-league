@@ -38,7 +38,7 @@ export default function SeasonsTable({ seasons }) {
   return (
     <SectionContainer>
       <Modal open={open} setOpen={setOpen}>
-        <SeasonsModal />
+        <SeasonsModal seasons={seasons} />
       </Modal>
       <TextHeadingContainer
         hasAddButton

@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "../../modal/Form";
+import { Dialog, Transition } from "@headlessui/react";
 import FormContainer from "../../modal/Form";
 import ModalCheckbox from "../../modal/ModalCheckbox";
 import ModalCheckboxGroup from "../../modal/ModalCheckboxGroup";
 import ModalDropdown from "../../modal/ModalDropdown";
 import ModalTextInput from "../../modal/ModalTextInput";
+import SubmitSuccess from "../../modal/SubmitSuccess";
+import ConfirmButton from "../../modal/ConfirmButton";
+import SubmitFail from "../../modal/SubmitFail";
+import LoadingSpinner from "../../modal/LoadingSpinner";
+import { useRefreshContext } from "../context/refreshData";
 
-export default function SeasonsModal({ setOpen }) {
-  const currentYear = new Date().getFullYear();
-  const [canSubmit, setCanSubmit] = useState(false);
+export default function SeasonsModal({ setOpen, seasons }) {
+  const seasonYears = seasons.map((s) => s.year);
+
+  const refreshData = useRefreshContext();
 
   const checkBoxes = [
     {
@@ -31,9 +38,20 @@ export default function SeasonsModal({ setOpen }) {
     },
   ];
 
+  const currentYear = new Date().getFullYear();
+  const [canSubmit, setCanSubmit] = useState(false);
   const [checkedState, setCheckedState] = useState(
     new Array(checkBoxes.length).fill(false)
   );
+  const [seasonYear, setSeasonYear] = useState(currentYear + 1);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Something went wrong.");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    return () => setFormSubmitted(false);
+  }, []);
 
   const handleOnChange = (position) => {
     const updatedCheckedState = checkedState.map((item, index) =>
@@ -55,66 +73,93 @@ export default function SeasonsModal({ setOpen }) {
   let options = [];
 
   for (const i = currentYear; i <= currentYear + 4; i++) {
-    options.push(i);
+    if (!seasonYears.includes(i)) options.push(i);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     event.preventDefault();
+    setLoading(true);
 
-    console.log("form submitted!!!");
+    try {
+      let res = await fetch("http://localhost:3000/api/seasons", {
+        method: "POST",
+        body: JSON.stringify({
+          name: `BTL Season ${seasonYear}`,
+          year: seasonYear,
+        }),
+      });
+
+      const resJson = await res.json();
+
+      if (res.ok) {
+        setFormSubmitted(true);
+        refreshData();
+      }
+
+      if (!res.ok && resJson.message) {
+        throw resJson.message;
+      }
+    } catch (error) {
+      setFormSubmitted(false);
+      setErrorMessage(error);
+      setFormError(true);
+    }
+
+    setLoading(false);
   };
 
-  return (
-    <Form>
-      <div>
-        <h3 className="text-lg leading-6 font-medium text-white">
-          Create a New Season
-        </h3>
-        <p className="mt-1 max-w-2xl text-sm">
-          Pick the year you want to associate with this season.
-        </p>
-      </div>
-      <div className="space-y-6 sm:space-y-5">
-        <ModalDropdown
-          inputName="season-year"
-          label="Season Year"
-          options={options}
-        />
-        <ModalCheckboxGroup>
-          {checkBoxes.map((checkbox, i) => (
-            <ModalCheckbox
-              key={checkbox.inputName}
-              inputName={checkbox.inputName}
-              label={checkbox.label}
-              onChange={() => handleOnChange(i)}
-            >
-              {checkbox.description}
-            </ModalCheckbox>
-          ))}
-        </ModalCheckboxGroup>
-        <div className="pt-5">
-          <div className="flex md:justify-end sm:justify-between">
-            <button
-              onClick={() => setOpen(false)}
-              type="button"
-              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-accent"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              type="submit"
-              disabled={!canSubmit}
-              className={`${
-                !canSubmit && "opacity-50"
-              } inline-flex ml-3 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-accent hover:bg-teal-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-accent`}
-            >
-              I understand
-              <span className="hidden md:inline">, create a new season</span>
-            </button>
-          </div>
+  const handleSeasonYear = (e) => {
+    setSeasonYear(e.target.value);
+  };
+
+  if (formSubmitted) {
+    return <SubmitSuccess itemName="season" setOpen={setOpen} />;
+  } else if (loading) {
+    return <LoadingSpinner />;
+  } else if (formError) {
+    return (
+      <SubmitFail error={errorMessage} itemName="season" setOpen={setOpen} />
+    );
+  } else {
+    return (
+      <Form>
+        <div>
+          <h3 className="text-lg leading-6 font-medium text-white">
+            Create a New Season
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm">
+            Pick the year you want to associate with this season.
+          </p>
         </div>
-      </div>
-    </Form>
-  );
+        <div className="space-y-6 sm:space-y-5">
+          <ModalDropdown
+            inputName="season-year"
+            label="Season Year"
+            options={options}
+            handleInput={handleSeasonYear}
+            inputValue={seasonYear}
+          />
+          <ModalCheckboxGroup>
+            {checkBoxes.map((checkbox, i) => (
+              <ModalCheckbox
+                key={checkbox.inputName}
+                inputName={checkbox.inputName}
+                label={checkbox.label}
+                onChange={() => handleOnChange(i)}
+              >
+                {checkbox.description}
+              </ModalCheckbox>
+            ))}
+          </ModalCheckboxGroup>
+          <ConfirmButton
+            setOpen={setOpen}
+            handleSubmit={handleSubmit}
+            canSubmit={canSubmit}
+            dtopText="I understand, create a new season"
+            mobileText="Create season"
+          />
+        </div>
+      </Form>
+    );
+  }
 }
