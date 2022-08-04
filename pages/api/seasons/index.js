@@ -64,5 +64,15 @@ export default async function handler(req, res) {
         res.status(424).send({ message });
       }
       break;
+    case "PATCH":
+      try {
+        const { seasons } = req.body;
+        await Season.bulkCreate(seasons, { updateOnDuplicate: ["year"] });
+        res.send(200);
+      } catch (error) {
+        console.log(error);
+        res.send(500);
+      }
+      break;
   }
 }

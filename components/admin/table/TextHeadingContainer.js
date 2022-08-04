@@ -5,12 +5,14 @@ export default function TextHeadingContainer({
   children,
   hasAddButton,
   buttonText,
-  setOpen,
+  buttonAction,
 }) {
   return (
     <div className="sm:flex sm:items-center">
       <div className="sm:flex-auto">{children}</div>
-      {hasAddButton && <AddButton buttonText={buttonText} setOpen={setOpen} />}
+      {hasAddButton && (
+        <AddButton buttonText={buttonText} buttonAction={buttonAction} />
+      )}
     </div>
   );
 }

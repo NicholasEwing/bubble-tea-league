@@ -34,7 +34,7 @@ export default function TeamsTable({ teams }) {
 
   return (
     <SectionContainer>
-      <TextHeadingContainer hasAddButton buttonText="Add team">
+      <TextHeadingContainer>
         <h1 className="text-xl font-semibold text-white">Teams</h1>
         <p className="mt-2 text-sm text-gray-400">
           A list of all the teams in the Bubble Tea League including their team
