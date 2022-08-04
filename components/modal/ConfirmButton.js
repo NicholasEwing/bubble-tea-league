@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function ConfirmButton({
-  setOpen,
+  closeModal = { closeModal },
   handleSubmit,
   canSubmit = true,
   dtopText,
@@ -11,7 +11,7 @@ export default function ConfirmButton({
     <div className="pt-5">
       <div className="flex justify-between md:justify-end">
         <button
-          onClick={() => setOpen(false)}
+          onClick={closeModal}
           type="button"
           className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-accent"
         >

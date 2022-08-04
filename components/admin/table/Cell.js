@@ -4,16 +4,18 @@ export default function Cell({
   selectedItems,
   item,
   value,
-  canEdit,
+  canEdit = false,
   editing,
   inputName,
   handleChanges,
   id,
-  numsOnly,
+  pattern,
 }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
+  console.log("inputName", inputName);
 
   return (
     <td
@@ -31,8 +33,8 @@ export default function Cell({
           name={inputName}
           id={inputName}
           value={value}
-          onChange={handleChanges}
-          pattern={numsOnly && "^[0-9]{1,4}"}
+          onChange={(e) => handleChanges(e, inputName)}
+          pattern={pattern}
           className="inline w-16 text-black shadow-sm focus:ring-teal-accent focus:border-teal-accent sm:text-sm border-gray-300 rounded-md"
         />
       ) : (

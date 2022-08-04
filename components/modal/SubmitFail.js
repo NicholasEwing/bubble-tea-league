@@ -1,7 +1,7 @@
 import React from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/outline";
 
-export default function SubmitFail({ error, itemName, setOpen }) {
+export default function SubmitFail({ error, itemName, closeModal }) {
   let description;
 
   switch (itemName) {
@@ -28,7 +28,7 @@ export default function SubmitFail({ error, itemName, setOpen }) {
         </div>
       </div>
       <button
-        onClick={() => setOpen(false)}
+        onClick={closeModal}
         type="button"
         className="self-center mt-6 px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-teal-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-accent"
       >

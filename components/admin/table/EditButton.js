@@ -24,7 +24,7 @@ export default function EditButton({
           </a>
           <a
             onClick={() => cancelChanges()}
-            className="absolute right-14 text-gray-400 hover:text-red-800 cursor-pointer select-none mr-4"
+            className="absolute right-9 md:right-14 text-gray-400 hover:text-red-800 cursor-pointer select-none mr-4"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

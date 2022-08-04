@@ -12,7 +12,7 @@ import SubmitFail from "../../modal/SubmitFail";
 import LoadingSpinner from "../../modal/LoadingSpinner";
 import { useRefreshContext } from "../context/refreshData";
 
-export default function SeasonsModal({ setOpen, seasons }) {
+export default function SeasonsModal({ closeModal, seasons }) {
   const seasonYears = seasons.map((s) => s.year);
 
   const refreshData = useRefreshContext();
@@ -113,12 +113,16 @@ export default function SeasonsModal({ setOpen, seasons }) {
   };
 
   if (formSubmitted) {
-    return <SubmitSuccess itemName="season" setOpen={setOpen} />;
+    return <SubmitSuccess itemName="season" closeModal={closeModal} />;
   } else if (loading) {
     return <LoadingSpinner />;
   } else if (formError) {
     return (
-      <SubmitFail error={errorMessage} itemName="season" setOpen={setOpen} />
+      <SubmitFail
+        error={errorMessage}
+        itemName="season"
+        closeModal={closeModal}
+      />
     );
   } else {
     return (
@@ -152,7 +156,7 @@ export default function SeasonsModal({ setOpen, seasons }) {
             ))}
           </ModalCheckboxGroup>
           <ConfirmButton
-            setOpen={setOpen}
+            closeModal={closeModal}
             handleSubmit={handleSubmit}
             canSubmit={canSubmit}
             dtopText="I understand, create a new season"

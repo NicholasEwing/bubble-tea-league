@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, cloneElement } from "react";
 import ClientOnlyPortal from "../ClientOnlyPortal";
 
-export default function Modal({ open, setOpen, children }) {
+export default function Modal({ open, closeModal, children }) {
   const ref = useRef();
 
   function useOnClickOutside(ref, handler) {
@@ -32,7 +32,7 @@ export default function Modal({ open, setOpen, children }) {
   }
 
   // TODO: show confirm close button if clicking outside while form inputs have information
-  useOnClickOutside(ref, () => setOpen(false));
+  useOnClickOutside(ref, closeModal);
 
   return (
     <>
@@ -43,7 +43,7 @@ export default function Modal({ open, setOpen, children }) {
               ref={ref}
               className="modal absolute w-full md:w-auto flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-slate-400 ring-slate-900 ring-1 ring-opacity-10 rounded-md shadow-xl md:min-w-[80%] md:min-h-[80%] min-w-screen min-h-screen md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
             >
-              {cloneElement(children, { setOpen })}
+              {cloneElement(children, { closeModal })}
             </div>
           </div>
         </ClientOnlyPortal>
