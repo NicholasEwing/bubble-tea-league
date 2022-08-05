@@ -5,7 +5,7 @@ import sequelize from "../sequelize";
 import { RefreshWrapper } from "../components/admin/context/refreshData";
 
 import SeasonsSection from "../components/admin/SeasonsSection";
-import TeamsSection from "../components/admin/TeamsSection.js";
+import TeamsSection from "../components/admin/TeamsSection/";
 
 export const getStaticProps = async () => {
   const { Season, Team, Player, Match } = sequelize.models;
