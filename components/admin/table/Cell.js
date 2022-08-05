@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import ScalingTextInput from "./ScalingTextInput";
+import CalendarInput from "./inputs/CalendarInput";
+import ScalingTextInput from "./inputs/ScalingTextInput";
 
 export default function Cell({
   selectedItems,
@@ -39,19 +40,17 @@ export default function Cell({
         pattern={pattern}
       />
     );
-  } else {
+  } else if (inputType === "datetime-local") {
     inputComponent = (
-      <input
-        data-id={id}
-        type={inputType}
-        name={inputName}
-        id={inputName}
-        value={value}
-        onChange={(e) => {
-          handleChanges(e, inputName);
-        }}
-      ></input>
+      <CalendarInput
+        handleChanges={handleChanges}
+        inputName={inputName}
+        id={id}
+        value={valueAsString}
+      />
     );
+  } else {
+    inputComponent = <p>Invalid input component!</p>;
   }
 
   return (
