@@ -9,6 +9,7 @@ import MatchesTable from "../components/admin/MatchesTable";
 import { RefreshWrapper } from "../components/admin/context/refreshData";
 
 import SeasonsSection from "../components/admin/SeasonsSection";
+import TeamsSection from "../components/admin/TeamsSection.js";
 
 export const getStaticProps = async () => {
   const { Season, Team, Player, Match } = sequelize.models;
@@ -43,6 +44,7 @@ export default function Dashboard({ seasons, teams, players, matches }) {
     <div className="py-8 px-4">
       <RefreshWrapper>
         <SeasonsSection items={seasons} />
+        <TeamsSection items={teams} />
         {/* <TeamsTable teams={teams} /> */}
         {/* <PlayersTable teams={teams} players={players} /> */}
         {/* <MatchesTable teams={teams} matches={matches} /> */}

@@ -4,6 +4,7 @@ import ColumnHeader from "./table/ColumnHeader";
 import EditButton from "./table/EditButton";
 import Row from "./table/Row";
 import SectionContainer from "./table/SectionContainer";
+import MultiSelectButtons from "./table/MultiSelectButtons";
 import Table from "./table/Table";
 import TableBody from "./table/TableBody";
 import TableContainer from "./table/TableContainer";
@@ -15,11 +16,18 @@ import { isEqual, varAsString } from "../../lib/utils";
 import { useRefreshContext } from "./context/refreshData";
 import ApplyButton from "./table/ApplyButton";
 
-export default function EditableTable({ items, columns, tableName }) {
+export default function EditableTable({
+  items,
+  columns,
+  tableName,
+  bulkEdit,
+  bulkDelete,
+}) {
   // table controls
   const [itemsState, setItemsState] = useState(items);
   const [editState, setEditState] = useState(items);
-  const [isEditing, setIsEditing] = useState(false);
+  const [bulkEditing, setBulkEditing] = useState(false);
+  const [editingItems, setEditingItems] = useState([]);
 
   // row checkbox controls
   const checkbox = useRef();
@@ -48,24 +56,44 @@ export default function EditableTable({ items, columns, tableName }) {
   }, [selectedItems, items.length]);
 
   function toggleAll() {
-    setSelectedSeasons(checked || indeterminate ? [] : items);
+    setSelectedItems(checked || indeterminate ? [] : items);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
 
-  // ------ THIS IS SPECIFIC TO EACH TABLE -------
   function handleChanges(e, valueKey) {
     const newItemValue = e.target.value;
 
     const itemId = parseInt(e.target.dataset.id);
-    const item = itemsState.find((i) => i.id || i.number == itemId);
+    const item = itemsState.find((i) => (i.id || i.number) == itemId);
 
     if (e.target.validity.valid) {
+      // check if item has already been edited, if so append the key changes
+      const editItem = editState.find(
+        (editItem) => (editItem.id || editItem.number) == itemId
+      );
+
+      console.log("edit item", editItem);
+
+      const newItem = { ...editItem, [valueKey]: newItemValue };
+
+      console.log("new item", newItem);
+
       const newItemsState = itemsState.map((i) => {
         if ((i.number || i.id) == (item.number || item.id)) {
-          return { ...item, [valueKey]: newItemValue };
+          return newItem;
         } else {
-          return i;
+          const editStateItem = editState.find(
+            (editItem) => (editItem.id || editItem.number) == (i.id || i.number)
+          );
+
+          const alreadyEditedItem = !isEqual(editStateItem, i);
+
+          if (alreadyEditedItem) {
+            return editStateItem;
+          } else {
+            return i;
+          }
         }
       });
 
@@ -73,16 +101,51 @@ export default function EditableTable({ items, columns, tableName }) {
     }
   }
 
-  const canSave = !isEqual(editState, itemsState);
+  // can save condition for each ROW
+  const checkIfRowCanSave = (id) => {
+    // console.log(`checking if row ${id} can save.`);
+    const draftedItem = editState.find((es) => (es.id || es.number) == id);
+    const currentItem = itemsState.find((is) => (is.id || is.number) == id);
 
-  function saveChanges() {
-    setIsEditing(false);
-    setItemsState(editState);
+    // console.log("drafted item", draftedItem);
+    // console.log("current item", currentItem);
+
+    return !isEqual(draftedItem, currentItem);
+  };
+
+  function saveChanges(id) {
+    // uncheck item's checkbox
+    const newEditingItems = editingItems.filter((i) => i !== id);
+    setEditingItems([...newEditingItems]);
+
+    // for this item, return the new editStateItem with our changes
+    const editStateItem = editState.find(
+      (editItem) => (editItem.id || editItem.number) == id
+    );
+
+    // for other items, return the OG item
+    const newItemsState = itemsState.map((stateItem) =>
+      (stateItem.id || stateItem.number) == id ? editStateItem : stateItem
+    );
+
+    setItemsState(newItemsState);
   }
 
-  function cancelChanges() {
-    setIsEditing(false);
-    setEditState(itemsState);
+  function cancelChanges(id) {
+    const newEditingItems = editingItems.filter((i) => i !== id);
+    setEditingItems([...newEditingItems]);
+
+    // only revert THIS item to it's itemState
+    const oldItem = itemsState.find(
+      (stateItem) => (stateItem.id || stateItem.number) == id
+    );
+
+    // return the normal edit state, but change the oldItem
+    const newEditState = editState.map((editItem) =>
+      (editItem.id || editItem.number) == id ? oldItem : editItem
+    );
+
+    setEditState(newEditState);
   }
 
   const canApply = isEqual(items, itemsState) ? false : true;
@@ -115,6 +178,7 @@ export default function EditableTable({ items, columns, tableName }) {
       setApplying(false);
       setShowSuccess(true);
     } catch (error) {
+      setEditingItems([]);
       setEditState(items);
       setItemsState(items);
       setApplying(false);
@@ -131,9 +195,26 @@ export default function EditableTable({ items, columns, tableName }) {
     setShowSuccess(false);
   }
 
+  function handleBulkEdit() {
+    setBulkEditing(true);
+  }
+
+  function handleEditRows(id) {
+    setEditingItems([...editingItems, id]);
+  }
+
   return (
     <>
       <TableContainer>
+        {(bulkEdit || bulkDelete) && (
+          <MultiSelectButtons
+            selectedItems={selectedItems}
+            bulkEdit={bulkEdit}
+            handleBulkEdit={handleBulkEdit}
+            bulkDelete={bulkDelete}
+          />
+        )}
+
         <Table>
           <TableHead
             checkbox={checkbox}
@@ -155,27 +236,29 @@ export default function EditableTable({ items, columns, tableName }) {
                 item={item}
                 setSelectedItems={setSelectedItems}
               >
-                {columns.map((c, i) => (
+                {columns.map((c, j) => (
                   <Cell
-                    key={`${tableName}-${c.name}-cell`}
-                    selectedItems={i === 0 ? selectedItems : undefined}
+                    key={`${tableName}-${c.name}-cell-${
+                      item.id || item.number
+                    }`}
+                    selectedItems={j === 0 ? selectedItems : undefined}
                     item={item}
                     value={item[c.valueKey]}
                     inputName={c.valueKey}
                     canEdit={c.canEdit}
-                    editing={c.canEdit ? isEditing : undefined}
+                    editing={editingItems.includes(item.id || item.number)}
                     id={item.id || item.number}
                     pattern={c.pattern}
                     handleChanges={handleChanges}
                   />
                 ))}
                 <EditButton
-                  item={item.id || item.number}
-                  editing={isEditing}
-                  setIsEditing={setIsEditing}
+                  id={item.id || item.number}
                   saveChanges={saveChanges}
                   cancelChanges={cancelChanges}
-                  canSave={canSave}
+                  checkIfRowCanSave={checkIfRowCanSave}
+                  handleEditRows={handleEditRows}
+                  editing={editingItems.includes(item.id || item.number)}
                 />
               </Row>
             ))}

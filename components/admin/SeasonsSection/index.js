@@ -5,7 +5,7 @@ import SeasonsTable from "../SeasonsTable";
 import SeasonsModal from "../SeasonsTable/SeasonsModal";
 import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
-import TextHeadingContainer from "./TextHeadingContainer";
+import TextHeadingContainer from "../TextHeadingContainer";
 
 export default function SeasonsSection({ items }) {
   const [open, setOpen] = useState(false);

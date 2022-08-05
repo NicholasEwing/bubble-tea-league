@@ -15,8 +15,6 @@ export default function Cell({
     return classes.filter(Boolean).join(" ");
   }
 
-  console.log("inputName", inputName);
-
   return (
     <td
       className={classNames(
@@ -26,19 +24,19 @@ export default function Cell({
           : "first:text-gray-900"
       )}
     >
-      {editing ? (
+      {editing && canEdit ? (
         <input
           data-id={id}
           type="text"
           name={inputName}
           id={inputName}
-          value={value}
+          value={value || ""}
           onChange={(e) => handleChanges(e, inputName)}
           pattern={pattern}
           className="inline w-16 text-black shadow-sm focus:ring-teal-accent focus:border-teal-accent sm:text-sm border-gray-300 rounded-md"
         />
       ) : (
-        value
+        value || "-"
       )}
     </td>
   );

@@ -1,29 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function EditButton({
-  item,
+  id,
   editing,
-  setIsEditing,
+  handleEditRows,
   saveChanges,
   cancelChanges,
-  canSave,
+  checkIfRowCanSave,
 }) {
+  const [canSave, setCanSave] = useState(false);
+
+  useEffect(() => {
+    if (editing) {
+      const canSave = checkIfRowCanSave(id);
+      setCanSave(canSave);
+    }
+  }, [editing, checkIfRowCanSave, id]);
+
   return (
     <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 relative">
       {editing ? (
         <>
           <a
-            onClick={canSave ? () => saveChanges() : undefined}
+            onClick={canSave ? () => saveChanges(id) : undefined}
             className={`${
               canSave
                 ? "opacity-100 hover:text-cyan-800"
                 : "opacity-30 cursor-default"
             } text-teal-accent cursor-pointer select-none`}
           >
-            Save<span className="sr-only">, {item.id}</span>
+            Save<span className="sr-only">, {id}</span>
           </a>
           <a
-            onClick={() => cancelChanges()}
+            onClick={() => cancelChanges(id)}
             className="absolute right-9 md:right-14 text-gray-400 hover:text-red-800 cursor-pointer select-none mr-4"
           >
             <svg
@@ -38,15 +47,15 @@ export default function EditButton({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="sr-only">, {item.id}</span>
+            <span className="sr-only">, {id}</span>
           </a>
         </>
       ) : (
         <a
-          onClick={() => setIsEditing(true)}
+          onClick={() => handleEditRows(id)}
           className="text-teal-accent hover:text-cyan-800 cursor-pointer select-none pl-[6.20px]"
         >
-          Edit<span className="sr-only">, {item.id}</span>
+          Edit<span className="sr-only">, {id}</span>
         </a>
       )}
     </td>
