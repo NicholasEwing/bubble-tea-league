@@ -7,7 +7,7 @@ export function RefreshWrapper({ children }) {
   const router = useRouter();
 
   const refreshData = () => {
-    router.replace(router.asPath);
+    router.replace(router.asPath, undefined, { scroll: false });
   };
 
   return (
