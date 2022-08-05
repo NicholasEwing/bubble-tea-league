@@ -36,20 +36,11 @@ export default function TeamsSection({ items }) {
     },
   ];
 
-  // todo:
-  // make edit controls per ROW (DONE)
-  // make checkboxes work after saving changes (DONE)
-  // make bulk edit button work (DONE)
-  // adjust input width to text or something (DONE)
-  // tricode pattern enforcement (DONE)
-  // team name length enforcement (DONE)
-
   return (
     <SectionContainer>
       <TextHeadingContainer>
         <div className="flex justify-between">
           <h1 className="text-xl font-semibold text-white">Teams</h1>
-          <AddButton buttonText="Add team" buttonAction={openModal} />
         </div>
         <p className="mt-2 text-sm text-gray-400">
           A list of all the teams in the Bubble Tea League including their team
