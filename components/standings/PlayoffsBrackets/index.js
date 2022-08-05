@@ -82,7 +82,7 @@ export default function PlayoffsBrackets({
 
           if (match.bracketRound === 4) roundName = "Finals";
         } else {
-          if (match.bracketRound < 4) roundName = `Round ${match.bracketRound}`;
+          if (match.bracketRound < 5) roundName = `Round ${match.bracketRound}`;
 
           if (match.bracketRound === 5) roundName = "Semifinals";
         }
