@@ -1,4 +1,5 @@
 import React from "react";
+import ScalingTextInput from "./ScalingTextInput";
 
 export default function Cell({
   selectedItems,
@@ -15,6 +16,16 @@ export default function Cell({
     return classes.filter(Boolean).join(" ");
   }
 
+  function trimString(string, length) {
+    if (string.length > length) {
+      return string.substring(0, length) + "...";
+    } else {
+      return string;
+    }
+  }
+
+  const valueAsString = value?.toString() ? value.toString() : "";
+
   return (
     <td
       className={classNames(
@@ -25,18 +36,15 @@ export default function Cell({
       )}
     >
       {editing && canEdit ? (
-        <input
-          data-id={id}
-          type="text"
-          name={inputName}
-          id={inputName}
-          value={value || ""}
-          onChange={(e) => handleChanges(e, inputName)}
+        <ScalingTextInput
+          handleChanges={handleChanges}
+          inputName={inputName}
+          id={id}
+          value={valueAsString}
           pattern={pattern}
-          className="inline w-16 text-black shadow-sm focus:ring-teal-accent focus:border-teal-accent sm:text-sm border-gray-300 rounded-md"
         />
       ) : (
-        value || "-"
+        trimString(valueAsString, 20) || "-"
       )}
     </td>
   );

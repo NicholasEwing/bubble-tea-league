@@ -14,20 +14,25 @@ export default function TeamsSection({ items }) {
     {
       valueKey: "id",
       name: "id",
+      small: true,
     },
     {
       valueKey: "teamName",
       name: "Team Name",
       canEdit: true,
+      pattern: "^[a-zA-Z0-9._ \t]{1,255}$",
     },
     {
       valueKey: "tricode",
       name: "Tricode",
       canEdit: true,
+      small: true,
+      pattern: "^[a-zA-Z]{0,3}$",
     },
     {
       valueKey: "season",
       name: "Season",
+      small: true,
     },
   ];
 
@@ -35,9 +40,9 @@ export default function TeamsSection({ items }) {
   // make edit controls per ROW (DONE)
   // make checkboxes work after saving changes (DONE)
   // make bulk edit button work (DONE)
-  // adjust input width to text or something
-  // tricode pattern enforcement
-  // team name length enforcement
+  // adjust input width to text or something (DONE)
+  // tricode pattern enforcement (DONE)
+  // team name length enforcement (DONE)
 
   return (
     <SectionContainer>

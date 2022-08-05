@@ -17,12 +17,14 @@ export default function SeasonsSection({ items }) {
       valueKey: "number",
       name: "Number",
       canEdit: false,
+      small: true,
     },
     {
       valueKey: "year",
       name: "Year",
       canEdit: true,
       pattern: "^[0-9]{1,4}",
+      small: true,
     },
   ];
 

@@ -220,6 +220,7 @@ export default function EditableTable({
               <ColumnHeader
                 key={`${tableName}-${c.name}-column-header`}
                 name={c.name}
+                small={c.small}
               />
             ))}
           </TableHead>
