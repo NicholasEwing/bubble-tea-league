@@ -23,10 +23,9 @@ export default function EditableTable({
   bulkEdit,
   bulkDelete,
 }) {
-  // table controls
+  // table data and controls
   const [itemsState, setItemsState] = useState(items);
   const [editState, setEditState] = useState(items);
-  const [bulkEditing, setBulkEditing] = useState(false);
   const [editingItems, setEditingItems] = useState([]);
 
   // row checkbox controls
@@ -49,14 +48,14 @@ export default function EditableTable({
 
   useLayoutEffect(() => {
     const isIndeterminate =
-      selectedItems.length > 0 && selectedItems.length < items.length;
-    setChecked(selectedItems.length === items.length);
+      selectedItems.length > 0 && selectedItems.length < editState.length;
+    setChecked(selectedItems.length === editState.length);
     setIndeterminate(isIndeterminate);
     checkbox.current.indeterminate = isIndeterminate;
-  }, [selectedItems, items.length]);
+  }, [selectedItems, editState.length]);
 
   function toggleAll() {
-    setSelectedItems(checked || indeterminate ? [] : items);
+    setSelectedItems(checked || indeterminate ? [] : editState);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
@@ -73,11 +72,7 @@ export default function EditableTable({
         (editItem) => (editItem.id || editItem.number) == itemId
       );
 
-      console.log("edit item", editItem);
-
       const newItem = { ...editItem, [valueKey]: newItemValue };
-
-      console.log("new item", newItem);
 
       const newItemsState = itemsState.map((i) => {
         if ((i.number || i.id) == (item.number || item.id)) {
@@ -103,12 +98,8 @@ export default function EditableTable({
 
   // can save condition for each ROW
   const checkIfRowCanSave = (id) => {
-    // console.log(`checking if row ${id} can save.`);
     const draftedItem = editState.find((es) => (es.id || es.number) == id);
     const currentItem = itemsState.find((is) => (is.id || is.number) == id);
-
-    // console.log("drafted item", draftedItem);
-    // console.log("current item", currentItem);
 
     return !isEqual(draftedItem, currentItem);
   };
@@ -196,7 +187,11 @@ export default function EditableTable({
   }
 
   function handleBulkEdit() {
-    setBulkEditing(true);
+    const newEditingItems = [...editingItems].concat(
+      selectedItems.map((si) => si.id || si.number)
+    );
+
+    setEditingItems(newEditingItems);
   }
 
   function handleEditRows(id) {

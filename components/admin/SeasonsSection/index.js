@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../../modal";
 import EditableTable from "../EditableTable";
-import SeasonsTable from "../SeasonsTable";
-import SeasonsModal from "../SeasonsTable/SeasonsModal";
+import SeasonsModal from "../AdminModals/SeasonsModal";
 import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";

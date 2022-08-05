@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import EditableTable from "../EditableTable";
-import SeasonsTable from "../SeasonsTable";
 import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
@@ -33,7 +32,9 @@ export default function TeamsSection({ items }) {
   ];
 
   // todo:
-  // make edit controls per ROW
+  // make edit controls per ROW (DONE)
+  // make checkboxes work after saving changes (DONE)
+  // make bulk edit button work (DONE)
   // adjust input width to text or something
   // tricode pattern enforcement
   // team name length enforcement
