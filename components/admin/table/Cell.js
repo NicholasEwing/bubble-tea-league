@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ScalingTextInput from "./ScalingTextInput";
 
 export default function Cell({
@@ -11,6 +11,7 @@ export default function Cell({
   handleChanges,
   id,
   pattern,
+  inputType = "text",
 }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -26,6 +27,33 @@ export default function Cell({
 
   const valueAsString = value?.toString() ? value.toString() : "";
 
+  let inputComponent = <p>no input decided on yet</p>;
+
+  if (inputType === "text") {
+    inputComponent = (
+      <ScalingTextInput
+        handleChanges={handleChanges}
+        inputName={inputName}
+        id={id}
+        value={valueAsString}
+        pattern={pattern}
+      />
+    );
+  } else {
+    inputComponent = (
+      <input
+        data-id={id}
+        type={inputType}
+        name={inputName}
+        id={inputName}
+        value={value}
+        onChange={(e) => {
+          handleChanges(e, inputName);
+        }}
+      ></input>
+    );
+  }
+
   return (
     <td
       className={classNames(
@@ -35,17 +63,9 @@ export default function Cell({
           : "first:text-gray-900"
       )}
     >
-      {editing && canEdit ? (
-        <ScalingTextInput
-          handleChanges={handleChanges}
-          inputName={inputName}
-          id={id}
-          value={valueAsString}
-          pattern={pattern}
-        />
-      ) : (
-        trimString(valueAsString, 20) || "-"
-      )}
+      {editing && canEdit
+        ? inputComponent
+        : trimString(valueAsString, 30) || "-"}
     </td>
   );
 }

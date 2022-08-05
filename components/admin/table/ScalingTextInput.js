@@ -11,7 +11,7 @@ export default function ScalingTextInput({
 
   const changeHandlerWidth = (e) => {
     const charWidth = e.target.value.length;
-    const widthToSet = charWidth >= 10 ? 10 : charWidth;
+    const widthToSet = charWidth >= 30 ? 30 : charWidth;
     setWidth(widthToSet);
   };
 

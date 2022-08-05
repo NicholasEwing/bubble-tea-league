@@ -232,22 +232,44 @@ export default function EditableTable({
                 item={item}
                 setSelectedItems={setSelectedItems}
               >
-                {columns.map((c, j) => (
-                  <Cell
-                    key={`${tableName}-${c.name}-cell-${
-                      item.id || item.number
-                    }`}
-                    selectedItems={j === 0 ? selectedItems : undefined}
-                    item={item}
-                    value={item[c.valueKey]}
-                    inputName={c.valueKey}
-                    canEdit={c.canEdit}
-                    editing={editingItems.includes(item.id || item.number)}
-                    id={item.id || item.number}
-                    pattern={c.pattern}
-                    handleChanges={handleChanges}
-                  />
-                ))}
+                {columns.map((column, j) => {
+                  const {
+                    customFormatter,
+                    customInfo,
+                    valueKey,
+                    name,
+                    canEdit,
+                    pattern,
+                    inputType,
+                  } = column;
+
+                  let cellValue = item[valueKey];
+
+                  if (customFormatter && !customInfo) {
+                    cellValue = customFormatter(cellValue);
+                  } else if (customFormatter && customInfo) {
+                    const customArgs = customInfo.map((key) => item[key]);
+                    cellValue = customFormatter(cellValue, customArgs);
+                  }
+
+                  return (
+                    <Cell
+                      key={`${tableName}-${name}-cell-${
+                        item.id || item.number
+                      }`}
+                      selectedItems={j === 0 ? selectedItems : undefined}
+                      item={item}
+                      value={cellValue}
+                      inputName={valueKey}
+                      inputType={inputType}
+                      canEdit={canEdit}
+                      editing={editingItems.includes(item.id || item.number)}
+                      id={item.id || item.number}
+                      pattern={pattern}
+                      handleChanges={handleChanges}
+                    />
+                  );
+                })}
                 <EditButton
                   id={item.id || item.number}
                   saveChanges={saveChanges}
