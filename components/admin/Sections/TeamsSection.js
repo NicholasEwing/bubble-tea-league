@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import EditableTable from "../EditableTable";
-import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
 export default function TeamsSection({ items }) {
-  const [open, setOpen] = useState(false);
-
-  const openModal = () => setOpen(true);
-  const closeModal = () => setOpen(false);
-
   const teamColumns = [
     {
       valueKey: "id",

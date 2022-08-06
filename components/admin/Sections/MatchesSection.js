@@ -1,22 +1,10 @@
 import React, { useState } from "react";
+import { findTeamName } from "../../../lib/utils";
 import EditableTable from "../EditableTable";
-import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
 export default function MatchesSection({ items, teams }) {
-  const [open, setOpen] = useState(false);
-
-  const openModal = () => setOpen(true);
-  const closeModal = () => setOpen(false);
-
-  const findTeamName = (value) => {
-    if (parseInt(value)) {
-      const { teamName } = teams.find((team) => team.id === value);
-      return teamName;
-    }
-  };
-
   const matchesColumns = [
     {
       valueKey: "id",
@@ -70,17 +58,17 @@ export default function MatchesSection({ items, teams }) {
     {
       valueKey: "teamOne",
       name: "Team One",
-      customFormatter: (value) => findTeamName(value),
+      customFormatter: (value) => findTeamName(value, teams),
     },
     {
       valueKey: "teamTwo",
       name: "Team Two",
-      customFormatter: (value) => findTeamName(value),
+      customFormatter: (value) => findTeamName(value, teams),
     },
     {
       valueKey: "matchWinnerTeamId",
       name: "Winner",
-      customFormatter: (value) => findTeamName(value),
+      customFormatter: (value) => findTeamName(value, teams),
     },
   ];
 
