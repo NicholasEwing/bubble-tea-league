@@ -42,7 +42,7 @@ export default function Dashboard({ seasons, teams, players, matches }) {
       <RefreshWrapper>
         <SeasonsSection items={seasons} />
         <TeamsSection items={teams} />
-        <MatchesSection items={matches} />
+        <MatchesSection items={matches} teams={teams} />
         <h2>Free Agents</h2>
       </RefreshWrapper>
     </div>

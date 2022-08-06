@@ -4,11 +4,18 @@ import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
-export default function MatchesSection({ items }) {
+export default function MatchesSection({ items, teams }) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
+
+  const findTeamName = (value) => {
+    if (parseInt(value)) {
+      const { teamName } = teams.find((team) => team.id === value);
+      return teamName;
+    }
+  };
 
   const matchesColumns = [
     {
@@ -53,7 +60,7 @@ export default function MatchesSection({ items }) {
           timeZoneName: "short",
         });
       },
-      inputType: "date",
+      inputType: "datetime-local",
     },
     {
       valueKey: "season",
@@ -63,20 +70,19 @@ export default function MatchesSection({ items }) {
     {
       valueKey: "teamOne",
       name: "Team One",
+      customFormatter: (value) => findTeamName(value),
     },
     {
       valueKey: "teamTwo",
       name: "Team Two",
+      customFormatter: (value) => findTeamName(value),
     },
     {
       valueKey: "matchWinnerTeamId",
       name: "Winner",
+      customFormatter: (value) => findTeamName(value),
     },
   ];
-
-  // todo:
-  // get date from date input to work correctly
-  // ensure date saves to database correctly
 
   return (
     <SectionContainer>
