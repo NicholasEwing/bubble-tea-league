@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import CalendarInput from "./inputs/CalendarInput";
+import DropdownInput from "./inputs/DropdownInput";
 import ScalingTextInput from "./inputs/ScalingTextInput";
 
 export default function Cell({
@@ -12,6 +13,7 @@ export default function Cell({
   handleChanges,
   id,
   pattern,
+  options,
   inputType = "text",
 }) {
   function classNames(...classes) {
@@ -47,6 +49,16 @@ export default function Cell({
         inputName={inputName}
         id={id}
         value={valueAsString}
+      />
+    );
+  } else if (inputType === "select") {
+    inputComponent = (
+      <DropdownInput
+        handleChanges={handleChanges}
+        inputName={inputName}
+        id={id}
+        value={valueAsString}
+        options={options}
       />
     );
   } else {

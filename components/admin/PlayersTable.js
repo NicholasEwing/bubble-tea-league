@@ -10,7 +10,7 @@ import Table from "./table/Table";
 import TableBody from "./table/TableBody";
 import TableContainer from "./table/TableContainer";
 import TableHead from "./table/TableHead";
-import TextHeadingContainer from "./table/TextHeadingContainer";
+import TextHeadingContainer from "./TextHeadingContainer";
 
 export default function PlayersTable({ teams, players }) {
   const checkbox = useRef();

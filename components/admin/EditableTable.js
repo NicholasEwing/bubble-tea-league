@@ -15,6 +15,7 @@ import AddButton from "./table/AddButton";
 import { isEqual, varAsString } from "../../lib/utils";
 import { useRefreshContext } from "./context/refreshData";
 import ApplyButton from "./table/ApplyButton";
+import TextHeadingContainer from "./TextHeadingContainer";
 
 export default function EditableTable({
   items,
@@ -47,12 +48,14 @@ export default function EditableTable({
   }, [items]);
 
   useLayoutEffect(() => {
-    const isIndeterminate =
-      selectedItems.length > 0 && selectedItems.length < editState.length;
-    setChecked(selectedItems.length === editState.length);
-    setIndeterminate(isIndeterminate);
-    checkbox.current.indeterminate = isIndeterminate;
-  }, [selectedItems, editState.length]);
+    if (items.length) {
+      const isIndeterminate =
+        selectedItems.length > 0 && selectedItems.length < editState.length;
+      setChecked(selectedItems.length === editState.length);
+      setIndeterminate(isIndeterminate);
+      checkbox.current.indeterminate = isIndeterminate;
+    }
+  }, [selectedItems, editState.length, items.length]);
 
   function toggleAll() {
     setSelectedItems(checked || indeterminate ? [] : editState);
@@ -63,16 +66,25 @@ export default function EditableTable({
   function handleChanges(e, valueKey) {
     const newItemValue = e.target.value;
 
+    console.log("new item value", newItemValue);
+
     const itemId = parseInt(e.target.dataset.id);
     const item = itemsState.find((i) => (i.id || i.number) == itemId);
 
+    console.log("itemid", itemId);
+    console.log("item", item);
+
     if (e.target.validity.valid) {
+      console.log("valid?");
       // check if item has already been edited, if so append the key changes
       const editItem = editState.find(
         (editItem) => (editItem.id || editItem.number) == itemId
       );
 
+      console.log("value key", valueKey);
       const newItem = { ...editItem, [valueKey]: newItemValue };
+
+      console.log("new item", newItem);
 
       const newItemsState = itemsState.map((i) => {
         if ((i.number || i.id) == (item.number || item.id)) {
@@ -198,6 +210,9 @@ export default function EditableTable({
     setEditingItems([...editingItems, id]);
   }
 
+  if (!items.length)
+    return <p className="text-white text-2xl my-8">No items here yet!</p>;
+
   return (
     <>
       <TableContainer>
@@ -241,6 +256,7 @@ export default function EditableTable({
                     canEdit,
                     pattern,
                     inputType,
+                    options,
                   } = column;
 
                   let cellValue = item[valueKey];
@@ -267,6 +283,7 @@ export default function EditableTable({
                       id={item.id || item.number}
                       pattern={pattern}
                       handleChanges={handleChanges}
+                      options={options}
                     />
                   );
                 })}
