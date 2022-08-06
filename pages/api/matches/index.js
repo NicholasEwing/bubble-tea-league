@@ -49,6 +49,17 @@ export default async function handler(req, res) {
         const matches = await Match.findAll();
         res.status(200).json(matches);
         break;
+      case "PATCH":
+        try {
+          const { matches } = req.body;
+          await Match.bulkCreate(matches, {
+            updateOnDuplicate: ["scheduledTime"],
+          });
+          res.status(200).send();
+        } catch (error) {
+          res.status(500).send({ error });
+        }
+        break;
     }
   } catch (error) {
     console.error("Error inside /api/matches", error);
