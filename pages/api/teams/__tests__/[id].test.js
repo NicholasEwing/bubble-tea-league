@@ -38,7 +38,7 @@ describe("/api/teams/[:id]", () => {
   it("DELETE /teams/[:id]", async () => {
     const { req, res } = createMocks({
       method: "DELETE",
-      query: { id: 11 },
+      query: { id: 21 },
     });
     await teamsIdHandler(req, res);
 

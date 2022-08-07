@@ -46,15 +46,13 @@ describe("/api/match-rounds", () => {
     const body = {
       startTime: 1234567890000,
       winningTeam: [
-        // team 4
-        { summonerName: "Not Drunk" },
-        { summonerName: "Emperix" },
-        { summonerName: "Raskotrug" },
-        { summonerName: "CutieAF" },
-        { summonerName: "ChiaSnax" },
+        { summonerName: "Aresofdoom" },
+        { summonerName: "Po3panda" },
+        { summonerName: "OGC Pikapika" },
+        { summonerName: "TheNickMead" },
+        { summonerName: "PentaMastaaa" },
       ],
       losingTeam: [
-        // team 2
         { summonerName: "M1tchyPoo" },
         { summonerName: "Satanaei" },
         { summonerName: "Plobethewarrior" },
@@ -62,7 +60,7 @@ describe("/api/match-rounds", () => {
         { summonerName: "Wıred" },
       ],
       shortCode: tournamentCode, // this needs to reference an actual tourny code in the db
-      metaData: `{"MatchId":1, "riotAuth":"${process.env.BTL_API_KEY}"}`,
+      metaData: `{"riotAuth":"${process.env.BTL_API_KEY}"}`,
       gameId: "4304210544",
       gameName: "a123bc45-ab1c-1a23-ab12-12345a67b89c",
       gameType: "Practice",
@@ -139,7 +137,7 @@ describe("/api/match-rounds", () => {
     );
 
     // ensure that 2 MatchRoundTeamStats were created in the db
-    const teamIds = [2, 4];
+    const teamIds = [1, 2];
     const teamStats = await MatchRoundTeamStats.findAll({
       where: {
         TeamId: {
@@ -168,11 +166,9 @@ describe("/api/match-rounds", () => {
     );
 
     // ensure that a MatchRound has a winningTeamId and a losingTeamId
-
-    // make sure team 4 "won" and team 2 "lost" in our fake match v5 callback
     const matchRound = await MatchRound.findAll({
       where: {
-        winningTeamId: 4,
+        winningTeamId: 1,
       },
     });
 

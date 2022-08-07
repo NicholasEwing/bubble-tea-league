@@ -13,7 +13,7 @@ describe("/api/teams", () => {
       await seedTeamsAndPlayers();
     } catch (error) {
       console.error(
-        "Error seeding teams / players in our /api/teams test block:",
+        "Error seeding players in our /api/teams test block:",
         error
       );
     }

@@ -40,7 +40,6 @@ describe("/api/players", () => {
       lastName,
       discordName,
       summonerName: "HughBk", // this has to be a real summoner name since PUUID is required
-      TeamId: 1,
     };
 
     const { req, res } = createMocks({ method: "POST", body });
