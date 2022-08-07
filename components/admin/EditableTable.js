@@ -66,25 +66,16 @@ export default function EditableTable({
   function handleChanges(e, valueKey) {
     const newItemValue = e.target.value;
 
-    console.log("new item value", newItemValue);
-
     const itemId = parseInt(e.target.dataset.id);
     const item = itemsState.find((i) => (i.id || i.number) == itemId);
 
-    console.log("itemid", itemId);
-    console.log("item", item);
-
     if (e.target.validity.valid) {
-      console.log("valid?");
       // check if item has already been edited, if so append the key changes
       const editItem = editState.find(
         (editItem) => (editItem.id || editItem.number) == itemId
       );
 
-      console.log("value key", valueKey);
       const newItem = { ...editItem, [valueKey]: newItemValue };
-
-      console.log("new item", newItem);
 
       const newItemsState = itemsState.map((i) => {
         if ((i.number || i.id) == (item.number || item.id)) {
@@ -224,7 +215,6 @@ export default function EditableTable({
             bulkDelete={bulkDelete}
           />
         )}
-
         <Table>
           <TableHead
             checkbox={checkbox}

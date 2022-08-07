@@ -11,6 +11,10 @@ export default function PlayersSection({ items, teams }) {
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
 
+  const teamOptions = teams.map((t) => {
+    return { id: t.id, value: t.teamName };
+  });
+
   const playersColumns = [
     {
       valueKey: "id",
@@ -28,12 +32,22 @@ export default function PlayersSection({ items, teams }) {
       name: "Player Role",
       canEdit: true,
       inputType: "select",
-      options: ["Top", "Jungle", "Middle", "Bottom", "Support", "Fill"],
+      options: [
+        { value: "Top" },
+        { value: "Jungle" },
+        { value: "Middle" },
+        { value: "Bottom" },
+        { value: "Support" },
+        { value: "Fill" },
+      ],
     },
     {
       valueKey: "TeamId",
       name: "Team",
+      canEdit: true,
       customFormatter: (value) => findTeamName(value, teams),
+      inputType: "select",
+      options: teamOptions,
     },
     {
       valueKey: "discordName",
