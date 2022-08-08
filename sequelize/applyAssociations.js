@@ -47,9 +47,9 @@ const applyAssociations = (sequelize) => {
     foreignKey: { name: "blueTeamId" },
   });
 
-  // Associate teams with players
-  Team.hasMany(Player, { foreignKey: { allowNull: false } });
-  Player.belongsTo(Team);
+  // Associate teams with players per season (team has one season, player can have a new team per season)
+  Team.belongsToMany(Player, { through: "PlayerTeamHistory" });
+  Player.belongsToMany(Team, { through: "PlayerTeamHistory" });
 
   // Connect team stats to a match round AND a team
   MatchRoundTeamStats.belongsTo(MatchRound, {

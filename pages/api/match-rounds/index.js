@@ -18,6 +18,7 @@ const {
   Player,
   MatchRoundTeamStats,
   MatchRoundPlayerStats,
+  PlayerTeamHistory,
 } = sequelize.models;
 const { default: fetch } = require("node-fetch");
 
@@ -42,6 +43,15 @@ export default async function handler(req, res) {
           attributes: ["MatchId"],
         });
 
+        // find season # from Match table
+        const { season } = await Match.findOne({
+          raw: true,
+          where: {
+            id: MatchId,
+          },
+          attributes: ["season"],
+        });
+
         // make sure Riot callback includes our API key
         if (riotAuth !== process.env.BTL_API_KEY) {
           res
@@ -53,17 +63,26 @@ export default async function handler(req, res) {
         let matchRoundResults = await v5getMatch(gameId);
 
         // parse useful info
-        const teamIds = await findTeamIdsFromMatchResults(req.body);
+        const teamIds = await findTeamIdsFromMatchResults(req.body, season);
         const { winningTeamId, losingTeamId } = teamIds;
+
+        const winningNames = winningTeam.map((p) => p.summonerName);
+        const losingNames = losingTeam.map((p) => p.summonerName);
+
         const winningPlayers = await Player.findAll({
           where: {
-            TeamId: winningTeamId,
+            summonerName: {
+              [Op.in]: winningNames,
+            },
           },
           raw: true,
         });
+
         const losingPlayers = await Player.findAll({
           where: {
-            TeamId: losingTeamId,
+            summonerName: {
+              [Op.in]: losingNames,
+            },
           },
           raw: true,
         });
@@ -98,20 +117,38 @@ export default async function handler(req, res) {
           }
         ).puuid;
 
-        // get blue / red team id
-        const bluePlayerTeam = await Player.findOne({
-          where: { PUUID: firstBluePlayerPUUID },
-          attributes: ["TeamId"],
+        // we know the winning / losing team Ids, now we need to know
+        // which color side they were on
+
+        // get player ids for first red / blue players
+        const { id: firstBluePlayerId } = await Player.findOne({
+          where: {
+            PUUID: firstBluePlayerPUUID,
+          },
+          attributes: ["id"],
           raw: true,
         });
-        const redPlayerTeam = await Player.findOne({
-          where: { PUUID: firstRedPlayerPUUID },
+
+        const { id: firstRedPlayerId } = await Player.findOne({
+          where: {
+            PUUID: firstRedPlayerPUUID,
+          },
+          attributes: ["id"],
+          raw: true,
+        });
+
+        // now FINALLY find the blue / red player's team ids
+        const { TeamId: blueTeamId } = await PlayerTeamHistory.findOne({
+          where: { PlayerId: firstBluePlayerId },
           attributes: ["TeamId"],
           raw: true,
         });
 
-        const blueTeamId = bluePlayerTeam.TeamId;
-        const redTeamId = redPlayerTeam.TeamId;
+        const { TeamId: redTeamId } = await PlayerTeamHistory.findOne({
+          where: { PlayerId: firstRedPlayerId },
+          attributes: ["TeamId"],
+          raw: true,
+        });
 
         // get game length
         const gameDuration = matchRoundResults.info.gameDuration;
@@ -208,7 +245,8 @@ export default async function handler(req, res) {
           matchRoundTeamStatsRecords,
           timelineEvents,
           winningTeamId,
-          losingTeamId
+          losingTeamId,
+          season
         );
         await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
 

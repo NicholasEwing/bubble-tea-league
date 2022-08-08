@@ -26,7 +26,6 @@ export default async function handler(req, res) {
               "firstName",
               "discordName",
               "role",
-              "TeamId",
             ],
           });
           res.status(200).send();
