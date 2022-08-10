@@ -16,13 +16,14 @@ import { isEqual, varAsString } from "../../lib/utils";
 import { useRefreshContext } from "./context/refreshData";
 import ApplyButton from "./table/ApplyButton";
 import TextHeadingContainer from "./TextHeadingContainer";
+import DeleteButton from "./table/DeleteButton";
 
 export default function EditableTable({
   items,
   columns,
   tableName,
   bulkEdit,
-  bulkDelete,
+  canDelete,
   foreignItems,
 }) {
   // table data and controls
@@ -41,6 +42,7 @@ export default function EditableTable({
   // submit / success / error controls
   const [applying, setApplying] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("Failed to apply changes.");
   const [showSuccess, setShowSuccess] = useState(false);
 
   const refreshData = useRefreshContext();
@@ -119,6 +121,7 @@ export default function EditableTable({
   }, [items]);
 
   useEffect(() => {
+    setForeignItemsState(foreignItems);
     setForeignEditState(foreignItems);
   }, [foreignItems]);
 
@@ -285,6 +288,57 @@ export default function EditableTable({
     try {
       setApplying(true);
 
+      // find ids to delete and delete them -------
+      const dbIds = items.map((i) => i.id);
+      const tableIds = itemsState.map((stateItem) => stateItem.id);
+
+      const idsToDelete = dbIds.filter((id) => !tableIds.includes(id));
+
+      if (idsToDelete.length) {
+        const deleteRes = await fetch(
+          `http://localhost:3000/api/${tableName}/`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ idsToDelete }),
+          }
+        );
+        if (!deleteRes.ok) {
+          throw new Error("Cannot delete players with BTL match history.");
+        }
+      }
+
+      if (foreignItemsState?.length) {
+        const foreignColumns = columns.filter((c) => c.updateForeignValue);
+        const { foreignApiName, foreignRecordName } =
+          foreignColumns[0].updateForeignValue;
+
+        const foreignDbIds = foreignItems.map((i) => i.id);
+        const tableIds = foreignItemsState.map((stateItem) => stateItem.id);
+
+        const idsToDelete = dbIds.filter((id) => !tableIds.includes(id));
+
+        if (idsToDelete.length) {
+          const foreignDeleteRes = await fetch(
+            `http://localhost:3000/api/${foreignApiName}/`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ idsToDelete }),
+            }
+          );
+
+          if (!foreignDeleteRes.ok) {
+            throw new Error("Cannot delete foreign data.");
+          }
+        }
+      }
+
+      // find rows to update and update them -------
       const res = await fetch(`http://localhost:3000/api/${tableName}/`, {
         method: "PATCH",
         headers: {
@@ -297,10 +351,10 @@ export default function EditableTable({
         throw new Error("Failed to apply changes.");
       }
 
-      // update foreign items, if any
       if (foreignItemsState?.length) {
-        const c = columns.find((c) => c.updateForeignValue);
-        const { foreignApiName, foreignRecordName } = c.updateForeignValue;
+        const foreignColumns = columns.filter((c) => c.updateForeignValue);
+        const { foreignApiName, foreignRecordName } =
+          foreignColumns[0].updateForeignValue;
 
         const foreignRes = await fetch(
           `http://localhost:3000/api/${foreignApiName}/`,
@@ -328,6 +382,7 @@ export default function EditableTable({
       setItemsState(items);
       setApplying(false);
       setShowError(true);
+      setErrorMsg(error.message);
       console.error(error);
     }
   }
@@ -352,19 +407,49 @@ export default function EditableTable({
     setEditingItems([...editingItems, id]);
   }
 
+  function handleDeleteItem() {
+    const rowToDelete = selectedItems[0];
+
+    // remove entire row from edit state
+    const newEditState = editState.filter((es) => es.id !== rowToDelete.id);
+    setEditState(newEditState);
+    setItemsState(newEditState);
+
+    // remove entire row from foreign state, if any
+    if (foreignEditState.length) {
+      const foreignColumns = columns.filter((c) => c.updateForeignValue);
+      const { foreignApiName, foreignRecordName, foreignKeyAsId } =
+        foreignColumns[0].updateForeignValue;
+
+      const newForeignEditState = foreignEditState.filter(
+        (fes) => fes[foreignKeyAsId] !== rowToDelete.id
+      );
+
+      setForeignEditState(newForeignEditState);
+      setForeignItemsState(newForeignEditState);
+    }
+
+    setSelectedItems(checked || indeterminate ? [] : editState);
+    setChecked(false);
+    setIndeterminate(false);
+  }
+
   if (!items.length)
     return <p className="text-white text-2xl my-8">No items here yet!</p>;
 
   return (
     <>
       <TableContainer>
-        {(bulkEdit || bulkDelete) && (
+        {(bulkEdit || canDelete) && selectedItems.length > 1 && (
           <MultiSelectButtons
             selectedItems={selectedItems}
             bulkEdit={bulkEdit}
             handleBulkEdit={handleBulkEdit}
-            bulkDelete={bulkDelete}
+            canDelete={canDelete}
           />
+        )}
+        {canDelete && selectedItems.length === 1 && (
+          <DeleteButton handleDeleteItem={handleDeleteItem} />
         )}
         <Table>
           <TableHead
@@ -455,7 +540,9 @@ export default function EditableTable({
         </Table>
       </TableContainer>
       <div className="flex self-end space-x-6 pt-8">
-        {showError && <Failed closeError={handleCloseError} />}
+        {showError && (
+          <Failed closeError={handleCloseError} errorMsg={errorMsg} />
+        )}
         {showSuccess && <Success closeSuccess={handleCloseSuccess} />}
         <ApplyButton
           applyChanges={applyChanges}
