@@ -43,6 +43,9 @@ export default function PlayersSection({
       (stateItem) => stateItem.PlayerId === playerId
     );
 
+    if (!editStateRow)
+      return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+
     const teamHasNotChanged = isEqual(
       playersCurrentSeason.TeamId,
       editStateRow.TeamId
@@ -64,6 +67,8 @@ export default function PlayersSection({
     const editStateRow = foreignEditState.find(
       (stateItem) => stateItem.PlayerId === playerId
     );
+
+    if (!editStateRow) return playersCurrentSeason.role;
 
     const roleHasNotChanged = playersCurrentSeason.role === editStateRow.role;
 
@@ -133,7 +138,7 @@ export default function PlayersSection({
       valueKey: "discordName",
       name: "Discord",
       canEdit: true,
-      pattern: "^[a-zA-Z0-9,._ ]{1,255}$",
+      pattern: "^[a-zA-Z0-9#,._ ]{1,255}$",
     },
   ];
 
@@ -160,7 +165,7 @@ export default function PlayersSection({
         columns={playersColumns}
         tableName="players"
         bulkEdit
-        bulkDelete
+        canDelete
       />
     </SectionContainer>
   );
