@@ -15,10 +15,7 @@ export default function MatchesSection({ items, teams }) {
       valueKey: "isPlayoffsMatch",
       name: "Match Stage",
       customInfo: ["isUpperBracket", "bracketRound"],
-      customFormatter: (value, customInfo) => {
-        const isUpperBracket = customInfo[0];
-        const bracketRound = customInfo[1];
-
+      customFormatter: ({ isPlayoffsMatch, isUpperBracket, bracketRound }) => {
         const upperBracketText = isUpperBracket ? "- Upper" : "- Lower";
         let bracketRoundText = bracketRound;
 
@@ -30,7 +27,7 @@ export default function MatchesSection({ items, teams }) {
           if (bracketRound === 5) bracketRoundText = "Finals";
         }
 
-        return value
+        return isPlayoffsMatch
           ? `Playoffs ${upperBracketText} - ${bracketRoundText}`
           : "Group Stage";
       },
@@ -39,8 +36,8 @@ export default function MatchesSection({ items, teams }) {
       valueKey: "scheduledTime",
       name: "Scheduled Time",
       canEdit: true,
-      customFormatter: (value) => {
-        const date = new Date(value);
+      customFormatter: ({ scheduledTime }) => {
+        const date = new Date(scheduledTime);
         return date.toLocaleDateString("en-US", {
           hour12: true,
           hour: "numeric",
@@ -58,17 +55,18 @@ export default function MatchesSection({ items, teams }) {
     {
       valueKey: "teamOne",
       name: "Team One",
-      customFormatter: (value) => findTeamName(value, teams),
+      customFormatter: ({ teamOne }) => findTeamName(teamOne, teams),
     },
     {
       valueKey: "teamTwo",
       name: "Team Two",
-      customFormatter: (value) => findTeamName(value, teams),
+      customFormatter: ({ teamTwo }) => findTeamName(teamTwo, teams),
     },
     {
       valueKey: "matchWinnerTeamId",
       name: "Winner",
-      customFormatter: (value) => findTeamName(value, teams),
+      customFormatter: ({ matchWinnerTeamId }) =>
+        findTeamName(matchWinnerTeamId, teams),
     },
   ];
 

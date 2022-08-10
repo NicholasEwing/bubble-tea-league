@@ -45,18 +45,18 @@ describe("/api/teams", () => {
     }
   });
 
-  it("POST /teams", async () => {
-    const fakeTeams = fakeInfoGenerator(teamSchema);
-    const { teamName, description, season } = fakeTeams[0];
+  // it("POST /teams", async () => {
+  //   const fakeTeams = fakeInfoGenerator(teamSchema);
+  //   const { teamName, description, season } = fakeTeams[0];
 
-    const body = {
-      teamName,
-      description,
-      season,
-    };
+  //   const body = {
+  //     teamName,
+  //     description,
+  //     season,
+  //   };
 
-    const { req, res } = createMocks({ method: "POST", body });
-    await teamsHandler(req, res);
-    assertStatusResponse(res, 201);
-  });
+  //   const { req, res } = createMocks({ method: "POST", body });
+  //   await teamsHandler(req, res);
+  //   assertStatusResponse(res, 201);
+  // });
 });

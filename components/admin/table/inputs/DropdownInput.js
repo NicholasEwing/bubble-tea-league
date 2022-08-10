@@ -6,14 +6,15 @@ export default function DropdownInput({
   id,
   value,
   options,
+  updateForeignValue,
 }) {
   const [activeId, setActiveId] = useState();
 
   useEffect(() => {
-    if (inputName === "TeamId") {
-      const currentTeam = options.find((option) => option.value === value);
-      setActiveId(currentTeam.id);
-    }
+    // this is only used when referencing another value from options
+    // i.e. having a team id of "4" but a team name of "team abc"
+    const currentItem = options.find((option) => option.value === value);
+    setActiveId(currentItem.id);
   }, [inputName, options, value]);
 
   return (
@@ -25,6 +26,9 @@ export default function DropdownInput({
         setActiveId(e.target.value);
       }}
       data-id={id}
+      data-foreign-key-as-id={updateForeignValue?.foreignKeyAsId}
+      data-foreign-key-to-change={updateForeignValue?.foreignKeyToChange}
+      data-foreign-table={updateForeignValue?.foreignTable}
       id={inputName}
       value={activeId || value}
     >

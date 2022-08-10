@@ -15,6 +15,7 @@ export default function Cell({
   pattern,
   options,
   inputType = "text",
+  updateForeignValue,
 }) {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -59,6 +60,7 @@ export default function Cell({
         id={id}
         value={valueAsString}
         options={options}
+        updateForeignValue={updateForeignValue}
       />
     );
   } else {
