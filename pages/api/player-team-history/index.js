@@ -9,7 +9,7 @@ export default async function handler(req, res) {
         try {
           const { playerTeamHistory } = req.body;
           await PlayerTeamHistory.bulkCreate(playerTeamHistory, {
-            updateOnDuplicate: ["TeamId"],
+            updateOnDuplicate: ["TeamId", "role"],
           });
           res.status(200).send();
         } catch (error) {

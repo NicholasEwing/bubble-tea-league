@@ -35,7 +35,7 @@ export default function PlayersSection({
 
   const playerTeamFormatter = (playerId, foreignEditState) => {
     const seasonTeamIds = seasonTeams.map((st) => st.id);
-    const playersCurrentTeam = playerTeamHistory.find(
+    const playersCurrentSeason = playerTeamHistory.find(
       (pth) => pth.PlayerId === playerId && seasonTeamIds.includes(pth.TeamId)
     );
 
@@ -43,12 +43,34 @@ export default function PlayersSection({
       (stateItem) => stateItem.PlayerId === playerId
     );
 
-    const teamHasNotChanged = isEqual(playersCurrentTeam, editStateRow);
+    const teamHasNotChanged = isEqual(
+      playersCurrentSeason.TeamId,
+      editStateRow.TeamId
+    );
 
     if (teamHasNotChanged) {
-      return findTeamName(playersCurrentTeam.TeamId, seasonTeams);
+      return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
     } else {
       return findTeamName(editStateRow.TeamId, seasonTeams);
+    }
+  };
+
+  const playerRoleFormatter = (playerId, foreignEditState) => {
+    const seasonTeamIds = seasonTeams.map((st) => st.id);
+    const playersCurrentSeason = playerTeamHistory.find(
+      (pth) => pth.PlayerId === playerId && seasonTeamIds.includes(pth.TeamId)
+    );
+
+    const editStateRow = foreignEditState.find(
+      (stateItem) => stateItem.PlayerId === playerId
+    );
+
+    const roleHasNotChanged = playersCurrentSeason.role === editStateRow.role;
+
+    if (roleHasNotChanged) {
+      return playersCurrentSeason.role;
+    } else {
+      return editStateRow.role;
     }
   };
 
@@ -65,10 +87,19 @@ export default function PlayersSection({
       pattern: "^[a-zA-Z0-9,._ ]{1,255}$",
     },
     {
-      valueKey: "role",
+      valueKey: "id",
       name: "Player Role",
       canEdit: true,
       inputType: "select",
+      needsForeignEditState: true,
+      updateForeignValue: {
+        foreignKeyAsId: "PlayerId",
+        foreignKeyToChange: "role",
+        foreignApiName: "player-team-history",
+        foreignRecordName: "playerTeamHistory",
+      },
+      customFormatter: ({ id, foreignEditState }) =>
+        playerRoleFormatter(id, foreignEditState),
       options: [
         { value: "Top" },
         { value: "Jungle" },
@@ -78,9 +109,8 @@ export default function PlayersSection({
         { value: "Fill" },
       ],
     },
-    // todo:
-    // make sure drop down works (done)
-    // make new season (literally can't test this until it goes live, thanks riot Dx)
+    // TODO WHEN LIVE:
+    // make new season (literally can't test this until it goes live due to dev key restrictions, thanks riot Dx)
     // make sure changing seasons works AND dropdown still works
     // what if someone changes seasons while editing? break out of edit mode?? idk
     {

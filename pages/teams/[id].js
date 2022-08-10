@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Op } from "sequelize";
 import TeamLogo from "../../components/match-results/TeamHeader/TeamLogo";
 import BottomIcon from "../../components/teams/Icons/BottomIcon";
 import FillIcon from "../../components/teams/Icons/FillIcon";
@@ -9,7 +10,7 @@ import TopIcon from "../../components/teams/Icons/TopIcon";
 import Name from "../../components/teams/Name";
 
 const sequelize = require("../../sequelize/index");
-const { Team, Player } = sequelize.models;
+const { Team, Player, PlayerTeamHistory } = sequelize.models;
 
 export const getStaticPaths = async () => {
   const teams = await Team.findAll({ raw: true });
@@ -33,13 +34,31 @@ export const getStaticProps = async (context) => {
 
   const team = await Team.findByPk(id, { raw: true });
 
-  const players = await Player.findAll({
+  const playerHistories = await PlayerTeamHistory.findAll({
     where: {
       TeamId: id,
+    },
+    attributes: ["PlayerId", "role"],
+    raw: true,
+  });
+
+  const playerIds = playerHistories.map((ph) => ph.PlayerId);
+
+  let players = await Player.findAll({
+    where: {
+      id: {
+        [Op.in]: playerIds,
+      },
     },
     raw: true,
   });
 
+  players = players.map((player) => {
+    const playerHistory = playerHistories.find((h) => h.PlayerId === player.id);
+    const playerRole = playerHistory.role;
+
+    return { ...player, role: playerRole };
+  });
   // find all players and send to page componnent as prop
 
   return {

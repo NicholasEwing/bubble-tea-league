@@ -28,10 +28,5 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: false,
     },
-    role: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: "Fill",
-    },
   });
 };

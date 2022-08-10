@@ -7,7 +7,6 @@ const applyAssociations = (sequelize) => {
     MatchRound,
     MatchRoundTeamStats,
     MatchRoundPlayerStats,
-    TournamentCode,
   } = sequelize.models;
 
   // Associate matches with seasons

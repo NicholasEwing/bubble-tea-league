@@ -25,7 +25,6 @@ describe("/api/players", () => {
           summonerName: expect.any(String),
           discordName: expect.any(String),
           isSubstitute: expect.any(Boolean),
-          role: expect.any(String),
         }),
       ])
     );
