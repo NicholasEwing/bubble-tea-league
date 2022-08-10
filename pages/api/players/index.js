@@ -33,6 +33,17 @@ export default async function handler(req, res) {
           res.status(500).send({ error });
         }
         break;
+      case "DELETE":
+        try {
+          const { idsToDelete } = req.body;
+          await Player.destroy({
+            where: { id: idsToDelete },
+          });
+          res.status(200).send();
+        } catch (error) {
+          res.status(404).send({ error });
+        }
+        break;
     }
   } catch (error) {
     console.error("Error inside /api/players", error);
