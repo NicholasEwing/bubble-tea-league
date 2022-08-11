@@ -461,11 +461,12 @@ export default function EditableTable({
     setEditingItems([...editingItems, id]);
   }
 
-  function handleDeleteItem() {
-    const rowToDelete = selectedItems[0];
+  // make this function bulk
+  function handleDeleteItem(selectedItems) {
+    const idsToDelete = selectedItems.map((i) => i.id);
 
-    // remove entire row from edit state
-    const newEditState = editState.filter((es) => es.id !== rowToDelete.id);
+    // remove all rows from edit state
+    const newEditState = editState.filter((es) => !idsToDelete.includes(es.id));
     setEditState(newEditState);
     setItemsState(newEditState);
 
@@ -476,7 +477,7 @@ export default function EditableTable({
         foreignColumns[0].updateForeignValue;
 
       const newForeignEditState = foreignEditState.filter(
-        (fes) => fes[foreignKeyAsId] !== rowToDelete.id
+        (fes) => !idsToDelete.includes(fes[foreignKeyAsId])
       );
 
       setForeignEditState(newForeignEditState);
@@ -500,10 +501,14 @@ export default function EditableTable({
             bulkEdit={bulkEdit}
             handleBulkEdit={handleBulkEdit}
             canDelete={canDelete}
+            handleDeleteItem={handleDeleteItem}
           />
         )}
         {canDelete && selectedItems.length === 1 && (
-          <DeleteButton handleDeleteItem={handleDeleteItem} />
+          <DeleteButton
+            selectedItems={selectedItems}
+            handleDeleteItem={handleDeleteItem}
+          />
         )}
         <Table>
           <TableHead
