@@ -14,7 +14,12 @@ export default function DropdownInput({
     // this is only used when referencing another value from options
     // i.e. having a team id of "4" but a team name of "team abc"
     const currentItem = options.find((option) => option.value === value);
-    setActiveId(currentItem.id);
+
+    if (currentItem) {
+      setActiveId(currentItem.id);
+    } else {
+      setActiveId(options[0].id);
+    }
   }, [inputName, options, value]);
 
   return (

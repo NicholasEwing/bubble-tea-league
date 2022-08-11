@@ -73,25 +73,34 @@ export default function EditableTable({
     const newItem = { ...editItem, [valueKey]: formattedValue };
 
     if (customIdKey) {
-      const newForeignItemsState = itemsState.map((i) => {
-        if (i[customIdKey] == itemId) {
-          return newItem;
-        } else {
-          const editStateItem = editState.find(
-            (editItem) => editItem[customIdKey] == i[customIdKey]
-          );
+      const itemExistsInState = itemsState.find(
+        (i) => i[customIdKey] == itemId
+      );
 
-          const alreadyEditedItem = !isEqual(editStateItem, i);
-
-          if (alreadyEditedItem) {
-            return editStateItem;
+      if (itemExistsInState) {
+        const newForeignItemsState = itemsState.map((i) => {
+          if (i[customIdKey] == itemId) {
+            return newItem;
           } else {
-            return i;
-          }
-        }
-      });
+            const editStateItem = editState.find(
+              (editItem) => editItem[customIdKey] == i[customIdKey]
+            );
 
-      return newForeignItemsState;
+            const alreadyEditedItem =
+              editStateItem[customIdKey] == i[customIdKey];
+
+            if (alreadyEditedItem) {
+              return editStateItem;
+            } else {
+              return i;
+            }
+          }
+        });
+
+        return newForeignItemsState;
+      } else {
+        return [...itemsState, newItem];
+      }
     } else {
       const newItemsState = itemsState.map((i) => {
         if ((i.number || i.id) == (item.number || item.id)) {
@@ -148,19 +157,35 @@ export default function EditableTable({
 
     if (e.target.validity.valid) {
       if (foreignKeyAsId && foreignKeyToChange) {
-        const foreignItem = foreignItems.find(
-          (i) => i[foreignKeyAsId] === itemId
-        );
-        const newForeignItemsState = updateTableRowValue(
-          foreignEditState,
-          foreignItemsState,
-          itemId,
-          foreignItem,
-          foreignKeyToChange,
-          newItemValue,
-          foreignKeyAsId
-        );
-        setForeignEditState(newForeignItemsState);
+        const foreignItem =
+          foreignItems.find((i) => i[foreignKeyAsId] === itemId) ||
+          foreignEditState.find((i) => i[foreignKeyAsId] === itemId);
+
+        if (foreignItem) {
+          const newForeignItemsState = updateTableRowValue(
+            foreignEditState,
+            foreignItemsState,
+            itemId,
+            foreignItem,
+            foreignKeyToChange,
+            newItemValue,
+            foreignKeyAsId
+          );
+
+          setForeignEditState(newForeignItemsState);
+        } else {
+          const ids = foreignEditState.map((fes) => fes.id);
+          const maxId = Math.max(...ids);
+
+          const newForeignItem = {
+            id: maxId + 1,
+            [foreignKeyAsId]: itemId,
+            [foreignKeyToChange]: e.target.value,
+          };
+
+          const newForeignEditState = [...foreignEditState, newForeignItem];
+          setForeignEditState(newForeignEditState);
+        }
       } else {
         const item = itemsState.find((i) => (i.id || i.number) == itemId);
         const newItemsState = updateTableRowValue(
@@ -236,13 +261,30 @@ export default function EditableTable({
         (foreignItem) => foreignItem[foreignKeyAsId] == id
       );
 
-      const newForeignItemsState = foreignItemsState.map((foreignStateItem) =>
-        foreignStateItem[foreignKeyAsId] == id
-          ? foreignEditStateItem
-          : foreignStateItem
+      const foreignStateItem = foreignItemsState.find(
+        (fsi) => fsi[foreignKeyAsId] == id
       );
 
-      setForeignItemsState(newForeignItemsState);
+      // if this item isn't in foreignItemState yet, simply add it
+      if (!foreignStateItem) {
+        const newForeignItemsState = [
+          ...foreignItemsState,
+          foreignEditStateItem,
+        ];
+        setForeignItemsState(newForeignItemsState);
+      } else {
+        // if it's already in here, find it and change it
+        const newForeignItemsState = foreignItemsState.map(
+          (foreignStateItem) => {
+            if (foreignStateItem[foreignKeyAsId] == id) {
+              return foreignEditStateItem;
+            } else {
+              return foreignStateItem;
+            }
+          }
+        );
+        setForeignItemsState(newForeignItemsState);
+      }
     }
   }
 
@@ -263,20 +305,32 @@ export default function EditableTable({
     setEditState(newEditState);
 
     // same thing, but for rows with foreign values
-    const c = columns.find((c) => c.updateForeignValue?.foreignKeyAsId);
-    const { foreignKeyAsId } = c.updateForeignValue;
-
-    const oldForeignItem = foreignItemsState.find(
-      (foreignStateItem) => foreignStateItem[foreignKeyAsId] == id
+    const foreignColumn = columns.find(
+      (c) => c.updateForeignValue?.foreignKeyAsId
     );
 
-    const newForeignEditState = foreignEditState.map((foreignEditStateItem) =>
-      foreignEditStateItem[foreignKeyAsId] == id
-        ? oldForeignItem
-        : foreignEditStateItem
-    );
+    if (foreignColumn) {
+      const { foreignKeyAsId } = foreignColumn.updateForeignValue;
+      const oldForeignItem = foreignItemsState.find(
+        (foreignStateItem) => foreignStateItem[foreignKeyAsId] == id
+      );
 
-    setForeignEditState(newForeignEditState);
+      if (oldForeignItem) {
+        const newForeignEditState = foreignEditState.map(
+          (foreignEditStateItem) =>
+            foreignEditStateItem[foreignKeyAsId] == id
+              ? oldForeignItem
+              : foreignEditStateItem
+        );
+
+        setForeignEditState(newForeignEditState);
+      } else {
+        const newForeignEditState = foreignEditState.filter(
+          (foreignEditStateItem) => foreignEditStateItem[foreignKeyAsId] !== id
+        );
+        setForeignEditState(newForeignEditState);
+      }
+    }
   }
 
   const canApply =
