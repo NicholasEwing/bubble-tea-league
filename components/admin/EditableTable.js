@@ -334,9 +334,9 @@ export default function EditableTable({
   }
 
   const canApply =
-    isEqual(items, itemsState) && isEqual(foreignItems, foreignItemsState)
-      ? false
-      : true;
+    !isEqual(items, itemsState) && !isEqual(foreignItems, foreignItemsState)
+      ? true
+      : false;
 
   async function applyChanges() {
     try {
