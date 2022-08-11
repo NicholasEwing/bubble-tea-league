@@ -8,10 +8,29 @@ export default async function handler(req, res) {
   try {
     switch (req.method) {
       case "POST":
-        // find player PUUID from summoner name
-        const PUUID = await getPlayerPUUID(req.body.summonerName);
-        req.body.PUUID = PUUID;
-        res.status(201).end();
+        try {
+          // if no PUUID given...
+          const { summonerName, discordName, firstName } = req.body;
+          let { PUUID } = req.body;
+          if (!PUUID) PUUID = await getPlayerPUUID(summonerName);
+          const { id } = await Player.create({
+            PUUID,
+            summonerName,
+            discordName,
+            firstName,
+          });
+          res.status(201).send({ id });
+        } catch (error) {
+          let message;
+
+          if (error?.parent?.sqlMessage) {
+            message = error.parent.sqlMessage;
+          } else {
+            message = error.message;
+          }
+
+          res.status(409).send({ message });
+        }
         break;
       case "GET":
         const players = await Player.findAll();

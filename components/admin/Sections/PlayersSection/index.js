@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { findTeamName, isEqual } from "../../../../lib/utils";
+import Modal from "../../../modal";
+import PlayersModal from "../../AdminModals/PlayersModal";
 import EditableTable from "../../EditableTable";
 import AddButton from "../../table/AddButton";
 import SectionContainer from "../../table/SectionContainer";
@@ -43,18 +45,40 @@ export default function PlayersSection({
       (stateItem) => stateItem.PlayerId === playerId
     );
 
-    if (!editStateRow)
-      return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+    // if item is edited and has no db info
+    if (editStateRow && !playersCurrentSeason) {
+      // show edited info
+      if (editStateRow.TeamId) {
+        return findTeamName(editStateRow.TeamId, seasonTeams);
+      } else {
+        // if no edited role, show "-"
+        return "-";
+      }
+    }
 
-    const teamHasNotChanged = isEqual(
-      playersCurrentSeason.TeamId,
-      editStateRow.TeamId
-    );
+    // if item hasn't been edited and has a db record
+    if (!editStateRow && playersCurrentSeason) {
+      // show db info...
+      if (playersCurrentSeason.TeamId) {
+        return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+      } else {
+        // if no db info, on record, show "-"
+        return "-";
+      }
+    }
 
-    if (teamHasNotChanged) {
-      return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
-    } else {
-      return findTeamName(editStateRow.TeamId, seasonTeams);
+    // if item is edited and has db info
+    if (editStateRow && playersCurrentSeason) {
+      const teamHasNotChanged =
+        playersCurrentSeason.TeamId === editStateRow.TeamId;
+
+      if (teamHasNotChanged) {
+        // show db info
+        return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+      } else {
+        // show edited info
+        return findTeamName(editStateRow.TeamId, seasonTeams);
+      }
     }
   };
 
@@ -68,14 +92,39 @@ export default function PlayersSection({
       (stateItem) => stateItem.PlayerId === playerId
     );
 
-    if (!editStateRow) return playersCurrentSeason.role;
+    // if item is edited and has no db info
+    if (editStateRow && !playersCurrentSeason) {
+      // show edited info
+      if (editStateRow.role) {
+        return editStateRow.role;
+      } else {
+        // if no edited role, show "-"
+        return "-";
+      }
+    }
 
-    const roleHasNotChanged = playersCurrentSeason.role === editStateRow.role;
+    // if item hasn't been edited and has a db record
+    if (!editStateRow && playersCurrentSeason) {
+      // show db info...
+      if (playersCurrentSeason.role) {
+        return playersCurrentSeason.role;
+      } else {
+        // if no db info, on record, show "-"
+        return "-";
+      }
+    }
 
-    if (roleHasNotChanged) {
-      return playersCurrentSeason.role;
-    } else {
-      return editStateRow.role;
+    // if item is edited and has db info
+    if (editStateRow && playersCurrentSeason) {
+      const roleHasNotChanged = playersCurrentSeason.role === editStateRow.role;
+
+      if (roleHasNotChanged) {
+        // show db info
+        return playersCurrentSeason.role;
+      } else {
+        // show edited info
+        return editStateRow.role;
+      }
     }
   };
 
@@ -138,7 +187,7 @@ export default function PlayersSection({
       valueKey: "discordName",
       name: "Discord",
       canEdit: true,
-      pattern: "^[a-zA-Z0-9#,._ ]{1,255}$",
+      pattern: "^.{0,32}#[0-9]{0,4}$",
     },
   ];
 
@@ -167,6 +216,9 @@ export default function PlayersSection({
         bulkEdit
         canDelete
       />
+      <Modal open={open} closeModal={closeModal}>
+        <PlayersModal players={items} closeModal={closeModal} />
+      </Modal>
     </SectionContainer>
   );
 }

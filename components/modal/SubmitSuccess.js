@@ -2,13 +2,16 @@ import React from "react";
 import { CheckIcon } from "@heroicons/react/outline";
 
 export default function SubmitSuccess({ itemName, closeModal }) {
-  let description;
+  let description = "";
 
   switch (itemName) {
     case "season":
       description =
         "Be sure to set schedule times for each individual game. If something wasn't generated properly then go yell at Nick to fix it.";
       break;
+    case "player":
+      description =
+        "Be sure to set a team and role for the player. Keep in mind that teams / roles are season specific, so make sure you've selected the correct season.";
   }
 
   return (

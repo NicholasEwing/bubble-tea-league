@@ -3,6 +3,7 @@ import React from "react";
 export default function LoadingSpinner({
   wheelColor = "text-gray-600",
   wheelAccent = "fill-teal-accent",
+  noText,
 }) {
   return (
     <div role="status inline-block">
@@ -23,7 +24,7 @@ export default function LoadingSpinner({
           fill="currentFill"
         ></path>
       </svg>
-      <span className="sr-only">Loading...</span>
+      {!noText && <span className="sr-only">Loading...</span>}
     </div>
   );
 }

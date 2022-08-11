@@ -2,15 +2,6 @@ import React from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/outline";
 
 export default function SubmitFail({ error, itemName, closeModal }) {
-  let description;
-
-  switch (itemName) {
-    case "season":
-      description =
-        "Be sure to set schedule times for each individual game. If something wasn't generated properly then go yell at Nick to fix it.";
-      break;
-  }
-
   return (
     <div className="min-w-full text-white flex-1 flex flex-col justify-center">
       <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
