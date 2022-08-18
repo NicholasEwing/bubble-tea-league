@@ -11,7 +11,7 @@ export default function Team({
   matchLoserTeamId,
   matchRounds,
 }) {
-  const {
+  let {
     id,
     tricode = "TBD",
     teamName = "TBD",
@@ -21,6 +21,14 @@ export default function Team({
 
   const isWinner = matchWinnerTeamId === id || false;
   const isLoser = matchLoserTeamId === id || false;
+
+  const receivedBye = isWinner && !isLoser;
+  const isBye = matchWinnerTeamId && !isLoser && !isWinner;
+
+  if (isBye) {
+    tricode = "BYE";
+    teamName = "BYE";
+  }
 
   const isTBD = teamName === "TBD" && !isWinner && !isLoser;
 
