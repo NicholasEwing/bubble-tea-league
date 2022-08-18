@@ -9,6 +9,7 @@ import {
   getTimelineEvents,
   v5getMatch,
 } from "../../../lib/riot-games-api-helpers";
+import { seedPlayoffs } from "../../../lib/general-api-helpers";
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const sequelize = require("../../../sequelize");
@@ -222,7 +223,28 @@ export default async function handler(req, res) {
             }
           }
         } else {
-          await match.update({ matchWinnerTeamId: winningTeamId });
+          await match.update({
+            matchWinnerTeamId: winningTeamId,
+            matchLoserTeamId: losingTeamId,
+          });
+
+          // if last (45th) group stage match for the season, seed playoffs
+          const finishedGroupStageMatches = await Match.findAll({
+            raw: true,
+            where: {
+              season,
+              matchWinnerTeamId: {
+                [Op.not]: null,
+              },
+              matchLoserTeamId: {
+                [Op.not]: null,
+              },
+            },
+          });
+
+          if (finishedGroupStageMatches.length === 45) {
+            await seedPlayoffs(season);
+          }
         }
 
         // Create 2 MatchRoundTeamStats records
