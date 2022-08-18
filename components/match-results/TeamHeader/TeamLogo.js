@@ -6,8 +6,11 @@ export default function TeamLogo({
   width = 36,
   height = 36,
   faded,
+  tbd,
 }) {
-  const [src, setSrc] = useState(`/teams/${tricode}.png`);
+  const [src, setSrc] = useState(
+    tbd ? "/team-tbd.png" : `/teams/${tricode}.png`
+  );
 
   return (
     <div className={`flex ${faded && "opacity-30"}`}>

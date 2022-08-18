@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import TeamLogo from "../match-results/TeamHeader/TeamLogo";
 import SeasonMatchInfo from "./SeasonMatchInfo";
 import Team from "./Team";
 
