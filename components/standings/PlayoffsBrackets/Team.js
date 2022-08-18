@@ -52,7 +52,7 @@ export default function Team({
             !isTBD && isLoser ? "opacity-20" : "opacity-100"
           } flex-shrink-0 h-auto mx-5 w-9`}
         >
-          <TeamLogo tricode={tricode} faded={isLoser} tbd={isTBD} />
+          <TeamLogo tricode={tricode} faded={isLoser} tbd={isTBD || isBye} />
         </div>
         <div
           className={`name hidden sm:block font-light w-full ${

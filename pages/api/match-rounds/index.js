@@ -220,6 +220,57 @@ export default async function handler(req, res) {
                 matchWinnerTeamId: winningTeamId,
                 matchLoserTeamId: losingTeamId,
               });
+
+              // advance players in playoffs bracket
+              if (match.isUpperBracket && match.bracketRound < 3) {
+                // advance winner
+                const nextWinnerMatch = await Match.findOne({
+                  where: {
+                    season,
+                    isUpperBracket: true,
+                    bracketRound: match.bracketRound + 1,
+                  },
+                });
+                if (nextWinnerMatch.teamOne) {
+                  await nextWinnerMatch.update({ teamTwo: winningTeamId });
+                } else {
+                  await nextWinnerMatch.update({ teamOne: winningTeamId });
+                }
+
+                // advance loser to lower bracket
+                const nextLoserMatch = await Match.findOne({
+                  where: {
+                    season,
+                    isUpperBracket: false,
+                    bracketRound: match.bracketRound + 1,
+                  },
+                });
+                await nextLoserMatch.update({ teamOne: losingTeamId });
+              } else {
+                // if semifinals...
+                if (match.bracketRound === 5) {
+                  // ...move to finals
+                  const finalsMatch = await Match.findOne({
+                    where: {
+                      season,
+                      isUpperBracket: true,
+                      bracketRound: 4,
+                    },
+                  });
+
+                  finalsMatch.update({ teamTwo: winningTeamId });
+                } else {
+                  // otherwise, move up the lower bracket
+                  const nextWinnerMatch = await Match.findOne({
+                    where: {
+                      season,
+                      isUpperBracket: false,
+                      bracketRound: match.bracketRound + 1,
+                    },
+                  });
+                  nextWinnerMatch.update({ teamTwo: winningTeamId });
+                }
+              }
             }
           }
         } else {
