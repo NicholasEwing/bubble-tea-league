@@ -227,7 +227,7 @@ export default function PlayoffsBrackets({
 
   return seasonTeams.length && teamsSeeded ? (
     <div className="stage max-w-full">
-      <div className="StandingsBracketV2 pl-4 overflow-x-auto overflow-y-hidden relative select-none w-full sm:pl-6">
+      <div className="StandingsBracketV2 relative w-full select-none overflow-x-auto overflow-y-hidden pl-4 sm:pl-6">
         <div className={styles.bracket}>
           <div className="UpperBracket row">
             <ColumnContainer>
@@ -304,10 +304,10 @@ export default function PlayoffsBrackets({
     </div>
   ) : (
     <>
-      <div className="title m-4 lg:m-9 lg:mb-4 font-medium text-xl">
+      <div className="title m-4 text-xl font-medium lg:m-9 lg:mb-4">
         Brackets
       </div>
-      <h1 className="flex justify-center text-white font-light text-2xl m-8">
+      <h1 className="m-8 flex justify-center text-2xl font-light text-white">
         Playoffs haven&apos;t kicked off yet. Come back later!
       </h1>
     </>

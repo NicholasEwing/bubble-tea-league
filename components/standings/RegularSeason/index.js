@@ -3,8 +3,8 @@ import StandingItem from "./StandingItem";
 
 export default function RegularSeason({ activeSeason, seasonTeams }) {
   return (
-    <div className="max-w-full lg:w-full lg:h-full">
-      <div className="title m-4 lg:m-9 lg:mb-4 font-medium text-xl">
+    <div className="max-w-full lg:h-full lg:w-full">
+      <div className="title m-4 text-xl font-medium lg:m-9 lg:mb-4">
         Standings
       </div>
       {seasonTeams.length ? (
@@ -25,7 +25,7 @@ export default function RegularSeason({ activeSeason, seasonTeams }) {
           />
         ))
       ) : (
-        <h1 className="flex justify-center text-white font-thin text-5xl m-8">
+        <h1 className="m-8 flex justify-center text-5xl font-thin text-white">
           No teams registered for this season yet.
         </h1>
       )}
