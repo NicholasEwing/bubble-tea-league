@@ -5,14 +5,10 @@ const { Player, Team, PlayerTeamHistory } = sequelize.models;
 
 const seedTeamsAndPlayers = async () => {
   try {
-    // generate 10 teams, but only 10 players
-
     // The player objects must use REAL summoner names
     // so we can get their unique PUUIDs via the Riot Games API
     const { btlTeams, btlPlayers } = require("../lib/hardcoded-btl-teams");
-    // await sequelize.models.Team.bulkCreate(btlTeams);
 
-    // only create teams 2 and 4 for testing purposes so we don't piss off Riot
     const limiter = new RateLimiter({
       tokensPerInterval: 20,
       interval: "second",
@@ -40,7 +36,6 @@ const seedTeamsAndPlayers = async () => {
       playerRecords = await Player.bulkCreate(btlPlayers);
     }
 
-    // assign 10 players to 2 teams
     const teams = await Team.findAll({ raw: true });
 
     const teamIds = teams.map((t) => t.id);
