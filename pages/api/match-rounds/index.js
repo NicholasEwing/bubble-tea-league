@@ -290,11 +290,21 @@ export default async function handler(req, res) {
               matchLoserTeamId: {
                 [Op.not]: null,
               },
+              isPlayoffsMatch: false,
             },
           });
 
+          const groupStageMatches = await Match.findAll({ raw: true });
+          const groupStageMatchRounds = await MatchRound.findAll({
+            raw: true,
+          });
+
           if (finishedGroupStageMatches.length === 45) {
-            await seedPlayoffs(season);
+            await seedPlayoffs(
+              season,
+              groupStageMatches,
+              groupStageMatchRounds
+            );
           }
         }
 

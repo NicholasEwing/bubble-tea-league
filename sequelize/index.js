@@ -14,6 +14,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect,
+  logging: false,
   // query: { raw: true }, // this breaks next-auth lol
 });
 

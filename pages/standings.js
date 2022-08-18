@@ -1,37 +1,32 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Op } from "sequelize";
 import PlayoffsBrackets from "../components/standings/PlayoffsBrackets";
 import RegularSeason from "../components/standings/RegularSeason";
 import SeasonItem from "../components/standings/SeasonItem";
 import SeasonSelector from "../components/standings/SeasonSelector";
 import StageSelector from "../components/standings/StageSelector";
-
-const sequelize = require("../sequelize/index");
-const { Team, Season, Match, MatchRound } = sequelize.models;
+import { sortStandings } from "../lib/utils";
 
 export const getStaticProps = async () => {
+  const sequelize = require("../sequelize/index");
+  const { Team, Season, Match, MatchRound } = sequelize.models;
+
   let teams = await Team.findAll({ raw: true });
   const seasons = await Season.findAll({ raw: true });
 
   const groupStageMatches = await Match.findAll({
     where: {
-      matchWinnerTeamId: { [Op.not]: null },
       isPlayoffsMatch: false,
     },
     raw: true,
   });
 
-  // add group stage losses / wins
-  teams = teams.map((team) => {
-    // return team object WITH new info
-    const groupStageWins = groupStageMatches.filter(
-      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
-    );
-    const groupStageLosses = groupStageMatches.filter(
-      (m) => m.matchLoserTeamId === team.id && m.season === team.season
-    );
-    return { ...team, groupStageWins, groupStageLosses };
+  const groupStageMatchRounds = await MatchRound.findAll({
+    where: {
+      MatchId: { [Op.in]: groupStageMatches.map((m) => m.id) },
+    },
+    raw: true,
   });
 
   const playoffsMatches = await Match.findAll({
@@ -48,22 +43,37 @@ export const getStaticProps = async () => {
     raw: true,
   });
 
-  // add playoffs losses / wins
+  // add group stage losses / wins
   teams = teams.map((team) => {
     // return team object WITH new info
+    const groupStageWins = groupStageMatches.filter(
+      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+    );
+    const groupStageLosses = groupStageMatches.filter(
+      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+    );
+
     const playoffsWins = playoffsMatches.filter(
       (m) => m.matchWinnerTeamId === team.id && m.season === team.season
     );
     const playoffsLosses = playoffsMatches.filter(
       (m) => m.matchLoserTeamId === team.id && m.season === team.season
     );
-    return { ...team, playoffsWins, playoffsLosses };
+    return {
+      ...team,
+      groupStageWins,
+      groupStageLosses,
+      playoffsWins,
+      playoffsLosses,
+    };
   });
 
   return {
     props: {
       teams: JSON.parse(JSON.stringify(teams)),
       seasons: JSON.parse(JSON.stringify(seasons)),
+      groupStageMatches: JSON.parse(JSON.stringify(groupStageMatches)),
+      groupStageMatchRounds: JSON.parse(JSON.stringify(groupStageMatchRounds)),
       playoffsMatches: JSON.parse(JSON.stringify(playoffsMatches)),
       playoffsMatchRounds: JSON.parse(JSON.stringify(playoffsMatchRounds)),
     },
@@ -73,37 +83,27 @@ export const getStaticProps = async () => {
 export default function Standings({
   teams,
   seasons,
+  groupStageMatches,
+  groupStageMatchRounds,
   playoffsMatches,
   playoffsMatchRounds,
 }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
+  const [seasonTeams, setSeasonTeams] = useState([]);
 
-  // Sort from wins to losses
-  const seasonTeams = teams
-    .filter((t) => t.season === activeSeason)
-    .sort((a, b) => {
-      const placeZerosLast = (num) => {
-        let x = num;
-        return x === 0 ? -Infinity : x;
-      };
+  useEffect(() => {
+    let seasonTeams = teams.filter((t) => t.season === activeSeason);
 
-      const teamAMatchSum = placeZerosLast(
-        a.groupStageWins.length - a.groupStageLosses.length
-      );
-      const teamBMatchSum = placeZerosLast(
-        b.groupStageWins.length - b.groupStageLosses.length
-      );
+    seasonTeams = sortStandings(
+      seasonTeams,
+      groupStageMatches,
+      groupStageMatchRounds
+    );
 
-      if (teamAMatchSum < teamBMatchSum) {
-        return 1;
-      } else if (teamBMatchSum < teamAMatchSum) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
+    setSeasonTeams(seasonTeams);
+  }, [activeSeason, teams, groupStageMatches, groupStageMatchRounds]);
 
   const seasonPlayoffsMatches = playoffsMatches.filter(
     (pom) => pom.season === activeSeason
@@ -128,20 +128,20 @@ export default function Standings({
   };
 
   return (
-    <div className="Standings flex relative overflow-hidden min-h-full bg-[#0f1519] text-white">
+    <div className="Standings relative flex min-h-full overflow-hidden bg-[#0f1519] text-white">
       <div
-        className={`sidebar min-w-[360px] lg:w-[calc(((100%-442px)/12)*3+102px)] bg-[#0a0e13] fixed lg:static z-30 lg:transform-none left-0 top-[calc(54px+80px)] h-full lg:min-h-full w-full ${
+        className={`sidebar fixed left-0 top-[calc(54px+80px)] z-30 h-full w-full min-w-[360px] bg-[#0a0e13] lg:static lg:min-h-full lg:w-[calc(((100%-442px)/12)*3+102px)] lg:transform-none ${
           openDropdown ? "translate-x-0" : "-translate-x-full"
         } lg:border-r lg:border-r-[#252c32]`}
       >
-        <div className="h-13 border-b border-b-[#252c32] hidden lg:block">
+        <div className="h-13 hidden border-b border-b-[#252c32] lg:block">
           <SeasonSelector
             openDropdown={openDropdown}
             handleDropdown={handleDropdown}
           />
         </div>
         <section className="season-filter h-screen">
-          <ul className="seasons min-h-full overflow-x-hidden overflow-y-auto pb-20 lg:h-[calc(100%-75px)] lg:static lg:min-w-[360px] lg:border-r lg:border-r-[#252c32]">
+          <ul className="seasons min-h-full overflow-y-auto overflow-x-hidden pb-20 lg:static lg:h-[calc(100%-75px)] lg:min-w-[360px] lg:border-r lg:border-r-[#252c32]">
             {seasons &&
               seasons.map((season) => (
                 <SeasonItem
@@ -154,7 +154,7 @@ export default function Standings({
           </ul>
         </section>
       </div>
-      <div className="results w-full mb-12 lg:w-[calc(((100%-360px-340px)/9)*9+340px)] xl:calc(((100%-442px)/12)*9+340px)">
+      <div className="results xl:calc(((100%-442px)/12)*9+340px) mb-12 w-full lg:w-[calc(((100%-360px-340px)/9)*9+340px)]">
         <div className="StandingsTopNav bg-[#0a0e13]">
           <div className="h-13 border-b border-b-[#252c32] lg:hidden">
             <SeasonSelector
