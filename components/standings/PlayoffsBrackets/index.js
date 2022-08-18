@@ -275,7 +275,7 @@ export default function PlayoffsBrackets({
                         <Match key={`${round.title}-${i + 1}`}>
                           <Team
                             matchId={m.id}
-                            team={seasonTeams.find((t) => t.id === m.teamTwo)}
+                            team={seasonTeams.find((t) => t.id === m.teamOne)}
                             matchWinnerTeamId={m.matchWinnerTeamId}
                             matchLoserTeamId={m.matchLoserTeamId}
                             matchRounds={m.matchRounds}
