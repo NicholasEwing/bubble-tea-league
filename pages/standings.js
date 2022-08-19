@@ -6,14 +6,18 @@ import RegularSeason from "../components/standings/RegularSeason";
 import SeasonItem from "../components/standings/SeasonItem";
 import SeasonSelector from "../components/standings/SeasonSelector";
 import StageSelector from "../components/standings/StageSelector";
-import { sortStandings } from "../lib/utils";
 
 export const getStaticProps = async () => {
   const sequelize = require("../sequelize/index");
-  const { Team, Season, Match, MatchRound } = sequelize.models;
+  const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
 
   let teams = await Team.findAll({ raw: true });
   const seasons = await Season.findAll({ raw: true });
+
+  const teamStandings = await TeamStanding.findAll({
+    raw: true,
+    order: [["placement", "ASC"]],
+  });
 
   const groupStageMatches = await Match.findAll({
     where: {
@@ -72,10 +76,9 @@ export const getStaticProps = async () => {
     props: {
       teams: JSON.parse(JSON.stringify(teams)),
       seasons: JSON.parse(JSON.stringify(seasons)),
-      groupStageMatches: JSON.parse(JSON.stringify(groupStageMatches)),
-      groupStageMatchRounds: JSON.parse(JSON.stringify(groupStageMatchRounds)),
       playoffsMatches: JSON.parse(JSON.stringify(playoffsMatches)),
       playoffsMatchRounds: JSON.parse(JSON.stringify(playoffsMatchRounds)),
+      teamStandings: JSON.parse(JSON.stringify(teamStandings)),
     },
   };
 };
@@ -83,27 +86,29 @@ export const getStaticProps = async () => {
 export default function Standings({
   teams,
   seasons,
-  groupStageMatches,
-  groupStageMatchRounds,
   playoffsMatches,
   playoffsMatchRounds,
+  teamStandings,
 }) {
+  const ifTeams = teams.length;
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
+  const [seasonStandings, setSeasonStanding] = useState([]);
   const [seasonTeams, setSeasonTeams] = useState([]);
 
   useEffect(() => {
-    let seasonTeams = teams.filter((t) => t.season === activeSeason);
-
-    seasonTeams = sortStandings(
-      seasonTeams,
-      groupStageMatches,
-      groupStageMatchRounds
-    );
-
+    const seasonTeams = teams.filter((t) => t.season === activeSeason);
     setSeasonTeams(seasonTeams);
-  }, [activeSeason, teams, groupStageMatches, groupStageMatchRounds]);
+  }, [activeSeason, teams]);
+
+  useEffect(() => {
+    const seasonTeamIds = seasonTeams.map((t) => t.id);
+    const seasonStandings = teamStandings.filter((standing) =>
+      seasonTeamIds.includes(standing.TeamId)
+    );
+    setSeasonStanding(seasonStandings);
+  }, [seasonTeams, teamStandings]);
 
   const seasonPlayoffsMatches = playoffsMatches.filter(
     (pom) => pom.season === activeSeason
@@ -177,6 +182,7 @@ export default function Standings({
           <RegularSeason
             activeSeason={activeSeason}
             seasonTeams={seasonTeams}
+            seasonStandings={seasonStandings}
           />
         )}
       </div>

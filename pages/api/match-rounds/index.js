@@ -10,6 +10,7 @@ import {
   v5getMatch,
 } from "../../../lib/riot-games-api-helpers";
 import { seedPlayoffs } from "../../../lib/general-api-helpers";
+import { sortStandings } from "../../../lib/utils";
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const sequelize = require("../../../sequelize");
@@ -20,6 +21,8 @@ const {
   MatchRoundTeamStats,
   MatchRoundPlayerStats,
   PlayerTeamHistory,
+  Team,
+  TeamStanding,
 } = sequelize.models;
 const { default: fetch } = require("node-fetch");
 
@@ -200,6 +203,7 @@ export default async function handler(req, res) {
           );
 
           if (playoffsMatches.length > 1) {
+            // Playoffs Logic
             const { redTeamId, blueTeamId } = playoffsMatches[0];
             const teamIds = [redTeamId, blueTeamId];
 
@@ -274,10 +278,67 @@ export default async function handler(req, res) {
             }
           }
         } else {
+          // Group Stage Logic
           await match.update({
             matchWinnerTeamId: winningTeamId,
             matchLoserTeamId: losingTeamId,
           });
+
+          // Recalculate team standings
+          let seasonTeams = await Team.findAll({
+            raw: true,
+            where: {
+              season,
+            },
+          });
+
+          const groupStageMatches = await Match.findAll({
+            raw: true,
+          });
+          const groupStageMatchRounds = await MatchRound.findAll({
+            raw: true,
+          });
+
+          seasonTeams = seasonTeams.map((team) => {
+            const groupStageWins = groupStageMatches.filter(
+              (m) => m.matchWinnerTeamId === team.id
+            );
+            const groupStageLosses = groupStageMatches.filter(
+              (m) => m.matchLoserTeamId === team.id
+            );
+            return { ...team, groupStageWins, groupStageLosses };
+          });
+
+          seasonTeams = await sortStandings(
+            seasonTeams,
+            groupStageMatches,
+            groupStageMatchRounds
+          );
+
+          const teamStandingRecords = seasonTeams.map((team, i) => {
+            return { TeamId: team.id, placement: i + 1 };
+          });
+
+          const seasonTeamStandings = await TeamStanding.findAll({
+            where: {
+              TeamId: {
+                [Op.in]: seasonTeams.map((t) => t.id), // grab standing for this season
+              },
+            },
+          });
+
+          console.log(
+            "season team standings to be updated",
+            seasonTeamStandings
+          );
+          console.log("new team standing records", teamStandingRecords);
+
+          for (const standing of seasonTeamStandings) {
+            const { placement } = teamStandingRecords.find(
+              (r) => r.TeamId === standing.TeamId
+            );
+            await standing.update({ placement });
+          }
 
           // if last (45th) group stage match for the season, seed playoffs
           const finishedGroupStageMatches = await Match.findAll({
@@ -294,17 +355,9 @@ export default async function handler(req, res) {
             },
           });
 
-          const groupStageMatches = await Match.findAll({ raw: true });
-          const groupStageMatchRounds = await MatchRound.findAll({
-            raw: true,
-          });
-
           if (finishedGroupStageMatches.length === 45) {
-            await seedPlayoffs(
-              season,
-              groupStageMatches,
-              groupStageMatchRounds
-            );
+            // TODO: change seed playoffs to pull from db
+            await seedPlayoffs(season, seasonTeams);
           }
         }
 
