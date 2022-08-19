@@ -29,6 +29,7 @@ const modelDefiners = [
   require("./models/matchRoundTeamStats"),
   require("./models/matchRoundPlayerStats"),
   require("./models/playerTeamHistory"),
+  require("./models/teamStanding"),
 ];
 
 for (const modelDefiner of modelDefiners) {

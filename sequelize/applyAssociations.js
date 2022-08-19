@@ -7,6 +7,7 @@ const applyAssociations = (sequelize) => {
     MatchRound,
     MatchRoundTeamStats,
     MatchRoundPlayerStats,
+    TeamStanding,
   } = sequelize.models;
 
   // Associate matches with seasons
@@ -30,6 +31,10 @@ const applyAssociations = (sequelize) => {
 
   Team.hasMany(Match, { foreignKey: { name: "teamOne" } });
   Match.belongsTo(Team, { foreignKey: { name: "teamTwo" } });
+
+  // Keep track of seasonal team standings
+  Team.hasOne(TeamStanding);
+  TeamStanding.belongsTo(Team, { foreignKey: { allowNull: false } });
 
   // Associate winning / losing teams with match rounds
   Team.hasMany(MatchRound, {
