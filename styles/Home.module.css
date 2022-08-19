@@ -1,5 +1,6 @@
 .container {
   padding: 0 2rem;
+  color: white;
 }
 
 .main {
@@ -101,6 +102,10 @@
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
+}
+
+.code {
+  color: black;
 }
 
 .logo {
