@@ -17,6 +17,12 @@ export default async function handler(req, res) {
       res.status(200).json(seasons);
       break;
     case "POST":
+      let season,
+        groupStageMatches,
+        groupStageMatchRounds,
+        playoffsMatches,
+        playoffsMatchRounds;
+
       try {
         const { name, year, number } = req.body;
         // Ensure we have only one provider record
@@ -31,7 +37,6 @@ export default async function handler(req, res) {
         // Hit Riot Games API to create a "tournament" for the Season
         const tournamentId = await createTournamentId(providerId, name);
 
-        let season;
         if (req.body?.number) {
           season = await Season.create({
             number,
@@ -46,10 +51,14 @@ export default async function handler(req, res) {
         }
 
         // make 45 group stage matches / match rounds
-        await createGroupStageMatches(season.number, tournamentId);
+        [groupStageMatches, groupStageMatchRounds] =
+          await createGroupStageMatches(season.number, tournamentId);
 
         // make 14 playoff matches / 42 match rounds
-        await createPlayoffsMatches(season.number, tournamentId);
+        [playoffsMatches, playoffsMatchRounds] = await createPlayoffsMatches(
+          season.number,
+          tournamentId
+        );
 
         res.status(201).send({ tournamentId });
       } catch (error) {
@@ -60,6 +69,13 @@ export default async function handler(req, res) {
         } else {
           message = error.message;
         }
+
+        // undo season creation
+        await season?.destroy();
+        await groupStageMatches?.destroy();
+        await groupStageMatchRounds?.destroy();
+        await playoffsMatches?.destroy();
+        await playoffsMatchRounds?.destroy();
 
         res.status(424).send({ message });
       }

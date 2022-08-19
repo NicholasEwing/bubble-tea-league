@@ -19,7 +19,7 @@ export default function PlayersSection({
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
 
-  const [activeSeason, setActiveSeason] = useState(seasons[0].number);
+  const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
   const [seasonTeams, setSeasonTeams] = useState(
     teams.filter((t) => t.season === activeSeason)
   );
