@@ -7,6 +7,9 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
+    logoImgPath: {
+      type: DataTypes.STRING,
+    },
     description: {
       type: DataTypes.TEXT,
     },
