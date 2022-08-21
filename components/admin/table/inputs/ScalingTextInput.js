@@ -28,7 +28,7 @@ export default function ScalingTextInput({
         changeHandlerWidth(e);
       }}
       pattern={pattern}
-      className="inline min-w-16 max-w-64 text-black shadow-sm focus:ring-teal-accent focus:border-teal-accent sm:text-sm border-gray-300 rounded-md"
+      className="min-w-16 max-w-64 inline rounded-md border-gray-300 text-black shadow-sm focus:border-teal-accent focus:ring-teal-accent sm:text-sm"
     />
   );
 }
