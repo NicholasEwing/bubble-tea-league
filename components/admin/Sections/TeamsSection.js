@@ -11,6 +11,22 @@ export default function TeamsSection({ items }) {
       small: true,
     },
     {
+      valueKey: "logoImgPath",
+      name: "Logo",
+      canEdit: true,
+      inputType: "file",
+      customFormatter: ({ logoImgPath }) => {
+        const regexArr = /[^\\/\\]+$/.exec(logoImgPath);
+        const imageName = regexArr[0];
+        if (imageName === "null") {
+          // components convert null to string
+          return "-";
+        } else {
+          return imageName.substring(0, 12) + "...";
+        }
+      },
+    },
+    {
       valueKey: "teamName",
       name: "Team Name",
       canEdit: true,

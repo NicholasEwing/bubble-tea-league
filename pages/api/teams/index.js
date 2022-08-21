@@ -20,7 +20,7 @@ export default async function handler(req, res) {
         try {
           const { teams } = req.body;
           await Team.bulkCreate(teams, {
-            updateOnDuplicate: ["teamName", "tricode"],
+            updateOnDuplicate: ["teamName", "tricode", "logoImgPath"],
           });
           res.status(200).send();
         } catch (error) {

@@ -33,6 +33,11 @@ export default function EditableTable({
   const [foreignEditState, setForeignEditState] = useState(foreignItems);
   const [editingItems, setEditingItems] = useState([]);
 
+  // image upload controls
+  const [files, setFiles] = useState([]);
+  const [savedFiles, setSavedFiles] = useState([]);
+  const [createObjectURLs, setCreateObjectURLs] = useState([]);
+
   // row checkbox controls
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
@@ -46,6 +51,8 @@ export default function EditableTable({
   const [showSuccess, setShowSuccess] = useState(false);
 
   const refreshData = useRefreshContext();
+
+  const columnsWithFiles = columns.filter((c) => c.inputType === "file");
 
   const updateTableRowValue = (
     editState,
@@ -149,6 +156,28 @@ export default function EditableTable({
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
+
+  const saveFiles = (event, id) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setFiles([...files, { id, file }]);
+    }
+  };
+
+  const uploadFiles = async () => {
+    for (const fileObj of savedFiles) {
+      const { file, id } = fileObj;
+      // find custom data we need to append for each file...
+      const body = new FormData();
+      body.append("file", file);
+      body.append("id", id);
+
+      const res = await fetch(`http://localhost:3000/api/${tableName}/upload`, {
+        method: "POST",
+        body,
+      });
+    }
+  };
 
   function handleChanges(e, valueKey) {
     const newItemValue = e.target.value;
@@ -286,9 +315,20 @@ export default function EditableTable({
         setForeignItemsState(newForeignItemsState);
       }
     }
+
+    if (files) {
+      setSavedFiles(files);
+      setFiles([]);
+    }
   }
 
   function cancelChanges(id) {
+    const newFiles = files.filter((f) => f.id !== id);
+    const newObjectUrls = createObjectURLs.filter((o) => o.id !== id);
+
+    setFiles(newFiles);
+    setCreateObjectURLs(newObjectUrls);
+
     const newEditingItems = editingItems.filter((i) => i !== id);
     setEditingItems([...newEditingItems]);
 
@@ -426,6 +466,13 @@ export default function EditableTable({
         }
       }
 
+      if (savedFiles) {
+        uploadFiles();
+        setFiles([]);
+        setSavedFiles([]);
+        // TODO: clear object urls and pull imgs from db instead?
+      }
+
       refreshData();
 
       setApplying(false);
@@ -490,7 +537,7 @@ export default function EditableTable({
   }
 
   if (!items.length)
-    return <p className="text-white text-2xl my-8">No items here yet!</p>;
+    return <p className="my-8 text-2xl text-white">No items here yet!</p>;
 
   return (
     <>
@@ -547,6 +594,7 @@ export default function EditableTable({
                     needsForeignEditState,
                   } = column;
 
+                  let originalValue = item[valueKey];
                   let cellValue = item[valueKey];
 
                   if (customFormatter) {
@@ -572,6 +620,7 @@ export default function EditableTable({
                       }`}
                       selectedItems={j === 0 ? selectedItems : undefined}
                       item={item}
+                      originalValue={originalValue}
                       value={cellValue}
                       inputName={valueKey}
                       inputType={inputType}
@@ -582,6 +631,11 @@ export default function EditableTable({
                       handleChanges={handleChanges}
                       updateForeignValue={updateForeignValue}
                       options={options}
+                      files={files}
+                      savedFiles={savedFiles}
+                      saveFiles={saveFiles}
+                      createObjectURLs={createObjectURLs}
+                      setCreateObjectURLs={setCreateObjectURLs}
                     />
                   );
                 })}
@@ -598,7 +652,7 @@ export default function EditableTable({
           </TableBody>
         </Table>
       </TableContainer>
-      <div className="flex self-end space-x-6 pt-8">
+      <div className="flex space-x-6 self-end pt-8">
         {showError && (
           <Failed closeError={handleCloseError} errorMsg={errorMsg} />
         )}
