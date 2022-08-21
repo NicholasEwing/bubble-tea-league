@@ -7,6 +7,7 @@ const nextConfig = {
       "tailwindui.com",
       "ddragon.leagueoflegends.com",
       "www.fillmurray.com",
+      "localhost",
     ],
     formats: ["image/avif", "image/webp"],
   },
