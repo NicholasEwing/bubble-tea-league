@@ -372,10 +372,13 @@ export default function EditableTable({
     }
   }
 
-  const canApply =
-    !isEqual(items, itemsState) && !isEqual(foreignItems, foreignItemsState)
-      ? true
-      : false;
+  let canApply;
+  if (foreignItems?.length) {
+    canApply =
+      !isEqual(items, itemsState) || !isEqual(foreignItems, foreignItemsState);
+  } else {
+    canApply = !isEqual(items, itemsState);
+  }
 
   async function applyChanges() {
     try {
