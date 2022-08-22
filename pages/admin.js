@@ -57,7 +57,7 @@ export default function Dashboard({
 
   if (!isAdmin && status === "authenticated")
     return (
-      <h2 className="text-center mt-6 text-white text-3xl">
+      <h2 className="mt-6 text-center text-3xl text-white">
         Must be an admin to view this page.
       </h2>
     );

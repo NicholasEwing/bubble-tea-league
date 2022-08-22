@@ -6,9 +6,9 @@ export default function TabContainer({ children, tabName, selectTab, active }) {
       onClick={() => selectTab(tabName)}
       className={`${
         active
-          ? "text-teal-accent pointer-events-none after:absolute after:block after:bottom-0 after:left-0 after:h-1 after:w-full after:bg-teal-accent"
-          : "text-[#555D64]"
-      } flex items-center relative h-full px-4`}
+          ? "pointer-events-none text-teal-accent after:absolute after:bottom-0 after:left-0 after:block after:h-1 after:w-full after:bg-teal-accent"
+          : "cursor-pointer text-[#555D64]"
+      } relative flex h-full items-center px-4`}
     >
       {children}
     </div>

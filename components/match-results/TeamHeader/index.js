@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import TeamLogo from "./TeamLogo";
 import Tricode from "./Tricode";
@@ -16,27 +17,33 @@ export default function TeamHeader({
 
   if (teamSide === "blue") {
     return (
-      <div className="team flex items-center p-3 relative">
-        {thisTeamWon ? (
-          <span className="text-green-700 font-bold absolute -left-7">W</span>
-        ) : (
-          <span className="text-red-700 font-bold absolute -left-7">L</span>
-        )}
-        <Tricode tricode={tricode} teamSide={teamSide} />
-        <TeamLogo tricode={tricode} />
-      </div>
+      <Link href={`/teams/${teamId}`}>
+        <a className="team relative flex items-center p-3">
+          {thisTeamWon ? (
+            <span className="absolute -left-7 font-bold text-green-700">W</span>
+          ) : (
+            <span className="absolute -left-7 font-bold text-red-700">L</span>
+          )}
+          <Tricode tricode={tricode} teamSide={teamSide} />
+          <TeamLogo tricode={tricode} />
+        </a>
+      </Link>
     );
   } else if (teamSide === "red") {
     return (
-      <div className="team flex items-center p-3 relative">
-        {thisTeamWon ? (
-          <span className="text-green-700 font-bold absolute -right-7">W</span>
-        ) : (
-          <span className="text-red-700 font-bold absolute -right-7">L</span>
-        )}
-        <TeamLogo tricode={tricode} />
-        <Tricode tricode={tricode} teamSide={teamSide} />
-      </div>
+      <Link href={`/teams/${teamId}`}>
+        <a className="team relative flex items-center p-3">
+          {thisTeamWon ? (
+            <span className="absolute -right-7 font-bold text-green-700">
+              W
+            </span>
+          ) : (
+            <span className="absolute -right-7 font-bold text-red-700">L</span>
+          )}
+          <TeamLogo tricode={tricode} />
+          <Tricode tricode={tricode} teamSide={teamSide} />
+        </a>
+      </Link>
     );
   }
 }
