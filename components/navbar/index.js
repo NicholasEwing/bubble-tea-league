@@ -1,7 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import Link from "next/link";
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import HomeIcon from "./HomeIcon";
 import DesktopNavLink from "./DesktopNavLink";
 import ProfileDropdown from "./ProfileDropdown";
