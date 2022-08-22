@@ -167,7 +167,6 @@ export default function EditableTable({
   const uploadFiles = async () => {
     for (const fileObj of savedFiles) {
       const { file, id } = fileObj;
-      // find custom data we need to append for each file...
       const body = new FormData();
       body.append("file", file);
       body.append("id", id);
@@ -432,7 +431,12 @@ export default function EditableTable({
         }
       }
 
-      // find rows to update and update them -------
+      if (savedFiles) {
+        await uploadFiles();
+        setFiles([]);
+        setSavedFiles([]);
+      }
+
       const res = await fetch(`http://localhost:3000/api/${tableName}/`, {
         method: "PATCH",
         headers: {
@@ -464,13 +468,6 @@ export default function EditableTable({
         if (!foreignRes.ok) {
           throw new Error("Failed to apply changes.");
         }
-      }
-
-      if (savedFiles) {
-        uploadFiles();
-        setFiles([]);
-        setSavedFiles([]);
-        // TODO: clear object urls and pull imgs from db instead?
       }
 
       refreshData();

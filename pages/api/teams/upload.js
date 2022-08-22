@@ -22,20 +22,26 @@ export default async function handler(req, res) {
   try {
     switch (req.method) {
       case "POST":
-        console.log("hit upload end point for teams");
-        const form = new formidable.IncomingForm();
-        form.parse(req, async function (err, fields, files) {
-          const { file } = files;
-          const { id } = fields;
-          const team = await Team.findByPk(id);
+        try {
+          const form = new formidable.IncomingForm();
+          form.parse(req, async function (err, fields, files) {
+            const { file } = files;
+            const { id } = fields;
+            const team = await Team.findByPk(id);
+            const oldImage = team.logoImgPath;
+            const newImage = file.originalFilename;
 
-          await team.update({
-            logoImgPath: `/teams/${file.originalFilename}`,
+            if (oldImage) fs.unlinkSync(`./public${oldImage}`);
+
+            await saveFile(file);
+            await team.update({
+              logoImgPath: `/teams/${newImage}`,
+            });
           });
-
-          await saveFile(file);
-        });
-        res.status(201).end();
+          res.status(201).end();
+        } catch (error) {
+          res.status(409).send({ error });
+        }
         break;
     }
   } catch (error) {
