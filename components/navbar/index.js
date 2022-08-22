@@ -1,7 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import Link from "next/link";
 import Image from "next/image";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import HomeIcon from "./HomeIcon";
 import DesktopNavLink from "./DesktopNavLink";
 import ProfileDropdown from "./ProfileDropdown";
@@ -21,17 +21,30 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const { data: session, status } = useSession();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const navigation = [
-    { name: "Schedule", href: "/schedule", current: false },
-    { name: "Standings", href: "/standings", current: false },
-    { name: "About", href: "#", current: false },
+    {
+      name: "Schedule",
+      href: "/schedule",
+    },
+    {
+      name: "Standings",
+      href: "/standings",
+    },
+    { name: "About", href: "#" },
   ];
 
-  const isAdmin = admins.includes(session?.user?.email);
+  useEffect(() => {
+    const userIsAdmin = admins.includes(session?.user?.email);
+    setIsAdmin(userIsAdmin);
+  }, [session]);
 
   if (isAdmin)
-    navigation.push({ name: "Admin", href: "/admin", current: false });
+    navigation.push({
+      name: "Admin",
+      href: "/admin",
+    });
 
   return (
     <Disclosure
