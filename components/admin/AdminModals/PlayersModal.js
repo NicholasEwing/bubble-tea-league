@@ -53,7 +53,6 @@ export default function PlayersModal({ players, closeModal }) {
     });
 
     const { PUUID } = await res.json();
-    console.log("puuid?", PUUID);
     return PUUID;
   };
 
@@ -150,7 +149,6 @@ export default function PlayersModal({ players, closeModal }) {
         throw resJson.message;
       }
     } catch (error) {
-      console.log("caught error when submitting", error);
       setFormSubmitted(false);
       setErrorMessage(error);
       setFormError(true);
@@ -175,7 +173,7 @@ export default function PlayersModal({ players, closeModal }) {
     return (
       <Form>
         <div>
-          <h3 className="text-lg leading-6 font-medium text-white">
+          <h3 className="text-lg font-medium leading-6 text-white">
             Create a New Player
           </h3>
           <p className="mt-1 max-w-2xl text-sm">
@@ -190,7 +188,7 @@ export default function PlayersModal({ players, closeModal }) {
             blurHandler={summonerNameBlurHandler}
           >
             {summonerNameState.length > 0 && riotApiLoading && (
-              <span className="flex mt-4">
+              <span className="mt-4 flex">
                 <LoadingSpinner />
                 <p className="text-sm text-gray-300">
                   Checking Riot Games API...
@@ -200,11 +198,11 @@ export default function PlayersModal({ players, closeModal }) {
             {summonerNameState.length > 0 &&
               !riotApiLoading &&
               (summonerNameValid ? (
-                <p className="text-sm mt-4 text-green-300">
+                <p className="mt-4 text-sm text-green-300">
                   ✓ Summoner name found from Riot Games API!
                 </p>
               ) : (
-                <p className="text-sm mt-4 text-red-300">
+                <p className="mt-4 text-sm text-red-300">
                   {summonerNameWarning}
                 </p>
               ))}
@@ -216,11 +214,11 @@ export default function PlayersModal({ players, closeModal }) {
           >
             {discordNameState.length > 0 &&
               (discordNameValid ? (
-                <p className="text-sm mt-4 text-green-300">
+                <p className="mt-4 text-sm text-green-300">
                   ✓ Discord name is valid!
                 </p>
               ) : (
-                <p className="text-sm mt-4 text-red-300">
+                <p className="mt-4 text-sm text-red-300">
                   ❌ Discord name invalid!
                 </p>
               ))}

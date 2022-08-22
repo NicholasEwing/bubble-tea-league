@@ -10,6 +10,7 @@ import SeasonsSection from "../components/admin/Sections/SeasonsSection";
 import TeamsSection from "../components/admin/Sections/TeamsSection";
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import PlayersSection from "../components/admin/Sections/PlayersSection";
+import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
 
 import admins from "../sequelize/admins";
 
@@ -18,15 +19,19 @@ export const getStaticProps = async () => {
 
   const seasons = await Season.findAll({ raw: true });
   const teams = await Team.findAll({ raw: true });
-  const players = await Player.findAll({ raw: true });
+  const allPlayers = await Player.findAll({ raw: true });
   const matches = await Match.findAll({ raw: true });
   const playerTeamHistory = await PlayerTeamHistory.findAll({ raw: true });
+
+  const players = allPlayers.filter((p) => !p.isFreeAgent);
+  const freeAgents = allPlayers.filter((p) => p.isFreeAgent);
 
   return {
     props: {
       seasons: JSON.parse(JSON.stringify(seasons)),
       teams: JSON.parse(JSON.stringify(teams)),
       players: JSON.parse(JSON.stringify(players)),
+      freeAgents: JSON.parse(JSON.stringify(freeAgents)),
       matches: JSON.parse(JSON.stringify(matches)),
       playerTeamHistory: JSON.parse(JSON.stringify(playerTeamHistory)),
     },
@@ -37,6 +42,7 @@ export default function Dashboard({
   seasons,
   teams,
   players,
+  freeAgents,
   matches,
   playerTeamHistory,
 }) {
@@ -78,6 +84,7 @@ export default function Dashboard({
           seasons={seasons}
           playerTeamHistory={playerTeamHistory}
         />
+        <FreeAgentsSection items={freeAgents} />
         <h2>Free Agents</h2>
       </RefreshWrapper>
     </div>

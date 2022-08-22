@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
     lastName: {
       type: DataTypes.STRING,
     },
-    isSubstitute: {
+    isFreeAgent: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,

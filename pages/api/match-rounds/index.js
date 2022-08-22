@@ -109,50 +109,64 @@ export default async function handler(req, res) {
         }
 
         // get player puuids
-        const firstBluePlayerPUUID = matchRoundResults.info.participants.find(
+        const bluePlayers = matchRoundResults.info.participants.filter(
           (participant) => {
             return participant.teamId === 100;
           }
-        ).puuid;
+        );
 
-        const firstRedPlayerPUUID = matchRoundResults.info.participants.find(
+        const redPlayers = matchRoundResults.info.participants.filter(
           (participant) => {
             return participant.teamId === 200;
           }
-        ).puuid;
+        );
 
         // we know the winning / losing team Ids, now we need to know
         // which color side they were on
 
-        // get player ids for first red / blue players
-        const { id: firstBluePlayerId } = await Player.findOne({
-          where: {
-            PUUID: firstBluePlayerPUUID,
-          },
-          attributes: ["id"],
-          raw: true,
-        });
+        let blueTeamId;
+        for (const player of bluePlayers) {
+          const { id: bluePlayerId } = await Player.findOne({
+            where: {
+              PUUID: player.puuid,
+            },
+            attributes: ["id"],
+            raw: true,
+          });
 
-        const { id: firstRedPlayerId } = await Player.findOne({
-          where: {
-            PUUID: firstRedPlayerPUUID,
-          },
-          attributes: ["id"],
-          raw: true,
-        });
+          const { TeamId } = await PlayerTeamHistory.findOne({
+            where: { PlayerId: bluePlayerId },
+            attributes: ["TeamId"],
+            raw: true,
+          });
 
-        // now FINALLY find the blue / red player's team ids
-        const { TeamId: blueTeamId } = await PlayerTeamHistory.findOne({
-          where: { PlayerId: firstBluePlayerId },
-          attributes: ["TeamId"],
-          raw: true,
-        });
+          if (TeamId) {
+            blueTeamId = TeamId;
+            break;
+          }
+        }
 
-        const { TeamId: redTeamId } = await PlayerTeamHistory.findOne({
-          where: { PlayerId: firstRedPlayerId },
-          attributes: ["TeamId"],
-          raw: true,
-        });
+        let redTeamId;
+        for (const player of redPlayers) {
+          const { id: redPlayerId } = await Player.findOne({
+            where: {
+              PUUID: player.puuid,
+            },
+            attributes: ["id"],
+            raw: true,
+          });
+
+          const { TeamId } = await PlayerTeamHistory.findOne({
+            where: { PlayerId: redPlayerId },
+            attributes: ["TeamId"],
+            raw: true,
+          });
+
+          if (TeamId) {
+            redTeamId = TeamId;
+            break;
+          }
+        }
 
         // get game length
         const gameDuration = matchRoundResults.info.gameDuration;
@@ -326,12 +340,6 @@ export default async function handler(req, res) {
               },
             },
           });
-
-          console.log(
-            "season team standings to be updated",
-            seasonTeamStandings
-          );
-          console.log("new team standing records", teamStandingRecords);
 
           for (const standing of seasonTeamStandings) {
             const { placement } = teamStandingRecords.find(

@@ -137,7 +137,6 @@ export default function PlayersSection({
     {
       valueKey: "summonerName",
       name: "Summoner Name",
-      canEdit: true,
       pattern: "^[a-zA-Z0-9,._ ]{1,255}$",
     },
     {

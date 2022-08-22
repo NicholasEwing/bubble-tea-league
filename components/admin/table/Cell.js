@@ -68,9 +68,7 @@ export default function Cell({
       if (existingObjectUrl) {
         existingObjectUrl.url = URL.createObjectURL(i);
         const newObjectUrls = createObjectURLs.filter((o) => o.id !== id);
-        console.log("new obj urls", newObjectUrls);
         newObjectUrls.push(existingObjectUrl);
-        console.log("overwrited old one, new obj urls", newObjectUrls);
         setCreateObjectURLs(newObjectUrls);
       } else {
         setCreateObjectURLs([
