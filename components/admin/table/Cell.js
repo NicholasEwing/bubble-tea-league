@@ -25,27 +25,6 @@ export default function Cell({
   createObjectURLs,
   setCreateObjectURLs,
 }) {
-  // useEffect(() => {
-  //   async function readBlob(blob) {
-  //     const text = await new Response(blob).text();
-  //   }
-
-  //   if (inputType === "file" && !files.length && createObjectURL) {
-  //     // compare this cell's value
-
-  //     const text = readBlob(createObjectURL);
-  //     console.log("text???", text);
-
-  //     console.log("triggered condition");
-  //     console.log("value", value);
-  //     console.log("create obj url?", createObjectURL);
-  //     // console.log("files", files);
-  //     // console.log("saved files", savedFiles);
-  //     // only trigger on THIS cell...
-  //     setCreateObjectURL();
-  //   }
-  // }, [inputType, files, createObjectURL, savedFiles, value]);A
-
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -157,6 +136,7 @@ export default function Cell({
           />
         </span>
       )}
+      {/* nested ternanies are really stupid, but I'm lazy */}
       {valueAsComponent
         ? valueAsComponent
         : editing && canEdit

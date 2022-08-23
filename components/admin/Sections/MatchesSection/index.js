@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { findTeamName } from "../../../lib/utils";
-import EditableTable from "../EditableTable";
-import SectionContainer from "../table/SectionContainer";
-import TextHeadingContainer from "../TextHeadingContainer";
+import { findTeamName } from "../../../../lib/utils";
+import EditableTable from "../../EditableTable";
+import SectionContainer from "../../table/SectionContainer";
+import TextHeadingContainer from "../../TextHeadingContainer";
+import CopyIcon from "./CopyIcon";
 
 export default function MatchesSection({ items, teams, matchRounds }) {
   const matchesColumns = [
@@ -20,17 +21,18 @@ export default function MatchesSection({ items, teams, matchRounds }) {
         const tournamentCodes = foreignEditState
           .filter((fes) => fes.MatchId === id)
           .map((i) => i.tournamentCode);
-        console.log("inside custom formatter");
-        console.log("id", id);
-        console.log("tournament codes", tournamentCodes);
 
-        return <CopyIcon />;
-
-        return `${tournamentCodes.length} code${
-          tournamentCodes.length > 1 ? "s" : ""
-        }`;
-
-        return tournamentCodes[0].substring(0, 12) + "...";
+        return (
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(tournamentCodes);
+            }}
+            className="inline-flex cursor-pointer select-none items-center rounded-full border border-gray-500 px-2.5 py-0.5"
+          >
+            <CopyIcon />
+            Copy
+          </button>
+        );
       },
     },
     {
