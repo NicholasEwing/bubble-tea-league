@@ -15,6 +15,7 @@ export default function TeamsSection({ items }) {
       name: "Logo",
       canEdit: true,
       inputType: "file",
+      small: true,
       customFormatter: ({ logoImgPath }) => {
         const regexArr = /[^\\/\\]+$/.exec(logoImgPath);
         const imageName = regexArr[0];

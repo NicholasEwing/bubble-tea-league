@@ -4,12 +4,34 @@ import EditableTable from "../EditableTable";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
-export default function MatchesSection({ items, teams }) {
+export default function MatchesSection({ items, teams, matchRounds }) {
   const matchesColumns = [
     {
       valueKey: "id",
       name: "id",
       small: true,
+    },
+    {
+      valueKey: "id",
+      name: "Tournament Codes",
+      small: true,
+      needsForeignEditState: true,
+      customFormatter: ({ id, foreignEditState }) => {
+        const tournamentCodes = foreignEditState
+          .filter((fes) => fes.MatchId === id)
+          .map((i) => i.tournamentCode);
+        console.log("inside custom formatter");
+        console.log("id", id);
+        console.log("tournament codes", tournamentCodes);
+
+        return <CopyIcon />;
+
+        return `${tournamentCodes.length} code${
+          tournamentCodes.length > 1 ? "s" : ""
+        }`;
+
+        return tournamentCodes[0].substring(0, 12) + "...";
+      },
     },
     {
       valueKey: "isPlayoffsMatch",
@@ -85,6 +107,7 @@ export default function MatchesSection({ items, teams }) {
       </TextHeadingContainer>
       <EditableTable
         items={items}
+        foreignItems={matchRounds}
         columns={matchesColumns}
         tableName="matches"
       />

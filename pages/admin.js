@@ -15,12 +15,14 @@ import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
 import admins from "../sequelize/admins";
 
 export const getStaticProps = async () => {
-  const { Season, Team, Player, Match, PlayerTeamHistory } = sequelize.models;
+  const { Season, Team, Player, Match, PlayerTeamHistory, MatchRound } =
+    sequelize.models;
 
   const seasons = await Season.findAll({ raw: true });
   const teams = await Team.findAll({ raw: true });
   const allPlayers = await Player.findAll({ raw: true });
   const matches = await Match.findAll({ raw: true });
+  const matchRounds = await MatchRound.findAll({ raw: true });
   const playerTeamHistory = await PlayerTeamHistory.findAll({ raw: true });
 
   const players = allPlayers.filter((p) => !p.isFreeAgent);
@@ -33,6 +35,7 @@ export const getStaticProps = async () => {
       players: JSON.parse(JSON.stringify(players)),
       freeAgents: JSON.parse(JSON.stringify(freeAgents)),
       matches: JSON.parse(JSON.stringify(matches)),
+      matchRounds: JSON.parse(JSON.stringify(matchRounds)),
       playerTeamHistory: JSON.parse(JSON.stringify(playerTeamHistory)),
     },
   };
@@ -44,6 +47,7 @@ export default function Dashboard({
   players,
   freeAgents,
   matches,
+  matchRounds,
   playerTeamHistory,
 }) {
   const router = useRouter();
@@ -77,7 +81,11 @@ export default function Dashboard({
       <RefreshWrapper>
         <SeasonsSection items={seasons} />
         <TeamsSection items={teams} />
-        <MatchesSection items={matches} teams={teams} />
+        <MatchesSection
+          items={matches}
+          teams={teams}
+          matchRounds={matchRounds}
+        />
         <PlayersSection
           items={players}
           teams={teams}
