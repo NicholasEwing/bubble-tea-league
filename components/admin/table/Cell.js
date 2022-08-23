@@ -78,8 +78,12 @@ export default function Cell({
       }
     }
   };
-
-  const valueAsString = value?.toString() ? value.toString() : "";
+  let valueAsComponent, valueAsString;
+  if (typeof value === "object") {
+    valueAsComponent = value;
+  } else {
+    valueAsString = value?.toString() ? value.toString() : "";
+  }
 
   let inputComponent = <p>no input decided on yet</p>;
 
@@ -153,7 +157,9 @@ export default function Cell({
           />
         </span>
       )}
-      {editing && canEdit
+      {valueAsComponent
+        ? valueAsComponent
+        : editing && canEdit
         ? inputComponent
         : trimString(valueAsString, 30) || "-"}
     </td>
