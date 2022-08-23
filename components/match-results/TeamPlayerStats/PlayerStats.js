@@ -38,11 +38,11 @@ export default function PlayerStats({
         isSelectedByRow ? "xl:pointer-events-none xl:bg-black" : ""
       } ${
         isSelectedIndividually ? "pointer-events-none bg-black" : ""
-      } player top p-4 pr-0 h-32 flex flex-wrap text-sm font-thin border-b border-b-[#252c32]`}
+      } player top flex h-32 flex-wrap border-b border-b-[#252c32] p-4 pr-0 text-sm font-thin`}
     >
       <div className="name basis-full pb-1 font-bold">{summonerName}</div>
       <div
-        className={`portrait relative basis-16 h-16 w-16 before:block before:absolute before:-left-[3px] before:-top-[3px] before:-right-[3px] before:-bottom-[3px] before:z-1 before:rounded-[33px] before:border-[3px] before:border-[#0a0e13] ${
+        className={`portrait before:z-1 relative h-16 w-16 basis-16 before:absolute before:-left-[3px] before:-top-[3px] before:-right-[3px] before:-bottom-[3px] before:block before:rounded-[33px] before:border-[3px] before:border-[#0a0e13] ${
           isSelectedByRow
             ? "xl:before:border-teal-accent xl:before:shadow-inner"
             : ""
@@ -52,21 +52,21 @@ export default function PlayerStats({
             : ""
         }`}
       >
-        <div className="wrapper text-center h-full w-full bg-[#333] rounded-[30px] overflow-hidden relative z-1">
+        <div className="wrapper z-1 relative h-full w-full overflow-hidden rounded-[30px] bg-[#333] text-center">
           <Image
-            className="image inline-block h-full w-full m-0"
-            src={`https://ddragon.leagueoflegends.com/cdn/12.6.1/img/champion/${championName}.png`}
+            className="image m-0 inline-block h-full w-full"
+            src={`https://ddragon.leagueoflegends.com/cdn/${process.env.patchNumber}/img/champion/${championName}.png`}
             alt=""
             layout="fill"
             priority
             style={{ transform: "scale3d(1.1,1.1,1.1)" }}
           />
         </div>
-        <div className="level absolute -left-[2px] -bottom-[2px] bg-black rounded-3xl text-center w-6 h-6 font-thin border border-t-2 border-[#252c32] overflow-hidden z-2">
+        <div className="level z-2 absolute -left-[2px] -bottom-[2px] h-6 w-6 overflow-hidden rounded-3xl border border-t-2 border-[#252c32] bg-black text-center font-thin">
           {champLevel}
         </div>
       </div>
-      <div className="details pl-1 flex-1">
+      <div className="details flex-1 pl-1">
         <div className="stat kda">
           <svg
             className="icon float-left clear-left mx-1 mt-[2px] mb-0 inline-block align-bottom leading-5"
@@ -78,7 +78,7 @@ export default function PlayerStats({
             <g
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-teal-accent fill-[#555d64]"
+                  ? "fill-[#555d64] xl:fill-teal-accent"
                   : "fill-[#555d64]"
               } ${
                 isSelectedIndividually
@@ -105,7 +105,7 @@ export default function PlayerStats({
             <path
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-teal-accent fill-[#555d64]"
+                  ? "fill-[#555d64] xl:fill-teal-accent"
                   : "fill-[#555d64]"
               } ${
                 isSelectedIndividually
@@ -128,7 +128,7 @@ export default function PlayerStats({
             <g
               className={`shape ${
                 isSelectedByRow
-                  ? "xl:fill-teal-accent fill-[#555d64]"
+                  ? "fill-[#555d64] xl:fill-teal-accent"
                   : "fill-[#555d64]"
               } ${
                 isSelectedIndividually
