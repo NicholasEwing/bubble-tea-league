@@ -25,6 +25,7 @@ export default function EditableTable({
   bulkEdit,
   canDelete,
   foreignItems,
+  isPublic = false,
 }) {
   // table data and controls
   const [itemsState, setItemsState] = useState(items);
@@ -142,7 +143,7 @@ export default function EditableTable({
   }, [foreignItems]);
 
   useLayoutEffect(() => {
-    if (items.length) {
+    if (items.length && !isPublic) {
       const isIndeterminate =
         selectedItems.length > 0 && selectedItems.length < editState.length;
       setChecked(selectedItems.length === editState.length);
@@ -562,6 +563,7 @@ export default function EditableTable({
             checkbox={checkbox}
             checked={checked}
             toggleAll={toggleAll}
+            isPublic={isPublic}
           >
             {columns.map((c) => (
               <ColumnHeader
@@ -578,6 +580,7 @@ export default function EditableTable({
                 selectedItems={selectedItems}
                 item={item}
                 setSelectedItems={setSelectedItems}
+                isPublic={isPublic}
               >
                 {columns.map((column, j) => {
                   const {
@@ -639,14 +642,16 @@ export default function EditableTable({
                     />
                   );
                 })}
-                <EditButton
-                  id={item.id || item.number}
-                  saveChanges={saveChanges}
-                  cancelChanges={cancelChanges}
-                  checkIfRowCanSave={checkIfRowCanSave}
-                  handleEditRows={handleEditRows}
-                  editing={editingItems.includes(item.id || item.number)}
-                />
+                {!isPublic && (
+                  <EditButton
+                    id={item.id || item.number}
+                    saveChanges={saveChanges}
+                    cancelChanges={cancelChanges}
+                    checkIfRowCanSave={checkIfRowCanSave}
+                    handleEditRows={handleEditRows}
+                    editing={editingItems.includes(item.id || item.number)}
+                  />
+                )}
               </Row>
             ))}
           </TableBody>

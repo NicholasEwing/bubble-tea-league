@@ -5,7 +5,12 @@ import SectionContainer from "../../table/SectionContainer";
 import TextHeadingContainer from "../../TextHeadingContainer";
 import CopyIcon from "./CopyIcon";
 
-export default function MatchesSection({ items, teams, matchRounds }) {
+export default function MatchesSection({
+  items,
+  teams,
+  matchRounds,
+  isPublic = false,
+}) {
   const matchesColumns = [
     {
       valueKey: "id",
@@ -59,7 +64,7 @@ export default function MatchesSection({ items, teams, matchRounds }) {
     {
       valueKey: "scheduledTime",
       name: "Scheduled Time",
-      canEdit: true,
+      canEdit: isPublic ? false : true,
       customFormatter: ({ scheduledTime }) => {
         const date = new Date(scheduledTime);
         return date.toLocaleDateString("en-US", {
@@ -112,6 +117,7 @@ export default function MatchesSection({ items, teams, matchRounds }) {
         foreignItems={matchRounds}
         columns={matchesColumns}
         tableName="matches"
+        isPublic={isPublic}
       />
     </SectionContainer>
   );

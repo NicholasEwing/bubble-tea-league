@@ -62,7 +62,7 @@ export default function Dashboard({
   }, [status, isAdmin, router]);
 
   useEffect(() => {
-    if (status === "unauthenticated") signIn();
+    if (status === "unauthenticated") signIn("discord");
   }, [status]);
 
   if (!isAdmin && status === "authenticated")
@@ -93,7 +93,6 @@ export default function Dashboard({
           playerTeamHistory={playerTeamHistory}
         />
         <FreeAgentsSection items={freeAgents} />
-        <h2>Free Agents</h2>
       </RefreshWrapper>
     </div>
   );
