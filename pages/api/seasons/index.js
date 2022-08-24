@@ -6,11 +6,21 @@ import {
   createTournamentId,
   generateTournamentCodes,
 } from "../../../lib/riot-games-api-helpers";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import admins from "../../../sequelize/admins";
+
 const sequelize = require("../../../sequelize");
 const { Match, MatchRound, Season, Provider } = sequelize.models;
 
 export default async function handler(req, res) {
   const seasons = await Season.findAll();
+
+  if (process.env.NODE_ENV === "production") {
+    const session = await unstable_getServerSession(req, res, authOptions);
+    const userIsAdmin = admins.includes(session?.user?.email);
+    if (!userIsAdmin) res.status(401).end();
+  }
 
   switch (req.method) {
     case "GET":

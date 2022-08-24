@@ -3,9 +3,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import SequelizeAdapter from "@next-auth/sequelize-adapter";
 import sequelize from "../../../sequelize/index.js";
 
-// I usually have an isAdmin flag or something in the sessions, which is based on the database tag
-
-export default NextAuth({
+export const authOptions = {
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID,
@@ -23,4 +21,6 @@ export default NextAuth({
       return baseUrl;
     },
   },
-});
+};
+
+export default NextAuth(authOptions);

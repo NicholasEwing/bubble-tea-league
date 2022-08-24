@@ -24,7 +24,7 @@ describe("/api/players", () => {
           PUUID: expect.any(String),
           summonerName: expect.any(String),
           discordName: expect.any(String),
-          isSubstitute: expect.any(Boolean),
+          isFreeAgent: expect.any(Boolean),
         }),
       ])
     );

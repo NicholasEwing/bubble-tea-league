@@ -1,3 +1,6 @@
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import admins from "../../../sequelize/admins";
 const sequelize = require("../../../sequelize");
 const { Team } = sequelize.models;
 
@@ -19,6 +22,11 @@ const saveFile = async (file) => {
 };
 
 export default async function handler(req, res) {
+  if (process.env.NODE_ENV === "production") {
+    const session = await unstable_getServerSession(req, res, authOptions);
+    const userIsAdmin = admins.includes(session?.user?.email);
+    if (!userIsAdmin) res.status(401).end();
+  }
   try {
     switch (req.method) {
       case "POST":

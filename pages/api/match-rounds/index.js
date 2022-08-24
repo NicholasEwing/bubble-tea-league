@@ -11,6 +11,9 @@ import {
 } from "../../../lib/riot-games-api-helpers";
 import { seedPlayoffs } from "../../../lib/general-api-helpers";
 import { sortStandings } from "../../../lib/utils";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import admins from "../../../sequelize/admins";
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const sequelize = require("../../../sequelize");
@@ -28,6 +31,11 @@ const { default: fetch } = require("node-fetch");
 
 export default async function handler(req, res) {
   try {
+    if (process.env.NODE_ENV === "production") {
+      const session = await unstable_getServerSession(req, res, authOptions);
+      const userIsAdmin = admins.includes(session?.user?.email);
+      if (!userIsAdmin) res.status(401).end();
+    }
     switch (req.method) {
       case "GET":
         const matchRounds = await MatchRound.findAll();
