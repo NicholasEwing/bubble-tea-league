@@ -3,13 +3,12 @@ import React from "react";
 export default function LoadingSpinner({
   wheelColor = "text-gray-600",
   wheelAccent = "fill-teal-accent",
-  noText,
 }) {
   return (
     <div role="status inline-block">
       <svg
         aria-hidden="true"
-        className={`mr-2 w-5 h-5 ${wheelColor} ${wheelAccent} animate-spin`}
+        className={`mr-2 h-5 w-5 ${wheelColor} ${wheelAccent} animate-spin`}
         viewBox="0 0 100 101"
         fill="none"
         width="5"
@@ -24,7 +23,7 @@ export default function LoadingSpinner({
           fill="currentFill"
         ></path>
       </svg>
-      {!noText && <span className="sr-only">Loading...</span>}
+      <span className="sr-only">Loading...</span>
     </div>
   );
 }

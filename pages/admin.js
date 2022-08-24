@@ -6,6 +6,7 @@ import sequelize from "../sequelize";
 
 import { RefreshWrapper } from "../components/admin/context/refreshData";
 
+import ProviderSection from "../components/admin/Sections/ProviderSection";
 import SeasonsSection from "../components/admin/Sections/SeasonsSection";
 import TeamsSection from "../components/admin/Sections/TeamsSection";
 import MatchesSection from "../components/admin/Sections/MatchesSection";
@@ -15,9 +16,17 @@ import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
 import admins from "../sequelize/admins";
 
 export const getStaticProps = async () => {
-  const { Season, Team, Player, Match, PlayerTeamHistory, MatchRound } =
-    sequelize.models;
+  const {
+    Provider,
+    Season,
+    Team,
+    Player,
+    Match,
+    PlayerTeamHistory,
+    MatchRound,
+  } = sequelize.models;
 
+  const provider = await Provider.findOne({ raw: true });
   const seasons = await Season.findAll({ raw: true });
   const teams = await Team.findAll({ raw: true });
   const allPlayers = await Player.findAll({ raw: true });
@@ -30,6 +39,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
+      provider: JSON.parse(JSON.stringify(provider)),
       seasons: JSON.parse(JSON.stringify(seasons)),
       teams: JSON.parse(JSON.stringify(teams)),
       players: JSON.parse(JSON.stringify(players)),
@@ -42,6 +52,7 @@ export const getStaticProps = async () => {
 };
 
 export default function Dashboard({
+  provider,
   seasons,
   teams,
   players,
@@ -79,6 +90,7 @@ export default function Dashboard({
   return (
     <div className="py-8 px-4">
       <RefreshWrapper>
+        {!provider && <ProviderSection provider={provider} />}
         <SeasonsSection items={seasons} />
         <TeamsSection items={teams} />
         <MatchesSection

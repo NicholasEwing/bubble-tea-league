@@ -3,7 +3,7 @@ import { CheckCircleIcon } from "@heroicons/react/solid";
 import AlertContainer from "./AlertContainer";
 import XCloseAlert from "./XCloseAlert";
 
-export default function Success({ closeSuccess }) {
+export default function Success({ closeSuccess, successMsg }) {
   return (
     <AlertContainer bgColor="green-50">
       <div className="flex-shrink-0">
@@ -13,7 +13,9 @@ export default function Success({ closeSuccess }) {
         />
       </div>
       <div className="ml-3 flex">
-        <h3 className="text-sm font-medium text-green-800">Changes applied!</h3>
+        <h3 className="text-sm font-medium text-green-800">
+          {successMsg ? successMsg : "Changes applied!"}
+        </h3>
         <XCloseAlert success dismissHandler={closeSuccess} />
       </div>
     </AlertContainer>
