@@ -18,7 +18,7 @@ export default function EditButton({
   }, [editing, checkIfRowCanSave, id]);
 
   return (
-    <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 relative">
+    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
       {editing ? (
         <>
           <a
@@ -26,18 +26,18 @@ export default function EditButton({
             className={`${
               canSave
                 ? "opacity-100 hover:text-cyan-800"
-                : "opacity-30 cursor-default"
-            } text-teal-accent cursor-pointer select-none`}
+                : "cursor-default opacity-30"
+            } cursor-pointer select-none text-teal-accent`}
           >
             Save<span className="sr-only">, {id}</span>
           </a>
           <a
             onClick={() => cancelChanges(id)}
-            className="absolute right-9 md:right-14 text-gray-400 hover:text-red-800 cursor-pointer select-none mr-4"
+            className="absolute right-9 mr-4 cursor-pointer select-none text-gray-400 hover:text-red-800 md:right-14"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 mt-[2px]"
+              className="mt-[2px] h-4 w-4"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -53,7 +53,7 @@ export default function EditButton({
       ) : (
         <a
           onClick={() => handleEditRows(id)}
-          className="text-teal-accent hover:text-cyan-800 cursor-pointer select-none pl-[6.20px]"
+          className="cursor-pointer select-none pl-[6.20px] text-teal-accent hover:text-cyan-800"
         >
           Edit<span className="sr-only">, {id}</span>
         </a>
