@@ -58,10 +58,12 @@ export default function Cell({
     }
   };
   let valueAsComponent, valueAsString;
-  if (typeof value === "object") {
+  if (typeof value === "object" && value !== null) {
     valueAsComponent = value;
+  } else if (typeof value === "string" || typeof value === "number") {
+    valueAsString = value ? value.toString() : "";
   } else {
-    valueAsString = value?.toString() ? value.toString() : "";
+    valueAsString = "";
   }
 
   let inputComponent = <p>no input decided on yet</p>;
@@ -120,7 +122,7 @@ export default function Cell({
   return (
     <td
       className={classNames(
-        "relative h-[71px] whitespace-nowrap py-4 px-3 text-sm font-medium not-second:text-gray-300",
+        "relative h-[71px] whitespace-nowrap py-4 px-6 text-sm font-medium not-second:text-gray-300",
         selectedItems && item && selectedItems.includes(item)
           ? "first:text-teal-accent"
           : "first:text-gray-900"
@@ -141,7 +143,7 @@ export default function Cell({
         ? valueAsComponent
         : editing && canEdit
         ? inputComponent
-        : trimString(valueAsString, 30) || "-"}
+        : (valueAsString && trimString(valueAsString, 30)) || "-"}
     </td>
   );
 }

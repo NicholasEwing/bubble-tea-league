@@ -74,9 +74,12 @@ export default function EditableTable({
       );
     }
 
-    const formattedValue = !isNaN(newItemValue)
-      ? parseInt(newItemValue)
-      : newItemValue;
+    let formattedValue;
+    if (!isNaN(parseInt(newItemValue))) {
+      parseInt(newItemValue);
+    } else {
+      formattedValue = newItemValue;
+    }
 
     const newItem = { ...editItem, [valueKey]: formattedValue };
 

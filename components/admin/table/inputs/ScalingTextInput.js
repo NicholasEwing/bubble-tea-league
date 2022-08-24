@@ -7,7 +7,7 @@ export default function ScalingTextInput({
   value,
   pattern,
 }) {
-  const [width, setWidth] = useState(value.length);
+  const [width, setWidth] = useState(value?.length);
 
   const changeHandlerWidth = (e) => {
     const charWidth = e.target.value.length;
