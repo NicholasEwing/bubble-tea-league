@@ -188,6 +188,12 @@ export default function PlayersSection({
       canEdit: true,
       pattern: "^.{0,32}#[0-9]{0,4}$",
     },
+    {
+      valueKey: "email",
+      name: "Email",
+      canEdit: true,
+      pattern: "^.{0,32}[@]{0,32}$",
+    },
   ];
 
   return (

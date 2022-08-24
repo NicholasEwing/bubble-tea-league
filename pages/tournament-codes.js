@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import sequelize from "../sequelize";
-import players from "../sequelize/players";
+import admins from "../sequelize/admins";
 
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import Warning from "../components/tournament-codes/warning";
@@ -10,8 +10,13 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { Op } from "sequelize";
 
 export const getStaticProps = async () => {
-  const { Match, MatchRound, Team } = sequelize.models;
+  const { Match, MatchRound, Team, Player } = sequelize.models;
 
+  const playerEmailObjs = await Player.findAll({
+    raw: true,
+    attributes: ["email"],
+  });
+  const playerEmails = playerEmailObjs.map((o) => o.email);
   const teams = await Team.findAll({ raw: true });
   const matches = await Match.findAll({
     raw: true,
@@ -23,8 +28,11 @@ export const getStaticProps = async () => {
   });
   const matchRounds = await MatchRound.findAll({ raw: true });
 
+  console.log("PLAYER EMAILS", playerEmails);
+
   return {
     props: {
+      playerEmails: JSON.parse(JSON.stringify(playerEmails)),
       teams: JSON.parse(JSON.stringify(teams)),
       matches: JSON.parse(JSON.stringify(matches)),
       matchRounds: JSON.parse(JSON.stringify(matchRounds)),
@@ -32,13 +40,20 @@ export const getStaticProps = async () => {
   };
 };
 
-export default function Dashboard({ teams, matches, matchRounds }) {
+export default function Dashboard({
+  playerEmails,
+  teams,
+  matches,
+  matchRounds,
+}) {
   const router = useRouter();
 
   const sessionInfo = useSession();
 
   const { status } = useSession();
-  const isPlayer = players.includes(sessionInfo?.data?.user?.email);
+  const isPlayer =
+    playerEmails.includes(sessionInfo?.data?.user?.email) ||
+    admins.includes(sessionInfo?.data?.user?.email);
 
   useEffect(() => {
     if (status === "authenticated" && !isPlayer)
@@ -52,7 +67,7 @@ export default function Dashboard({ teams, matches, matchRounds }) {
   if (!isPlayer && status === "authenticated")
     return (
       <h2 className="mt-6 text-center text-3xl text-white">
-        Must be an admitted Bubble Tea League player to view this page.
+        Must be an admitted Bubble Tea League player or admin to view this page.
       </h2>
     );
 
