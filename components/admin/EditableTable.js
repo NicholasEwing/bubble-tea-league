@@ -175,6 +175,9 @@ export default function EditableTable({
       const res = await fetch(`http://localhost:3000/api/${tableName}/upload`, {
         method: "POST",
         body,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
     }
   };

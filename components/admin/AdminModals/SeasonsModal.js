@@ -72,7 +72,7 @@ export default function SeasonsModal({ closeModal, seasons }) {
 
   let options = [];
 
-  for (const i = currentYear; i <= currentYear + 4; i++) {
+  for (let i = currentYear; i <= currentYear + 4; i++) {
     if (!seasonYears.includes(i)) options.push(i);
   }
 
@@ -83,6 +83,9 @@ export default function SeasonsModal({ closeModal, seasons }) {
     try {
       let res = await fetch("http://localhost:3000/api/seasons", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           name: `BTL Season ${seasonYear}`,
           year: seasonYear,
@@ -128,7 +131,7 @@ export default function SeasonsModal({ closeModal, seasons }) {
     return (
       <Form>
         <div>
-          <h3 className="text-lg leading-6 font-medium text-white">
+          <h3 className="text-lg font-medium leading-6 text-white">
             Create a New Season
           </h3>
           <p className="mt-1 max-w-2xl text-sm">
