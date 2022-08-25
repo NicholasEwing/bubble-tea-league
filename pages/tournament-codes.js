@@ -28,8 +28,6 @@ export const getStaticProps = async () => {
   });
   const matchRounds = await MatchRound.findAll({ raw: true });
 
-  console.log("PLAYER EMAILS", playerEmails);
-
   return {
     props: {
       playerEmails: JSON.parse(JSON.stringify(playerEmails)),
