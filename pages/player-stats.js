@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import SeasonSelector from "../components/admin/Sections/PlayersSection/SeasonSelector";
 import SectionContainer from "../components/admin/table/SectionContainer";
 import { findTeamName, percentageFormatter } from "../lib/utils";
+import EditableTable from "../components/admin/EditableTable";
+import TextHeadingContainer from "../components/admin/TextHeadingContainer";
 
 export const getStaticProps = async () => {
   const sequelize = require("../sequelize/index");
@@ -118,11 +120,13 @@ export const getStaticProps = async () => {
         (assists, stats) => (assists += stats.assists),
         0
       );
-      const totalCs = playerMatches.reduce(
-        (totalMinionsKilled, stats) =>
-          (totalMinionsKilled += stats.totalMinionsKilled),
-        0
-      );
+      const totalCs = playerMatches
+        .reduce(
+          (totalMinionsKilled, stats) =>
+            (totalMinionsKilled += stats.totalMinionsKilled),
+          0
+        )
+        .toLocaleString("en-US");
       const gamesPlayed = playerMatches.length;
       const averageGameTimeSeconds =
         playerTeamMatchRounds.reduce(
@@ -247,18 +251,143 @@ export default function PlayerStats({ seasons, seasonRows }) {
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
 
   const rowsToDisplay = seasonRows[activeSeason - 1] || [];
+  console.log("rows to display", rowsToDisplay);
 
   const handleActiveSeason = (number) => {
     setActiveSeason(number);
   };
 
+  // define columns
+  const playerStatsColumns = [
+    {
+      valueKey: "summonerName",
+      name: "Summoner Name",
+    },
+    {
+      valueKey: "role",
+      name: "Role",
+      small: true,
+    },
+    {
+      valueKey: "team",
+      name: "Team",
+      small: true,
+    },
+    {
+      valueKey: "kills",
+      name: "Kills",
+      small: true,
+    },
+    {
+      valueKey: "deaths",
+      name: "Deaths",
+      small: true,
+    },
+    {
+      valueKey: "assists",
+      name: "Assists",
+      small: true,
+    },
+    {
+      valueKey: "totalCs",
+      name: "Total CS",
+      small: true,
+    },
+    {
+      valueKey: "gamesPlayed",
+      name: "Games Played",
+      small: true,
+    },
+    {
+      valueKey: "averageGameTime",
+      name: "Avg Game Time",
+      small: true,
+    },
+    {
+      valueKey: "totalDmgToChamps",
+      name: "Total Dmg To Champs",
+    },
+    {
+      valueKey: "creepsPerMin",
+      name: "CS / Min",
+      small: true,
+    },
+    {
+      valueKey: "totalGold",
+      name: "Total Gold",
+      small: true,
+    },
+    {
+      valueKey: "dmgToChampsPerMin",
+      name: "Dmg to Champs / Min",
+      small: true,
+    },
+    {
+      valueKey: "avgTeamPercentDmg",
+      name: "Avg Team % Dmg",
+      small: true,
+    },
+    {
+      valueKey: "visionScore",
+      name: "Vision Score",
+      small: true,
+    },
+    {
+      valueKey: "visionScorePerGame",
+      name: "Vision Score Per Game",
+      small: true,
+    },
+    {
+      valueKey: "visionScorePerMin",
+      name: "Vision Score / Min",
+      small: true,
+    },
+    {
+      valueKey: "killParticipationPercent",
+      name: "Kill Participation %",
+      small: true,
+    },
+    {
+      valueKey: "goldPerMin",
+      name: "Gold / Min",
+      small: true,
+    },
+    {
+      valueKey: "kda",
+      name: "KDA",
+      small: true,
+    },
+    {
+      valueKey: "firstBloods",
+      name: "First Bloods",
+      small: true,
+    },
+  ];
+
   return (
     <div className="py-8 px-4">
       <SectionContainer>
+        <TextHeadingContainer>
+          <h1 className="text-xl font-semibold text-white">
+            Seasonal Player Stats
+          </h1>
+          <p className="mt-2 text-sm text-gray-400">
+            This table shows stats across a player&apos;s entire season game
+            history. Some numbers are totals that are simply added, such as
+            kills, deaths, and assists. Others may be averages, percentages or
+            per-minute stats.
+          </p>
+        </TextHeadingContainer>
         <SeasonSelector
           seasons={seasons}
           activeSeason={activeSeason}
           handleActiveSeason={handleActiveSeason}
+        />
+        <EditableTable
+          items={rowsToDisplay}
+          columns={playerStatsColumns}
+          tableName="player-stats"
+          isPublic
         />
       </SectionContainer>
     </div>

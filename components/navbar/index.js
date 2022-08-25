@@ -32,7 +32,8 @@ export default function Navbar() {
       name: "Standings",
       href: "/standings",
     },
-    { name: "About", href: "#" },
+    { name: "Stats", href: "/player-stats" },
+    { name: "Rules", href: "/rules" },
   ];
 
   useEffect(() => {

@@ -122,7 +122,7 @@ export default function Cell({
   return (
     <td
       className={classNames(
-        "relative h-[71px] whitespace-nowrap py-4 px-6 text-sm font-medium not-second:text-gray-300",
+        "relative h-[71px] whitespace-nowrap py-4 px-3 text-sm font-medium not-second:text-gray-300",
         selectedItems && item && selectedItems.includes(item)
           ? "first:text-teal-accent"
           : "first:text-gray-900"
