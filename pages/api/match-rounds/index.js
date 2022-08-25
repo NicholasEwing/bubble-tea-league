@@ -45,7 +45,9 @@ export default async function handler(req, res) {
         // where a lot of the magic happens
         const { metaData, gameId, winningTeam, losingTeam, shortCode } =
           req.body;
-        const { riotAuth } = JSON.parse(metaData);
+        let riotAuth;
+        if (process.env.NODE_ENV === "production")
+          riotAuth = JSON.parse(metaData).riotAuth;
 
         const { MatchId } = await MatchRound.findOne({
           raw: true,
@@ -65,7 +67,10 @@ export default async function handler(req, res) {
         });
 
         // make sure Riot callback includes our API key
-        if (riotAuth !== process.env.BTL_API_KEY) {
+        if (
+          process.env.NODE_ENV === "production" &&
+          riotAuth !== process.env.BTL_API_KEY
+        ) {
           res
             .status(401)
             .send("You are not authorized to send results to the BTL API.");
