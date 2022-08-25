@@ -26,6 +26,18 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
+    firstBlood: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    totalDmgToChamps: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    kda: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
     championName: {
       type: DataTypes.STRING,
       allowNull: false,
