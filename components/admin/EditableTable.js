@@ -153,7 +153,7 @@ export default function EditableTable({
       setIndeterminate(isIndeterminate);
       checkbox.current.indeterminate = isIndeterminate;
     }
-  }, [selectedItems, editState.length, items.length]);
+  }, [selectedItems, editState.length, items.length, isPublic]);
 
   function toggleAll() {
     setSelectedItems(checked || indeterminate ? [] : editState);
@@ -582,7 +582,7 @@ export default function EditableTable({
           <TableBody>
             {editState.map((item, i) => (
               <Row
-                key={`${[tableName]}-${item.id || item.number}`}
+                key={`${[tableName]}-${item.id || item.number || i}`}
                 selectedItems={selectedItems}
                 item={item}
                 setSelectedItems={setSelectedItems}
@@ -668,11 +668,13 @@ export default function EditableTable({
           <Failed closeError={handleCloseError} errorMsg={errorMsg} />
         )}
         {showSuccess && <Success closeSuccess={handleCloseSuccess} />}
-        <ApplyButton
-          applyChanges={applyChanges}
-          canApply={canApply}
-          applying={applying}
-        />
+        {!isPublic && (
+          <ApplyButton
+            applyChanges={applyChanges}
+            canApply={canApply}
+            applying={applying}
+          />
+        )}
       </div>
     </>
   );

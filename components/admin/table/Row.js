@@ -9,11 +9,11 @@ export default function Row({
 }) {
   return (
     <tr className={selectedItems.includes(item) ? "bg-gray-700" : undefined}>
-      <td className="sm relative w-6 bg-gray-800 px-6">
-        {selectedItems.includes(item) && (
-          <div className="absolute inset-y-0 left-0 w-0.5 bg-teal-accent" />
-        )}
-        {!isPublic && (
+      {!isPublic && (
+        <td className="sm relative w-6 bg-gray-800 px-6">
+          {selectedItems.includes(item) && (
+            <div className="absolute inset-y-0 left-0 w-0.5 bg-teal-accent" />
+          )}
           <input
             type="checkbox"
             className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-teal-accent hover:ring-teal-accent sm:left-6"
@@ -27,8 +27,8 @@ export default function Row({
               )
             }
           />
-        )}
-      </td>
+        </td>
+      )}
       {children}
     </tr>
   );
