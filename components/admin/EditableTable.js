@@ -76,7 +76,7 @@ export default function EditableTable({
 
     let formattedValue;
     if (!isNaN(parseInt(newItemValue))) {
-      parseInt(newItemValue);
+      formattedValue = parseInt(newItemValue);
     } else {
       formattedValue = newItemValue;
     }
