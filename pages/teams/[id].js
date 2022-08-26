@@ -5,6 +5,7 @@ import BottomIcon from "../../components/teams/Icons/BottomIcon";
 import FillIcon from "../../components/teams/Icons/FillIcon";
 import JungleIcon from "../../components/teams/Icons/JungleIcon";
 import MiddleIcon from "../../components/teams/Icons/MiddleIcon";
+import OpGGButton from "../../components/teams/Icons/OpGGIcon";
 import SupportIcon from "../../components/teams/Icons/SupportIcon";
 import TopIcon from "../../components/teams/Icons/TopIcon";
 import Name from "../../components/teams/Name";
@@ -91,36 +92,38 @@ export default function TeamPage({ team, players }) {
 
   return (
     <>
-      <div className="text-white bg-[#0a0e13] h-36 lg:h-80 p-4 lg:p-8 flex items-end border-b border-b-[#252c32]">
-        <div className="block lg:hidden">
-          <TeamLogo tricode={team.tricode} width="60" height="60" />
-        </div>
-        <div className="hidden lg:block">
-          <TeamLogo tricode={team.tricode} width="120" height="120" />
-        </div>
-        <div className="h-12 lg:h-28 flex flex-col ml-4 justify-center">
-          <p className="text-xl lg:text-4xl font-medium">
-            {team.teamName} - {team.tricode}
-          </p>
-          <p className="text-md lg:text-2xl text-[#8fa3b0] tracking-tight">
-            Season {team.season}
-          </p>
-        </div>
+      <div className="border-b border-b-[#252c32] bg-[#0a0e13] p-4 text-white lg:h-64 lg:p-8">
+        <section className="flex h-full flex-1 flex-col items-start space-y-4 md:flex-row lg:items-end">
+          <div className="flex flex-1 items-start justify-center space-x-4 md:items-center md:justify-start">
+            <div>
+              <TeamLogo tricode={team.tricode} width="100" height="100" />
+            </div>
+            <span>
+              <p className="text-xl font-medium lg:text-4xl">
+                {team.teamName} - {team.tricode}
+              </p>
+              <p className="text-md tracking-tight text-[#8fa3b0] lg:text-2xl">
+                Season {team.season}
+              </p>
+            </span>
+          </div>
+          <OpGGButton players={players} />
+        </section>
       </div>
-      <div className="roster h-full w-full flex flex-row items-start text-white">
-        <div className="info w-full flex flex-wrap bg-[#0a0e13]">
+      <div className="roster flex h-full w-full flex-row items-start text-white">
+        <div className="info flex w-full flex-wrap bg-[#0a0e13]">
           {players.length ? (
             players.map((player) => (
               <div
                 key={player.summonerName}
-                className="border-b-[#252c32] border-b lg:border-r-[#252c32] lg:border-r w-full lg:w-1/2 p-4 lg:px-8 h-40 lg:h-64 flex flex-col justify-between"
+                className=" flex w-full space-x-8 border-b border-b-[#252c32] p-4 md:h-32 lg:h-64 lg:w-1/2 lg:border-r lg:border-r-[#252c32] lg:p-8 lg:px-8"
               >
                 {renderRoleIcon(player.role)}
                 <Name name={player.summonerName} role={player.role} />
               </div>
             ))
           ) : (
-            <h1 className="flex justify-center text-white font-thin text-3xl m-8">
+            <h1 className="m-8 flex justify-center text-3xl font-thin text-white">
               No players registered for this team yet.
             </h1>
           )}
