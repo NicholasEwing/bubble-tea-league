@@ -32,6 +32,7 @@ module.exports = async (phase) => {
         "ddragon.leagueoflegends.com",
         "www.fillmurray.com",
         "localhost",
+        "am-a.akamaihd.net",
       ],
       formats: ["image/avif", "image/webp"],
     },

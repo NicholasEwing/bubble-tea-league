@@ -6,6 +6,7 @@ import FutureMatch from "../components/schedule/FutureMatch";
 import EventDate from "../components/schedule/EventDate";
 import DividerLive from "../components/schedule/DividerLive";
 import sequelize from "../sequelize";
+import { dateInPast, isToday } from "../lib/utils";
 
 export const getStaticProps = async () => {
   const { Match, MatchRound, Team } = sequelize.models;
@@ -74,26 +75,8 @@ export const getStaticProps = async () => {
 export default function Schedule({ schedule, teams }) {
   const today = new Date();
 
-  const dateInPast = function (firstDate, secondDate) {
-    if (firstDate.setHours(0, 0, 0, 0) < secondDate.setHours(0, 0, 0, 0)) {
-      return true;
-    }
-
-    return false;
-  };
-
-  function isToday(date) {
-    const today = new Date();
-
-    if (today.toDateString() === date.toDateString()) {
-      return true;
-    }
-
-    return false;
-  }
-
   return (
-    <div className="text-white min-h-full bg-[#0a0e13]">
+    <div className="min-h-full bg-[#0a0e13] text-white">
       {schedule.length ? (
         schedule.map((dateObj) => {
           const date = new Date(Object.keys(dateObj)[0]);
@@ -164,7 +147,7 @@ export default function Schedule({ schedule, teams }) {
             );
           } else {
             return (
-              <h1 className="text-white text-xl">
+              <h1 className="text-xl text-white">
                 A <code>dateObj</code> was found with a null / undefined / non
                 Date Object key. Please yell at Nick to fix this.
               </h1>
@@ -172,7 +155,7 @@ export default function Schedule({ schedule, teams }) {
           }
         })
       ) : (
-        <h2 className="text-white text-3xl">
+        <h2 className="text-3xl text-white">
           No matches found. Come back later!
         </h2>
       )}

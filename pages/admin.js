@@ -88,24 +88,18 @@ export default function Dashboard({
   }
 
   return (
-    <div className="py-8 px-4">
-      <RefreshWrapper>
-        {!provider && <ProviderSection provider={provider} />}
-        <SeasonsSection items={seasons} />
-        <TeamsSection items={teams} />
-        <MatchesSection
-          items={matches}
-          teams={teams}
-          matchRounds={matchRounds}
-        />
-        <PlayersSection
-          items={players}
-          teams={teams}
-          seasons={seasons}
-          playerTeamHistory={playerTeamHistory}
-        />
-        <FreeAgentsSection items={freeAgents} />
-      </RefreshWrapper>
-    </div>
+    <RefreshWrapper>
+      {!provider && <ProviderSection provider={provider} />}
+      <SeasonsSection items={seasons} />
+      <TeamsSection items={teams} />
+      <MatchesSection items={matches} teams={teams} matchRounds={matchRounds} />
+      <PlayersSection
+        items={players}
+        teams={teams}
+        seasons={seasons}
+        playerTeamHistory={playerTeamHistory}
+      />
+      <FreeAgentsSection items={freeAgents} />
+    </RefreshWrapper>
   );
 }
