@@ -75,7 +75,7 @@ export default function EditableTable({
     }
 
     let formattedValue;
-    if (!isNaN(parseInt(newItemValue))) {
+    if (!isNaN(parseInt(newItemValue)) && !Date.parse(newItemValue)) {
       formattedValue = parseInt(newItemValue);
     } else {
       formattedValue = newItemValue;
@@ -413,7 +413,11 @@ export default function EditableTable({
         }
       }
 
-      if (foreignItemsState?.length) {
+      const foreignColumn = columns.find(
+        (c) => c.updateForeignValue?.foreignKeyAsId
+      );
+
+      if (foreignColumn) {
         const foreignColumns = columns.filter((c) => c.updateForeignValue);
         const { foreignApiName, foreignRecordName } =
           foreignColumns[0].updateForeignValue;
@@ -459,7 +463,7 @@ export default function EditableTable({
         throw new Error("Failed to apply changes.");
       }
 
-      if (foreignItemsState?.length) {
+      if (foreignColumn) {
         const foreignColumns = columns.filter((c) => c.updateForeignValue);
         const { foreignApiName, foreignRecordName } =
           foreignColumns[0].updateForeignValue;
