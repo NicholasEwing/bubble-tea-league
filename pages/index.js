@@ -72,9 +72,11 @@ export default function Home({ schedule, teams }) {
   // console.log("schedule", schedule);
 
   return (
-    <SectionContainer>
-      <h1 className="text-3xl text-white">home</h1>
+    <>
       <ScheduleBanner schedule={schedule} />
-    </SectionContainer>
+      <SectionContainer>
+        <h1 className="text-3xl text-white">home</h1>
+      </SectionContainer>
+    </>
   );
 }

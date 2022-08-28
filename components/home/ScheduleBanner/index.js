@@ -1,5 +1,6 @@
 import React from "react";
 import { dateInPast, isToday } from "../../../lib/utils";
+import FutureMatchBannerItem from "./FutureMatchBannerItem";
 import LiveMatchBannerItem from "./LiveMatchBannerItem";
 
 export default function ScheduleBanner({ schedule }) {
@@ -13,8 +14,7 @@ export default function ScheduleBanner({ schedule }) {
   });
 
   return (
-    <div>
-      <p className="text-white">banner here</p>
+    <div className="max-height-36 relative z-10 flex h-36 overflow-hidden border-y border-y-[#252c32] bg-[#0a0e13]">
       {futureSchedule.length &&
         futureSchedule.map((dateObj) => {
           const date = new Date(Object.keys(dateObj)[0]);
@@ -47,9 +47,7 @@ export default function ScheduleBanner({ schedule }) {
                 {Object.values(dateObj)
                   .flat()
                   .map((match) => (
-                    <p className="text-white" key={match.id}>
-                      future match
-                    </p>
+                    <FutureMatchBannerItem key={match.id} />
                     // <FutureMatch
                     //   key={`Future-${match.id}`}
                     //   MatchId={match.id}

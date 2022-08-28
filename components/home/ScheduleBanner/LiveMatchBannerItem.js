@@ -5,7 +5,7 @@ import TeamLogo from "../../match-results/TeamHeader/TeamLogo";
 export default function LiveMatchBannerItem() {
   return (
     <>
-      <div className="EventWidgetMatch day-section-start relative h-full text-white">
+      <div className="EventWidgetMatch day-section-start relative h-full border-r border-r-[#252c32] text-white">
         <a
           href="/live/lcs"
           className="match live flex w-60 flex-col items-center justify-center bg-black p-4 before:absolute before:left-0 before:top-0 before:block before:h-full before:w-[4px] before:bg-[#de2f2f]"
