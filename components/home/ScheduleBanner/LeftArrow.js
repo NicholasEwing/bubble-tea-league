@@ -1,10 +1,10 @@
 import React from "react";
 
-export default function LeftArrow({ hide }) {
+export default function LeftArrow({ hide, handleSlideLeft }) {
   return (
-    <div
+    <button
+      onClick={handleSlideLeft}
       id="event-list-arrow-left"
-      role="button"
       className={`${
         hide ? "hidden" : "flex"
       } arrow short bottom absolute z-20 h-full w-10 cursor-pointer select-none items-center justify-center border-r border-r-[#252c32] bg-[#0f1519] text-center text-teal-accent`}
@@ -33,6 +33,6 @@ export default function LeftArrow({ hide }) {
           </g>
         </g>
       </svg>
-    </div>
+    </button>
   );
 }

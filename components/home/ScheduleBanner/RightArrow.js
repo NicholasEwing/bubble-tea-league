@@ -1,8 +1,8 @@
-export default function RightArrow({ hide }) {
+export default function RightArrow({ hide, handleSlideRight }) {
   return (
-    <div
+    <button
+      onClick={handleSlideRight}
       id="event-list-arrow-right"
-      role="button"
       className={`${
         hide ? "hidden" : "flex"
       } arrow short bottom absolute right-0 z-20 h-full w-10 cursor-pointer select-none items-center justify-center border-l border-l-[#252c32] bg-[#0f1519] text-center text-teal-accent`}
@@ -31,6 +31,6 @@ export default function RightArrow({ hide }) {
           </g>
         </g>
       </svg>
-    </div>
+    </button>
   );
 }
