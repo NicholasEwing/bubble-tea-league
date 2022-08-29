@@ -5,7 +5,7 @@ import LeftArrow from "./LeftArrow";
 import LiveMatchBannerItem from "./LiveMatchBannerItem";
 import RightArrow from "./RightArrow";
 
-export default function ScheduleBanner({ schedule }) {
+export default function ScheduleBanner({ schedule, teams }) {
   const today = new Date();
   const [slideControls, setSlideControls] = useState(0);
 
@@ -44,18 +44,6 @@ export default function ScheduleBanner({ schedule }) {
                     .flat()
                     .map((match) => (
                       <LiveMatchBannerItem key={match.id} />
-                      // <LiveMatch
-                      //   key={`Live-${match.id}`}
-                      //   MatchId={match.id}
-                      //   teamOne={teams.find((t) => t.id === match.teamOne)}
-                      //   teamTwo={teams.find((t) => t.id === match.teamTwo)}
-                      //   bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
-                      //   seasonNumber={match.seasonNumber}
-                      //   matchRounds={match.matchRounds}
-                      //   matchWinnerTeamId={match.matchWinnerTeamId}
-                      //   matchLoserTeamId={match.matchLoserTeamId}
-                      //   scheduledTime={match.scheduledTime}
-                      // />
                     ))}
                 </React.Fragment>
               );
@@ -65,17 +53,14 @@ export default function ScheduleBanner({ schedule }) {
                   {Object.values(dateObj)
                     .flat()
                     .map((match) => (
-                      <FutureMatchBannerItem key={match.id} />
-                      // <FutureMatch
-                      //   key={`Future-${match.id}`}
-                      //   MatchId={match.id}
-                      //   teamOne={teams.find((t) => t.id === match.teamOne)}
-                      //   teamTwo={teams.find((t) => t.id === match.teamTwo)}
-                      //   bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
-                      //   seasonNumber={match.seasonNumber}
-                      //   matchRounds={match.matchRounds}
-                      //   scheduledTime={match.scheduledTime}
-                      // />
+                      <FutureMatchBannerItem
+                        key={`Future-${match.id}`}
+                        teamOne={teams.find((t) => t.id === match.teamOne)}
+                        teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                        bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
+                        scheduledTime={match.scheduledTime}
+                        date={date}
+                      />
                     ))}
                 </React.Fragment>
               );

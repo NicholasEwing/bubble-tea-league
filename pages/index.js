@@ -73,7 +73,7 @@ export default function Home({ schedule, teams }) {
 
   return (
     <>
-      <ScheduleBanner schedule={schedule} />
+      <ScheduleBanner schedule={schedule} teams={teams} />
       <SectionContainer>
         <h1 className="text-3xl text-white">home</h1>
       </SectionContainer>
