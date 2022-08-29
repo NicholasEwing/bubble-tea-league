@@ -1,7 +1,9 @@
 import React from "react";
 import { dateInPast, isToday } from "../../../lib/utils";
 import FutureMatchBannerItem from "./FutureMatchBannerItem";
+import LeftArrow from "./LeftArrow";
 import LiveMatchBannerItem from "./LiveMatchBannerItem";
+import RightArrow from "./RightArrow";
 
 export default function ScheduleBanner({ schedule }) {
   // for each match inside a date object, display a match
@@ -14,7 +16,10 @@ export default function ScheduleBanner({ schedule }) {
   });
 
   return (
-    <div className="max-height-36 relative z-10 flex h-36 overflow-hidden border-y border-y-[#252c32] bg-[#0a0e13]">
+    <div
+      className={`max-height-36 relative z-10 flex h-36 overflow-hidden border-y border-y-[#252c32] bg-[#0a0e13]`}
+    >
+      <LeftArrow hide />
       {futureSchedule.length &&
         futureSchedule.map((dateObj) => {
           const date = new Date(Object.keys(dateObj)[0]);
@@ -70,6 +75,7 @@ export default function ScheduleBanner({ schedule }) {
             );
           }
         })}
+      <RightArrow />
     </div>
   );
 }
