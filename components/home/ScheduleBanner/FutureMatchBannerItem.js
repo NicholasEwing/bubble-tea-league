@@ -29,12 +29,22 @@ export default function FutureMatchBannerItem({
         </div>
         <div className="teams pt-3 font-medium tracking-tight">
           <div className="team flex pt-1">
-            <TeamLogo tricode={teamOne?.tricode} width="24" height="24" />
-            <span className="code">{teamOne?.tricode}</span>
+            <TeamLogo
+              tbd={!teamOne}
+              tricode={teamOne?.tricode}
+              width="24"
+              height="24"
+            />
+            <span className="code">{teamOne?.tricode || "TBD"}</span>
           </div>
           <div className="team flex pt-1">
-            <TeamLogo tricode={teamTwo?.tricode} width="24" height="24" />
-            <span className="code">{teamTwo?.tricode}</span>
+            <TeamLogo
+              tbd={!teamTwo}
+              tricode={teamTwo?.tricode}
+              width="24"
+              height="24"
+            />
+            <span className="code">{teamTwo?.tricode || "TBD"}</span>
           </div>
         </div>
         <div className="time mt-1 ml-2 text-xs tracking-widest">
