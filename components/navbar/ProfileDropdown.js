@@ -11,13 +11,13 @@ export default function ProfileDropdown({
   classNames,
 }) {
   return (
-    <Menu as="div" className="ml-3 relative">
+    <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button
           className={
             status !== "authenticated" && !session
-              ? "relative flex h-12 w-28 justify-between items-center px-2 py-1 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
-              : "bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              ? "relative flex h-12 w-28 items-center justify-between rounded-md border border-transparent bg-indigo-500 px-2 py-1 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              : "flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
           }
         >
           {status !== "authenticated" && !session ? (
@@ -28,7 +28,7 @@ export default function ProfileDropdown({
               }}
               className="flex items-center"
             >
-              <div className="grid place-items-center w-8 h-10 mx-1">
+              <div className="mx-1 grid h-10 w-8 place-items-center">
                 <Image
                   src={discordLogo}
                   alt="Discord Logo"
@@ -61,7 +61,7 @@ export default function ProfileDropdown({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-30 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <Menu.Item>
             {({ active }) => (
               <a

@@ -95,18 +95,19 @@ export default function Home({ schedule, teams }) {
     }
   });
 
-  console.log("found featured match", featuredMatch);
-
   return (
     <>
       <ScheduleBanner schedule={futureSchedule} teams={teams} />
-      <HomeContent
-        teamOne={teams.find((t) => t.id === featuredMatch.teamOne)}
-        teamTwo={teams.find((t) => t.id === featuredMatch.teamTwo)}
-        bestOf={featuredMatch.isPlayoffsMatch ? "Bo3" : "Bo1"}
-        scheduledTime={featuredMatch.scheduledTime}
-        season={featuredMatch.season}
-      />
+      {featuredMatch && (
+        <HomeContent
+          teamOne={teams.find((t) => t.id === featuredMatch?.teamOne)}
+          teamTwo={teams.find((t) => t.id === featuredMatch?.teamTwo)}
+          bestOf={featuredMatch?.isPlayoffsMatch ? "Bo3" : "Bo1"}
+          scheduledTime={featuredMatch?.scheduledTime}
+          season={featuredMatch?.season}
+        />
+      )}
+
       <SectionContainer>
         <h1 className="text-3xl text-white">home</h1>
       </SectionContainer>

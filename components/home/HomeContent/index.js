@@ -22,14 +22,14 @@ export default function HomeContent({
             width="80"
           />
           <div className="text align-center relative mb-5 flex flex-col justify-center text-center text-white">
-            <div className="league-round font-medium uppercase tracking-widest opacity-60">
+            <div className="league-round text-sm font-medium uppercase tracking-widest opacity-60 md:text-base">
               <span className="name">Season {season}</span>
               <span className="hyphen">&nbsp;-&nbsp;</span>
               <span className="round">{bestOf}</span>
             </div>
-            <div className="title text-5xl font-bold">
+            <div className="title text-xl font-bold md:text-5xl">
               {teamOne.tricode}
-              <span className="vs lower px-4 text-3xl">VS</span>
+              <span className="vs lower px-4 text-sm md:text-3xl">VS</span>
               {teamTwo.tricode}
             </div>
           </div>
@@ -40,7 +40,7 @@ export default function HomeContent({
             width="80"
           />
         </div>
-        <div className="video-container pointer-events-none relative flex min-h-[60px] flex-col items-center">
+        <div className="video-container pointer-events-none relative hidden min-h-[60px] flex-col items-center md:flex">
           <iframe
             title="Proving Grounds - TL VS 100"
             className="video"
