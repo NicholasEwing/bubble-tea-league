@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SectionContainer from "../components/admin/table/SectionContainer";
 import HomeContent from "../components/home/HomeContent";
+import RecentVods from "../components/home/RecentVods";
 import ScheduleBanner from "../components/home/ScheduleBanner";
 import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
@@ -110,6 +111,7 @@ export default function Home({ schedule, teams }) {
 
       <SectionContainer>
         <h1 className="text-3xl text-white">home</h1>
+        <RecentVods />
       </SectionContainer>
     </>
   );
