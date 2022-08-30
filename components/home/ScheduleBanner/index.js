@@ -14,15 +14,9 @@ export default function ScheduleBanner({ schedule, teams }) {
   };
 
   const handleSlideRight = () => {
-    if (slideControls >= futureSchedule.length - 1) return;
+    if (slideControls >= schedule.length - 1) return;
     setSlideControls(++slideControls);
   };
-
-  // remove past items from schedule
-  const futureSchedule = schedule.filter((s) => {
-    const date = new Date(Object.keys(s)[0]);
-    return !dateInPast(date, today);
-  });
 
   return (
     <div
@@ -33,8 +27,8 @@ export default function ScheduleBanner({ schedule, teams }) {
         style={{ left: -(slideControls * 144) }}
         className={`absolute flex h-full flex-row overflow-hidden whitespace-nowrap transition-all duration-100`}
       >
-        {futureSchedule.length &&
-          futureSchedule.map((dateObj) => {
+        {schedule.length &&
+          schedule.map((dateObj) => {
             const date = new Date(Object.keys(dateObj)[0]);
 
             if (isToday(date)) {
@@ -43,7 +37,15 @@ export default function ScheduleBanner({ schedule, teams }) {
                   {Object.values(dateObj)
                     .flat()
                     .map((match) => (
-                      <LiveMatchBannerItem key={match.id} />
+                      <LiveMatchBannerItem
+                        key={match.id}
+                        teamOne={teams.find((t) => t.id === match.teamOne)}
+                        teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                        bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
+                        scheduledTime={match.scheduledTime}
+                        date={date}
+                        season={match.season}
+                      />
                     ))}
                 </React.Fragment>
               );
@@ -76,7 +78,7 @@ export default function ScheduleBanner({ schedule, teams }) {
       </div>
       <RightArrow
         handleSlideRight={handleSlideRight}
-        hide={slideControls >= futureSchedule.length - 1}
+        hide={slideControls >= schedule.length - 1}
       />
     </div>
   );

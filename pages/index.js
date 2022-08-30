@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionContainer from "../components/admin/table/SectionContainer";
+import HomeContent from "../components/home/HomeContent";
 import ScheduleBanner from "../components/home/ScheduleBanner";
+import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
 
 export const getStaticProps = async () => {
@@ -69,11 +71,42 @@ export const getStaticProps = async () => {
 };
 
 export default function Home({ schedule, teams }) {
-  // console.log("schedule", schedule);
+  const today = new Date();
+
+  // remove past items from schedule
+  const futureSchedule = schedule.filter((s) => {
+    const date = new Date(Object.keys(s)[0]);
+    return !dateInPast(date, today);
+  });
+
+  // if schedule contains match today
+  let featuredMatch;
+  futureSchedule.find((dateObj) => {
+    const date = new Date(Object.keys(dateObj)[0]);
+
+    if (isToday(date)) {
+      return Object.values(dateObj)
+        .flat()
+        .find((match) => {
+          featuredMatch = match;
+        });
+    } else {
+      return false;
+    }
+  });
+
+  console.log("found featured match", featuredMatch);
 
   return (
     <>
-      <ScheduleBanner schedule={schedule} teams={teams} />
+      <ScheduleBanner schedule={futureSchedule} teams={teams} />
+      <HomeContent
+        teamOne={teams.find((t) => t.id === featuredMatch.teamOne)}
+        teamTwo={teams.find((t) => t.id === featuredMatch.teamTwo)}
+        bestOf={featuredMatch.isPlayoffsMatch ? "Bo3" : "Bo1"}
+        scheduledTime={featuredMatch.scheduledTime}
+        season={featuredMatch.season}
+      />
       <SectionContainer>
         <h1 className="text-3xl text-white">home</h1>
       </SectionContainer>

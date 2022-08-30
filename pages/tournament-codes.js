@@ -74,7 +74,7 @@ export default function Dashboard({
   }
 
   return (
-    <div className="py-8 px-4">
+    <>
       <SectionContainer>
         <Warning />
       </SectionContainer>
@@ -84,6 +84,6 @@ export default function Dashboard({
         matchRounds={matchRounds}
         isPublic
       />
-    </div>
+    </>
   );
 }

@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         "champion-attributes": "url('/sprite-attribute-champion.png')",
+        "home-hero": "url('/home-hero-bg.png')",
       },
       colors: {
         "teal-accent": "#00c8c8",
