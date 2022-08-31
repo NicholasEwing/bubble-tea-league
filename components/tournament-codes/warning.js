@@ -18,11 +18,11 @@ export default function Warning() {
           <div className="mt-2 text-sm text-yellow-700">
             <strong>TL;DR:</strong>
             <ul role="list" className="my-2 list-disc space-y-1 pl-5">
-              <li>Don't share tournament codes with the public.</li>
-              <li>Only use codes associated with your team's matches.</li>
+              <li>Don&apos;t share tournament codes with the public.</li>
+              <li>Only use codes associated with your team&apos;s matches.</li>
               <li>
-                Always ensure you're using the correct code depending on the
-                team you're facing.
+                Always ensure you&apos;re using the correct code depending on the
+                team you&apos;re facing.
               </li>
             </ul>
             <p>
@@ -30,7 +30,7 @@ export default function Warning() {
               registered with the Bubble Tea League can view this page. Do NOT
               share any tournament codes from this table to the general public.
               <br />
-              Only use the tournament codes associated with your team's matches.
+              Only use the tournament codes associated with your team&apos;s matches.
               Using the incorrect code or sharing codes could compromise the
               entire tournament by allowing third-parties to generate fake
               statistics.

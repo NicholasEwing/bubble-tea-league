@@ -68,7 +68,7 @@ export default function ScheduleBanner({ schedule, teams }) {
               );
             } else {
               return (
-                <h1 className="text-xl text-white">
+                <h1 key={date} className="text-xl text-white">
                   A <code>dateObj</code> was found with a null / undefined / non
                   Date Object key. Please yell at Nick to fix this.
                 </h1>
