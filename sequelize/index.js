@@ -3,6 +3,7 @@ const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
 
 const makeTables = async () => {
+  console.log('running make tables');
   await sequelize.sync({ force: true });
   return true;
 };
@@ -56,6 +57,7 @@ sequelize
   .then(async () => {
     console.log("Connection has been established successfully.");
     await makeTables();
+    console.log('made it past make tables')
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
