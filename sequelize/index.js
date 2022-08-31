@@ -54,7 +54,7 @@ applyAssociations(sequelize);
 
 sequelize
   .authenticate()
-  .then(async () => {
+  .then(() => {
     console.log("Connection has been established successfully.");
     makeTables().then(res => {
       console.log('made tables!');
