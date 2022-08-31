@@ -53,9 +53,9 @@ applyAssociations(sequelize);
 
 sequelize
   .authenticate()
-  .then(() => {
+  .then(async () => {
     console.log("Connection has been established successfully.");
-    sequelize.sync();
+    await makeTables();
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
