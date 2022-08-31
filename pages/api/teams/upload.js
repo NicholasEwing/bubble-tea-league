@@ -41,6 +41,8 @@ export default async function handler(req, res) {
 
             if (oldImage) fs.unlinkSync(`./public${oldImage}`);
 
+            // TODO: force image name to be "tricode.png"
+
             await saveFile(file);
             await team.update({
               logoImgPath: `/teams/${newImage}`,
