@@ -50,9 +50,6 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
-    sequelize.sync({ force: true }).then(() => {
-      console.log('tables synced');
-    });
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
