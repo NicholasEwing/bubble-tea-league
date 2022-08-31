@@ -10,9 +10,9 @@ export default function WhatIsBtl() {
             <span className="text-btl-blue">Bubble Tea League?</span>
           </h2>
           <p className="mt-5 text-white sm:text-sm md:text-base lg:text-xl">
-            The BTL is a community of friends focused on community &amp;
+            The BTL is an exclusive gaming community focused on improvement &amp;
             competition. Every year, 50 players compete for fun and bragging
-            rights as the action is broadcast on{" "}
+            rights as the action is broadcast live on{" "}
             <a
               href="https://www.twitch.tv/thebubbletealeague"
               className="font-medium text-btl-pink underline underline-offset-4"
