@@ -17,6 +17,11 @@ const sequelize = new Sequelize(database, username, password, {
   port,
   dialect,
   logging: false,
+  dialectOptions: {
+      ssl: {
+          rejectUnauthorized: true,        
+      }
+  }
   // query: { raw: true }, // this breaks next-auth lol
 });
 
@@ -41,14 +46,14 @@ for (const modelDefiner of modelDefiners) {
 // Apply our associations to all models
 applyAssociations(sequelize);
 
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log("Connection has been established successfully.");
-//   })
-//   .catch((err) => {
-//     console.log("Unable to connect to the database:", err);
-//   });
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Connection has been established successfully.");
+  })
+  .catch((err) => {
+    console.log("Unable to connect to the database:", err);
+  });
 
 // export the sequelize instance to be used elsewhere
 module.exports = sequelize;
