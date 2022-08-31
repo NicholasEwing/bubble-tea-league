@@ -19,6 +19,7 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
     function ({ addVariant }) {
       addVariant("not-first", "&:not(:nth-child(1))");
     },
