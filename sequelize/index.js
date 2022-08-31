@@ -48,12 +48,19 @@ applyAssociations(sequelize);
 
 sequelize
   .authenticate()
-  .sync()
   .then(() => {
     console.log("Connection has been established successfully.");
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
+  });
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log('Sequelize synced successfully.')
+  }).catch(err => {
+    console.log("Unable to sync Sequelize tables.", err);
   });
 
 // export the sequelize instance to be used elsewhere
