@@ -16,7 +16,7 @@ const sequelize = new Sequelize(database, username, password, {
   host,
   port,
   dialect,
-  logging: false,
+  logging: true,
   dialectOptions: {
       ssl: {
           rejectUnauthorized: true,        
@@ -50,17 +50,12 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
+    sequelize.sync({ force: true }).then(() => {
+      console.log('tables synced');
+    });
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
-  });
-
-sequelize
-  .sync()
-  .then(() => {
-    console.log('Sequelize synced successfully.')
-  }).catch(err => {
-    console.log("Unable to sync Sequelize tables.", err);
   });
 
 // export the sequelize instance to be used elsewhere
