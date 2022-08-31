@@ -8,6 +8,8 @@ if (process.env.NODE_ENV === "test") {
   ({ database, username, password, host, port, dialect } = config.test);
 } else if (process.env.NODE_ENV === "development") {
   ({ database, username, password, host, port, dialect } = config.development);
+} else if(process.env.NODE_ENV === "production") {
+  ({ database, username, password, host, port, dialect } = config.production);
 }
 
 const sequelize = new Sequelize(database, username, password, {
