@@ -41,6 +41,12 @@ export default function MatchesSection({
       },
     },
     {
+      valueKey: "vodLink",
+      name: "VOD Link",
+      small: true,
+      canEdit: true,
+    },
+    {
       valueKey: "isPlayoffsMatch",
       name: "Match Stage",
       customInfo: ["isUpperBracket", "bracketRound"],

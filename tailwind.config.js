@@ -12,6 +12,8 @@ module.exports = {
       },
       colors: {
         "teal-accent": "#00c8c8",
+        "btl-blue": "#77cff6",
+        "btl-pink": "#f391c0",
       },
     },
   },

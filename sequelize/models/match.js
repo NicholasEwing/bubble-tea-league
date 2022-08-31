@@ -15,5 +15,9 @@ module.exports = (sequelize) => {
     scheduledTime: {
       type: DataTypes.DATE,
     },
+    vodLink: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
   });
 };

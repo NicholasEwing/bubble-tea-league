@@ -61,7 +61,7 @@ export default async function handler(req, res) {
         try {
           const { matches } = req.body;
           await Match.bulkCreate(matches, {
-            updateOnDuplicate: ["scheduledTime"],
+            updateOnDuplicate: ["scheduledTime", "vodLink"],
           });
           res.status(200).send();
         } catch (error) {

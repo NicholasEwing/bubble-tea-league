@@ -4,6 +4,7 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import HomeContent from "../components/home/HomeContent";
 import RecentVods from "../components/home/RecentVods";
 import ScheduleBanner from "../components/home/ScheduleBanner";
+import WhatIsBtl from "../components/home/WhatIsBtl";
 import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
 
@@ -74,6 +75,11 @@ export const getStaticProps = async () => {
 export default function Home({ schedule, teams }) {
   const today = new Date();
 
+  const pastSchedule = schedule.filter((s) => {
+    const date = new Date(Object.keys(s)[0]);
+    return dateInPast(date, today);
+  });
+
   // remove past items from schedule
   const futureSchedule = schedule.filter((s) => {
     const date = new Date(Object.keys(s)[0]);
@@ -108,10 +114,9 @@ export default function Home({ schedule, teams }) {
           season={featuredMatch?.season}
         />
       )}
-
+      <WhatIsBtl />
       <SectionContainer>
-        <h1 className="text-3xl text-white">home</h1>
-        <RecentVods />
+        <RecentVods teams={teams} pastSchedule={pastSchedule} />
       </SectionContainer>
     </>
   );
