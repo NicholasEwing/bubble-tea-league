@@ -56,8 +56,10 @@ sequelize
   .authenticate()
   .then(async () => {
     console.log("Connection has been established successfully.");
-    await makeTables();
-    console.log('made it past make tables')
+    makeTables().then(res => {
+      console.log('made tables!');
+      console.log("RES:", res);
+    });
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
