@@ -2,6 +2,11 @@ const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
 
+const makeTables = async () => {
+  await sequelize.sync({ force: true });
+  return true;
+};
+
 let database, username, password, host, port, dialect;
 
 if (process.env.NODE_ENV === "test") {
@@ -50,6 +55,7 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
+    sequelize.sync();
   })
   .catch((err) => {
     console.log("Unable to connect to the database:", err);
