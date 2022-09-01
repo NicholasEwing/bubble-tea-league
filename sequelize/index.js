@@ -2,6 +2,11 @@ const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
 
+const makeTables = async () => {
+  await sequelize.sync({ force: true });
+  return true;
+};
+
 let database, username, password, host, port, dialect;
 
 if (process.env.NODE_ENV === "test") {
@@ -45,6 +50,10 @@ for (const modelDefiner of modelDefiners) {
 
 // Apply our associations to all models
 applyAssociations(sequelize);
+
+makeTables().then(() => {
+  console.log("Made tables!");
+});
 
 sequelize
   .authenticate()
