@@ -17,5 +17,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       unique: true,
     },
+    season: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   });
 };
