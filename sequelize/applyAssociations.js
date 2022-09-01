@@ -56,15 +56,11 @@ const applyAssociations = (sequelize) => {
   Player.belongsToMany(Team, { through: "PlayerTeamHistory" });
 
   // Connect team stats to a match round AND a team
-  MatchRoundTeamStats.belongsTo(MatchRound, {
-    foreignKey: { allowNull: false },
-  });
+  MatchRoundTeamStats.belongsTo(MatchRound);
   MatchRoundTeamStats.belongsTo(Team);
 
   // Connect player stats to a match round AND a player
-  MatchRoundPlayerStats.belongsTo(MatchRound, {
-    foreignKey: { allowNull: false },
-  });
+  MatchRoundPlayerStats.belongsTo(MatchRound);
   MatchRoundPlayerStats.belongsTo(Player);
 };
 
