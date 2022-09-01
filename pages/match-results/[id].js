@@ -23,11 +23,12 @@ const {
 } = sequelize.models;
 
 export const getStaticPaths = async () => {
-  const matches = await Match?.findAll({ raw: true });
-
-  if (!matches) {
+  try {
+    const matches = await Match?.findAll({ raw: true });
+  } catch (error) {
     return {
-      notFound: true,
+      paths: [],
+      fallback: false,
     };
   }
 
@@ -57,7 +58,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: true,
+    fallback: false,
   };
 };
 
@@ -75,6 +76,12 @@ export const getStaticProps = async (context) => {
     attributes: { exclude: ["metaData"] },
     raw: true,
   });
+
+  if (!match || !matchRounds) {
+    return {
+      notFound: true,
+    };
+  }
 
   // add team names to matchRounds
   matchRounds = await Promise.all(

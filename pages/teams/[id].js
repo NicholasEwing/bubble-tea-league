@@ -17,7 +17,6 @@ export const getStaticPaths = async () => {
   try {
     const teams = await Team?.findAll({ raw: true });
   } catch (error) {
-    // https://nextjs.org/docs/api-reference/data-fetching/get-static-props#notfound
     return {
       paths: [],
       fallback: false,
