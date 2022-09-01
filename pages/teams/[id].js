@@ -9,7 +9,7 @@ import OpGGButton from "../../components/teams/Icons/OpGGIcon";
 import SupportIcon from "../../components/teams/Icons/SupportIcon";
 import TopIcon from "../../components/teams/Icons/TopIcon";
 import Name from "../../components/teams/Name";
-import sequelize from "../sequelize";
+import sequelize from "../../sequelize";
 
 export const getStaticPaths = async () => {
   try {

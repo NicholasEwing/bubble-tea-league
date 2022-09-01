@@ -10,7 +10,7 @@ import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFo
 import TeamSummary from "../../components/match-results/TeamSummary";
 import { replaceTimelinePUUIDs } from "../../lib/jest-api-helpers";
 import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
-import sequelize from "../sequelize";
+import sequelize from "../../sequelize";
 
 export const getStaticPaths = async () => {
   try {
