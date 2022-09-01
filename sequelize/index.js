@@ -48,7 +48,7 @@ for (const modelDefiner of modelDefiners) {
 
 const syncModels = async () => {
   for (const model in sequelize.models) {
-    await sequelize.models[model].sync();
+    await sequelize.models[model].sync({ force: true });
   }
 
   return true;
