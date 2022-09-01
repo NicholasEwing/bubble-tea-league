@@ -9,12 +9,13 @@ import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
 
 export const getStaticProps = async () => {
+  let matches, matchRounds, teams;
   try {
     const { Match, MatchRound, Team } = sequelize.models;
 
-    const matches = await Match?.findAll({ raw: true });
-    const matchRounds = await MatchRound?.findAll({ raw: true });
-    let teams = await Team?.findAll({ raw: true });
+    matches = await Match?.findAll({ raw: true });
+    matchRounds = await MatchRound?.findAll({ raw: true });
+    teams = await Team?.findAll({ raw: true });
   } catch (error) {
     return {
       notFound: true,

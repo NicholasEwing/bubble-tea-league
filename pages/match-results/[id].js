@@ -13,6 +13,8 @@ import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
 import sequelize from "../../sequelize";
 
 export const getStaticPaths = async () => {
+  let matches;
+
   try {
     const {
       Match,
@@ -22,7 +24,7 @@ export const getStaticPaths = async () => {
       Team,
       Player,
     } = sequelize.models;
-    const matches = await Match?.findAll({ raw: true });
+    matches = await Match?.findAll({ raw: true });
   } catch (error) {
     return {
       paths: [],

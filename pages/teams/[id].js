@@ -12,9 +12,10 @@ import Name from "../../components/teams/Name";
 import sequelize from "../../sequelize";
 
 export const getStaticPaths = async () => {
+  let teams;
   try {
     const { Team, Player, PlayerTeamHistory } = sequelize.models;
-    const teams = await Team?.findAll({ raw: true });
+    teams = await Team?.findAll({ raw: true });
   } catch (error) {
     return {
       paths: [],

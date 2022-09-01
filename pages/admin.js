@@ -12,6 +12,13 @@ import sequelize from "../sequelize";
 import admins from "../sequelize/admins";
 
 export const getStaticProps = async () => {
+  let provider,
+    seasons,
+    teams,
+    allPlayers,
+    matches,
+    matchRounds,
+    playerTeamHistory;
   try {
     const {
       Provider,
@@ -23,13 +30,13 @@ export const getStaticProps = async () => {
       MatchRound,
     } = sequelize.models;
 
-    const provider = await Provider?.findOne({ raw: true });
-    const seasons = await Season?.findAll({ raw: true });
-    const teams = await Team?.findAll({ raw: true });
-    const allPlayers = await Player?.findAll({ raw: true });
-    const matches = await Match?.findAll({ raw: true });
-    const matchRounds = await MatchRound?.findAll({ raw: true });
-    const playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
+    provider = await Provider?.findOne({ raw: true });
+    seasons = await Season?.findAll({ raw: true });
+    teams = await Team?.findAll({ raw: true });
+    allPlayers = await Player?.findAll({ raw: true });
+    matches = await Match?.findAll({ raw: true });
+    matchRounds = await MatchRound?.findAll({ raw: true });
+    playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
   } catch (error) {
     return {
       notFound: true,

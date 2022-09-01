@@ -10,6 +10,7 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { Op } from "sequelize";
 
 export const getStaticProps = async () => {
+  let playerEmails, teams, matches, matchRounds;
   try {
     const { Match, MatchRound, Team, Player } = sequelize.models;
 
@@ -17,9 +18,9 @@ export const getStaticProps = async () => {
       raw: true,
       attributes: ["email"],
     });
-    const playerEmails = playerEmailObjs?.map((o) => o.email);
-    const teams = await Team?.findAll({ raw: true });
-    const matches = await Match?.findAll({
+    playerEmails = playerEmailObjs?.map((o) => o.email);
+    teams = await Team?.findAll({ raw: true });
+    matches = await Match?.findAll({
       raw: true,
       where: {
         matchWinnerTeamId: {
@@ -27,14 +28,14 @@ export const getStaticProps = async () => {
         },
       },
     });
-    const matchRounds = await MatchRound?.findAll({ raw: true });
+    matchRounds = await MatchRound?.findAll({ raw: true });
   } catch (error) {
     return {
       notFound: true,
     };
   }
 
-  if (!playerEmailObjs || !teams || !matches || !matchRounds) {
+  if (!playerEmails || !teams || !matches || !matchRounds) {
     return {
       notFound: true,
     };
