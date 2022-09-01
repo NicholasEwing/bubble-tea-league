@@ -13,7 +13,7 @@ import sequelize from "../../sequelize";
 const { Team, Player, PlayerTeamHistory } = sequelize.models;
 
 export const getStaticPaths = async () => {
-  const teams = await Team?.findAll({ raw: true });
+  const teams = await Team?.findAll({ raw: true, subQuery: false });
 
   if (!teams) {
     return {
@@ -44,12 +44,6 @@ export const getStaticProps = async (context) => {
     raw: true,
   });
 
-  if (!team || !playerHistories) {
-    return {
-      notFound: true,
-    };
-  }
-
   const playerIds = playerHistories.map((ph) => ph.PlayerId);
 
   let players = await Player.findAll({
@@ -60,6 +54,12 @@ export const getStaticProps = async (context) => {
     },
     raw: true,
   });
+
+  if (!team || !playerHistories) {
+    return {
+      notFound: true,
+    };
+  }
 
   players = players.map((player) => {
     const playerHistory = playerHistories.find((h) => h.PlayerId === player.id);
