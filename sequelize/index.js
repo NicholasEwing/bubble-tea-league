@@ -51,13 +51,12 @@ for (const modelDefiner of modelDefiners) {
 // Apply our associations to all models
 applyAssociations(sequelize);
 
-makeTables().then(() => {
-  console.log("Made tables!");
-});
-
 sequelize
   .authenticate()
   .then(() => {
+    makeTables().then(() => {
+      console.log("Made tables!");
+    });
     console.log("Connection has been established successfully.");
   })
   .catch((err) => {
