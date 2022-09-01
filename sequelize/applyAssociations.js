@@ -12,11 +12,11 @@ const applyAssociations = (sequelize) => {
 
   // Associate matches with seasons
   Season.hasMany(Match, { foreignKey: "season" });
-  Match.belongsTo(Season, { foreignKey: { name: "season", allowNull: false } });
+  Match.belongsTo(Season, { foreignKey: { name: "season" } });
 
   // Associate teams with seasons
   Season.hasMany(Team, { foreignKey: "season" });
-  Team.belongsTo(Season, { foreignKey: { name: "season", allowNull: false } });
+  Team.belongsTo(Season, { foreignKey: { name: "season" } });
 
   // Associate matches with match rounds (ex: A best of three match can have up to three rounds)
   Match.hasMany(MatchRound);
@@ -59,13 +59,13 @@ const applyAssociations = (sequelize) => {
   MatchRoundTeamStats.belongsTo(MatchRound, {
     foreignKey: { allowNull: false },
   });
-  MatchRoundTeamStats.belongsTo(Team, { foreignKey: { allowNull: false } });
+  MatchRoundTeamStats.belongsTo(Team);
 
   // Connect player stats to a match round AND a player
   MatchRoundPlayerStats.belongsTo(MatchRound, {
     foreignKey: { allowNull: false },
   });
-  MatchRoundPlayerStats.belongsTo(Player, { foreignKey: { allowNull: false } });
+  MatchRoundPlayerStats.belongsTo(Player);
 };
 
 module.exports = applyAssociations;
