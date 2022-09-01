@@ -27,6 +27,15 @@ const sequelize = new Sequelize(database, username, password, {
   // query: { raw: true }, // this breaks next-auth lol
 });
 
+const syncModels = async (sequelize) => {
+  for (const model in sequelize.models) {
+    console.log("Syncing model", model);
+    await sequelize.models[model].sync();
+  }
+
+  return true;
+};
+
 // Define all models and then attaches them to sequelize.models
 const modelDefiners = [
   require("./models/team"),
@@ -45,34 +54,24 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-const syncModels = async () => {
-  for (const model in sequelize.models) {
-    console.log("Syncing model", model);
-    await sequelize.models[model].sync();
-  }
-
-  return true;
-};
-
-syncModels()
+syncModels(sequelize)
   .then(() => {
     console.log("Synced all models.");
+    // Apply our associations to all models
+    applyAssociations(sequelize);
+
+    sequelize
+      .authenticate()
+      .then(() => {
+        console.log("Connection has been established successfully.");
+      })
+      .catch((err) => {
+        console.log("Unable to connect to the database:", err);
+      });
+
+    // export the sequelize instance to be used elsewhere
+    module.exports = sequelize;
   })
   .catch((error) => {
     console.log("Failed to sync models.", error);
   });
-
-// Apply our associations to all models
-applyAssociations(sequelize);
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((err) => {
-    console.log("Unable to connect to the database:", err);
-  });
-
-// export the sequelize instance to be used elsewhere
-module.exports = sequelize;
