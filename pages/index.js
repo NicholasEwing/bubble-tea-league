@@ -9,11 +9,17 @@ import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
 
 export const getStaticProps = async () => {
-  const { Match, MatchRound, Team } = sequelize.models;
+  try {
+    const { Match, MatchRound, Team } = sequelize.models;
 
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  let teams = await Team?.findAll({ raw: true });
+    const matches = await Match?.findAll({ raw: true });
+    const matchRounds = await MatchRound?.findAll({ raw: true });
+    let teams = await Team?.findAll({ raw: true });
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (!teams || !matches || !matchRounds) {
     return {
@@ -78,7 +84,7 @@ export const getStaticProps = async () => {
   };
 };
 
-export default function Home({ schedule, teams }) {
+export default function Home({ schedule = null, teams = null }) {
   const today = new Date();
 
   const pastSchedule = schedule.filter((s) => {

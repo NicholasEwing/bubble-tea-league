@@ -10,23 +10,29 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { Op } from "sequelize";
 
 export const getStaticProps = async () => {
-  const { Match, MatchRound, Team, Player } = sequelize.models;
+  try {
+    const { Match, MatchRound, Team, Player } = sequelize.models;
 
-  const playerEmailObjs = await Player?.findAll({
-    raw: true,
-    attributes: ["email"],
-  });
-  const playerEmails = playerEmailObjs?.map((o) => o.email);
-  const teams = await Team?.findAll({ raw: true });
-  const matches = await Match?.findAll({
-    raw: true,
-    where: {
-      matchWinnerTeamId: {
-        [Op.is]: null,
+    const playerEmailObjs = await Player?.findAll({
+      raw: true,
+      attributes: ["email"],
+    });
+    const playerEmails = playerEmailObjs?.map((o) => o.email);
+    const teams = await Team?.findAll({ raw: true });
+    const matches = await Match?.findAll({
+      raw: true,
+      where: {
+        matchWinnerTeamId: {
+          [Op.is]: null,
+        },
       },
-    },
-  });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
+    });
+    const matchRounds = await MatchRound?.findAll({ raw: true });
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (!playerEmailObjs || !teams || !matches || !matchRounds) {
     return {
@@ -45,10 +51,10 @@ export const getStaticProps = async () => {
 };
 
 export default function Dashboard({
-  playerEmails,
-  teams,
-  matches,
-  matchRounds,
+  playerEmails = null,
+  teams = null,
+  matches = null,
+  matchRounds = null,
 }) {
   const router = useRouter();
 

@@ -1,38 +1,40 @@
 import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-
-import sequelize from "../sequelize";
-
 import { RefreshWrapper } from "../components/admin/context/refreshData";
-
 import ProviderSection from "../components/admin/Sections/ProviderSection";
 import SeasonsSection from "../components/admin/Sections/SeasonsSection";
 import TeamsSection from "../components/admin/Sections/TeamsSection";
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import PlayersSection from "../components/admin/Sections/PlayersSection";
 import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
-
+import sequelize from "../sequelize";
 import admins from "../sequelize/admins";
 
 export const getStaticProps = async () => {
-  const {
-    Provider,
-    Season,
-    Team,
-    Player,
-    Match,
-    PlayerTeamHistory,
-    MatchRound,
-  } = sequelize.models;
+  try {
+    const {
+      Provider,
+      Season,
+      Team,
+      Player,
+      Match,
+      PlayerTeamHistory,
+      MatchRound,
+    } = sequelize.models;
 
-  const provider = await Provider?.findOne({ raw: true });
-  const seasons = await Season?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
-  const allPlayers = await Player?.findAll({ raw: true });
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
+    const provider = await Provider?.findOne({ raw: true });
+    const seasons = await Season?.findAll({ raw: true });
+    const teams = await Team?.findAll({ raw: true });
+    const allPlayers = await Player?.findAll({ raw: true });
+    const matches = await Match?.findAll({ raw: true });
+    const matchRounds = await MatchRound?.findAll({ raw: true });
+    const playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (
     !provider ||
@@ -66,14 +68,14 @@ export const getStaticProps = async () => {
 };
 
 export default function Dashboard({
-  provider,
-  seasons,
-  teams,
-  players,
-  freeAgents,
-  matches,
-  matchRounds,
-  playerTeamHistory,
+  provider = null,
+  seasons = null,
+  teams = null,
+  players = null,
+  freeAgents = null,
+  matches = null,
+  matchRounds = null,
+  playerTeamHistory = null,
 }) {
   const router = useRouter();
 

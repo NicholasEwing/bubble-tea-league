@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Op } from "sequelize";
 import MatchContainer from "../../components/match-results/Containers/MatchContainer";
 import MatchSection from "../../components/match-results/Containers/MatchSection";
@@ -11,19 +10,18 @@ import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFo
 import TeamSummary from "../../components/match-results/TeamSummary";
 import { replaceTimelinePUUIDs } from "../../lib/jest-api-helpers";
 import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
-
-const sequelize = require("../../sequelize/index");
-const {
-  Match,
-  MatchRound,
-  MatchRoundTeamStats,
-  MatchRoundPlayerStats,
-  Team,
-  Player,
-} = sequelize.models;
+import sequelize from "../sequelize";
 
 export const getStaticPaths = async () => {
   try {
+    const {
+      Match,
+      MatchRound,
+      MatchRoundTeamStats,
+      MatchRoundPlayerStats,
+      Team,
+      Player,
+    } = sequelize.models;
     const matches = await Match?.findAll({ raw: true });
   } catch (error) {
     return {
@@ -210,10 +208,10 @@ export const getStaticProps = async (context) => {
 };
 
 export default function MatchResults({
-  match,
-  matchRounds,
-  matchRoundTeamStats,
-  matchRoundPlayerStats,
+  match = null,
+  matchRounds = null,
+  matchRoundTeamStats = null,
+  matchRoundPlayerStats = null,
 }) {
   const [toggleState, setToggleState] = useState(1);
 

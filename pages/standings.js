@@ -8,44 +8,50 @@ import SeasonSelector from "../components/standings/SeasonSelector";
 import StageSelector from "../components/standings/StageSelector";
 
 export const getStaticProps = async () => {
-  const sequelize = require("../sequelize/index");
-  const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
+  try {
+    const sequelize = require("../sequelize/index");
+    const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
 
-  let teams = await Team?.findAll({ raw: true });
-  const seasons = await Season?.findAll({ raw: true });
+    let teams = await Team?.findAll({ raw: true });
+    const seasons = await Season?.findAll({ raw: true });
 
-  const teamStandings = await TeamStanding?.findAll({
-    raw: true,
-    order: [["placement", "ASC"]],
-  });
+    const teamStandings = await TeamStanding?.findAll({
+      raw: true,
+      order: [["placement", "ASC"]],
+    });
 
-  const groupStageMatches = await Match?.findAll({
-    where: {
-      isPlayoffsMatch: false,
-    },
-    raw: true,
-  });
+    const groupStageMatches = await Match?.findAll({
+      where: {
+        isPlayoffsMatch: false,
+      },
+      raw: true,
+    });
 
-  const groupStageMatchRounds = await MatchRound?.findAll({
-    where: {
-      MatchId: { [Op.in]: groupStageMatches.map((m) => m.id) },
-    },
-    raw: true,
-  });
+    const groupStageMatchRounds = await MatchRound?.findAll({
+      where: {
+        MatchId: { [Op.in]: groupStageMatches.map((m) => m.id) },
+      },
+      raw: true,
+    });
 
-  const playoffsMatches = await Match?.findAll({
-    where: {
-      isPlayoffsMatch: true,
-    },
-    raw: true,
-  });
+    const playoffsMatches = await Match?.findAll({
+      where: {
+        isPlayoffsMatch: true,
+      },
+      raw: true,
+    });
 
-  const playoffsMatchRounds = await MatchRound?.findAll({
-    where: {
-      MatchId: { [Op.in]: playoffsMatches.map((pom) => pom.id) },
-    },
-    raw: true,
-  });
+    const playoffsMatchRounds = await MatchRound?.findAll({
+      where: {
+        MatchId: { [Op.in]: playoffsMatches.map((pom) => pom.id) },
+      },
+      raw: true,
+    });
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (
     !seasons ||

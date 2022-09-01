@@ -6,28 +6,36 @@ import EditableTable from "../components/admin/EditableTable";
 import TextHeadingContainer from "../components/admin/TextHeadingContainer";
 
 export const getStaticProps = async () => {
-  const sequelize = require("../sequelize/index");
-  const {
-    Season,
-    Player,
-    Team,
-    PlayerTeamHistory,
-    Match,
-    MatchRound,
-    MatchRoundPlayerStats,
-    MatchRoundTeamStats,
-  } = sequelize.models;
+  try {
+    const sequelize = require("../sequelize/index");
+    const {
+      Season,
+      Player,
+      Team,
+      PlayerTeamHistory,
+      Match,
+      MatchRound,
+      MatchRoundPlayerStats,
+      MatchRoundTeamStats,
+    } = sequelize.models;
 
-  const seasons = await Season?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
-  const players = await Player?.findAll({ raw: true });
-  const playerTeamHistories = await PlayerTeamHistory?.findAll({ raw: true });
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const matchRoundTeamStats = await MatchRoundTeamStats?.findAll({ raw: true });
-  const matchRoundPlayerStats = await MatchRoundPlayerStats?.findAll({
-    raw: true,
-  });
+    const seasons = await Season?.findAll({ raw: true });
+    const teams = await Team?.findAll({ raw: true });
+    const players = await Player?.findAll({ raw: true });
+    const playerTeamHistories = await PlayerTeamHistory?.findAll({ raw: true });
+    const matches = await Match?.findAll({ raw: true });
+    const matchRounds = await MatchRound?.findAll({ raw: true });
+    const matchRoundTeamStats = await MatchRoundTeamStats?.findAll({
+      raw: true,
+    });
+    const matchRoundPlayerStats = await MatchRoundPlayerStats?.findAll({
+      raw: true,
+    });
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (
     !seasons ||
@@ -261,11 +269,10 @@ export const getStaticProps = async () => {
   };
 };
 
-export default function PlayerStats({ seasons, seasonRows }) {
+export default function PlayerStats({ seasons = null, seasonRows = null }) {
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
 
   const rowsToDisplay = seasonRows[activeSeason - 1] || [];
-  console.log("rows to display", rowsToDisplay);
 
   const handleActiveSeason = (number) => {
     setActiveSeason(number);
