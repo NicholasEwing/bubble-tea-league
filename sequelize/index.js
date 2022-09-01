@@ -2,19 +2,21 @@ const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
 
-const makeTables = async () => {
-  await sequelize.sync({ force: true });
-  return true;
-};
-
-let database, username, password, host, port, dialect;
+let database, username, password, host, port, dialect, dialectOptions;
 
 if (process.env.NODE_ENV === "test") {
   ({ database, username, password, host, port, dialect } = config.test);
+  dialectOptions = {};
 } else if (process.env.NODE_ENV === "development") {
   ({ database, username, password, host, port, dialect } = config.development);
+  dialectOptions = {};
 } else if (process.env.NODE_ENV === "production") {
   ({ database, username, password, host, port, dialect } = config.production);
+  dialectOptions = {
+    ssl: {
+      rejectUnauthorized: true,
+    },
+  };
 }
 
 const sequelize = new Sequelize(database, username, password, {
@@ -22,11 +24,7 @@ const sequelize = new Sequelize(database, username, password, {
   port,
   dialect,
   logging: false,
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: true,
-    },
-  },
+  dialectOptions,
   // query: { raw: true }, // this breaks next-auth lol
 });
 
@@ -48,15 +46,28 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
+const syncModels = async () => {
+  for (const model of sequelize.models) {
+    await model.sync();
+  }
+
+  return true;
+};
+
+syncModels()
+  .then(() => {
+    console.log("Synced all models.");
+  })
+  .catch((error) => {
+    console.log("Failed to sync models.", error);
+  });
+
 // Apply our associations to all models
 applyAssociations(sequelize);
 
 sequelize
   .authenticate()
   .then(() => {
-    makeTables().then(() => {
-      console.log("Made tables!");
-    });
     console.log("Connection has been established successfully.");
   })
   .catch((err) => {
