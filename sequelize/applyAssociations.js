@@ -19,8 +19,8 @@ const applyAssociations = (sequelize) => {
   Team.belongsTo(Season, { foreignKey: "season", constraints: false });
 
   // Associate matches with match rounds (ex: A best of three match can have up to three rounds)
-  Match.hasMany(MatchRound, { constraints: false });
-  MatchRound.belongsTo(Match);
+  Match.hasMany(MatchRound);
+  MatchRound.belongsTo(Match, { constraints: false });
 
   // Associate matches with match winning teams
   Team.hasMany(Match, { foreignKey: "matchWinnerTeamId" });
