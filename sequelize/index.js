@@ -27,7 +27,7 @@ const sequelize = new Sequelize(database, username, password, {
   // query: { raw: true }, // this breaks next-auth lol
 });
 
-const syncModels = async (sequelize) => {
+const syncModels = async () => {
   for (const model in sequelize.models) {
     console.log("Syncing model", model);
     await sequelize.models[model].sync();
@@ -54,7 +54,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-syncModels(sequelize)
+syncModels()
   .then(() => {
     console.log("Synced all models.");
     // Apply our associations to all models
