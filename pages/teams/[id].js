@@ -13,7 +13,7 @@ import sequelize from "../../sequelize";
 const { Team, Player, PlayerTeamHistory } = sequelize.models;
 
 export const getStaticPaths = async () => {
-  const teams = await Team?.findAll({ raw: true });
+  const teams = await Team?.findAll({ raw: true, subQuery: true });
 
   if (!teams) {
     return {
