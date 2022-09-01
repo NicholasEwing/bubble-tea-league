@@ -25,6 +25,12 @@ const {
 export const getStaticPaths = async () => {
   const matches = await Match.findAll({ raw: true });
 
+  if (!matches) {
+    return {
+      notFound: true,
+    };
+  }
+
   // Only generate match pages that have
   // FINISHED match rounds associated with them
   const matchIds = matches.map((m) => m.id);
@@ -238,7 +244,7 @@ export default function MatchResults({
   };
 
   return (
-    <div className="flex bg-[#0f1519] relative">
+    <div className="relative flex bg-[#0f1519]">
       <MatchContainer matchId={match.id}>
         <MatchSection>
           <TeamHeader
@@ -248,7 +254,7 @@ export default function MatchResults({
             toggleState={toggleState}
             matchRounds={matchRounds}
           />
-          <span className="separator px-2 text-sm text-gray-400 font-semibold">
+          <span className="separator px-2 text-sm font-semibold text-gray-400">
             VS
           </span>
           <TeamHeader
@@ -269,16 +275,16 @@ export default function MatchResults({
         </MatchSection>
 
         <MatchSection left hideOnDesktop>
-          <ul className="menu list-none	pt-1 px-2 h-full">
+          <ul className="menu h-full	list-none px-2 pt-1">
             <li
-              className="tab title stats selected tracking-widest p-4 font-medium text-sm border-b-4 border-b-teal-accent h-full grid place-items-center"
+              className="tab title stats selected grid h-full place-items-center border-b-4 border-b-teal-accent p-4 text-sm font-medium tracking-widest"
               role="button"
             >
               STATS
             </li>
           </ul>
         </MatchSection>
-        <section className="team-stats relative bg-[#0a0e13] flex flex-col">
+        <section className="team-stats relative flex flex-col bg-[#0a0e13]">
           {matchRounds.map((round, i) => (
             <React.Fragment key={i}>
               <TeamSummary

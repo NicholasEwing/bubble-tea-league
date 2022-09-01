@@ -16,6 +16,13 @@ const { Team, Player, PlayerTeamHistory } = sequelize.models;
 export const getStaticPaths = async () => {
   const teams = await Team.findAll({ raw: true });
 
+  // https://nextjs.org/docs/api-reference/data-fetching/get-static-props#notfound
+  if (!teams) {
+    return {
+      notFound: true,
+    };
+  }
+
   const paths = teams.map((team) => {
     return {
       params: {

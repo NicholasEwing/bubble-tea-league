@@ -29,6 +29,20 @@ export const getStaticProps = async () => {
     raw: true,
   });
 
+  if (
+    !seasons ||
+    !teams ||
+    !players ||
+    !matches ||
+    !matchRounds ||
+    !matchRoundTeamStats ||
+    !matchRoundPlayerStats
+  ) {
+    return {
+      notFound: true,
+    };
+  }
+
   // calculates the avg of anything per game for a player, (avg damage, avg cs, avg deaths, etc)
   function calculateStatPerMin(
     PlayerId,

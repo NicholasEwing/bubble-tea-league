@@ -28,6 +28,12 @@ export const getStaticProps = async () => {
   });
   const matchRounds = await MatchRound.findAll({ raw: true });
 
+  if (!playerEmailObjs || !teams || !matches) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       playerEmails: JSON.parse(JSON.stringify(playerEmails)),

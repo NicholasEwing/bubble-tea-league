@@ -34,6 +34,20 @@ export const getStaticProps = async () => {
   const matchRounds = await MatchRound.findAll({ raw: true });
   const playerTeamHistory = await PlayerTeamHistory.findAll({ raw: true });
 
+  if (
+    !provider ||
+    !seasons ||
+    !teams ||
+    !allPlayers ||
+    !matches ||
+    !matchRounds ||
+    !playerTeamHistory
+  ) {
+    return {
+      notFound: true,
+    };
+  }
+
   const players = allPlayers.filter((p) => !p.isFreeAgent);
   const freeAgents = allPlayers.filter((p) => p.isFreeAgent);
 

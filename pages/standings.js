@@ -14,6 +14,12 @@ export const getStaticProps = async () => {
   let teams = await Team.findAll({ raw: true });
   const seasons = await Season.findAll({ raw: true });
 
+  if (!seasons || !teams) {
+    return {
+      notFound: true,
+    };
+  }
+
   const teamStandings = await TeamStanding.findAll({
     raw: true,
     order: [["placement", "ASC"]],

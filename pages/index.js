@@ -15,6 +15,12 @@ export const getStaticProps = async () => {
   const matchRounds = await MatchRound.findAll({ raw: true });
   let teams = await Team.findAll({ raw: true });
 
+  if (!teams || !matches || !matchRounds) {
+    return {
+      notFound: true,
+    };
+  }
+
   const groupStageMatches = matches.filter(
     (m) => m.matchWinnerTeamId && !m.isPlayoffsMatch
   );
