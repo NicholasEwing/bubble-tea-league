@@ -12,13 +12,13 @@ import { Op } from "sequelize";
 export const getStaticProps = async () => {
   const { Match, MatchRound, Team, Player } = sequelize.models;
 
-  const playerEmailObjs = await Player.findAll({
+  const playerEmailObjs = await Player?.findAll({
     raw: true,
     attributes: ["email"],
   });
-  const playerEmails = playerEmailObjs.map((o) => o.email);
-  const teams = await Team.findAll({ raw: true });
-  const matches = await Match.findAll({
+  const playerEmails = playerEmailObjs?.map((o) => o.email);
+  const teams = await Team?.findAll({ raw: true });
+  const matches = await Match?.findAll({
     raw: true,
     where: {
       matchWinnerTeamId: {
@@ -26,9 +26,9 @@ export const getStaticProps = async () => {
       },
     },
   });
-  const matchRounds = await MatchRound.findAll({ raw: true });
+  const matchRounds = await MatchRound?.findAll({ raw: true });
 
-  if (!playerEmailObjs || !teams || !matches) {
+  if (!playerEmailObjs || !teams || !matches || !matchRounds) {
     return {
       notFound: true,
     };

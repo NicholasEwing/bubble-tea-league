@@ -23,7 +23,7 @@ const {
 } = sequelize.models;
 
 export const getStaticPaths = async () => {
-  const matches = await Match.findAll({ raw: true });
+  const matches = await Match?.findAll({ raw: true });
 
   if (!matches) {
     return {

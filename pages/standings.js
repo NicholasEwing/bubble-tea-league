@@ -11,47 +11,54 @@ export const getStaticProps = async () => {
   const sequelize = require("../sequelize/index");
   const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
 
-  let teams = await Team.findAll({ raw: true });
-  const seasons = await Season.findAll({ raw: true });
+  let teams = await Team?.findAll({ raw: true });
+  const seasons = await Season?.findAll({ raw: true });
 
-  if (!seasons || !teams) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const teamStandings = await TeamStanding.findAll({
+  const teamStandings = await TeamStanding?.findAll({
     raw: true,
     order: [["placement", "ASC"]],
   });
 
-  const groupStageMatches = await Match.findAll({
+  const groupStageMatches = await Match?.findAll({
     where: {
       isPlayoffsMatch: false,
     },
     raw: true,
   });
 
-  const groupStageMatchRounds = await MatchRound.findAll({
+  const groupStageMatchRounds = await MatchRound?.findAll({
     where: {
       MatchId: { [Op.in]: groupStageMatches.map((m) => m.id) },
     },
     raw: true,
   });
 
-  const playoffsMatches = await Match.findAll({
+  const playoffsMatches = await Match?.findAll({
     where: {
       isPlayoffsMatch: true,
     },
     raw: true,
   });
 
-  const playoffsMatchRounds = await MatchRound.findAll({
+  const playoffsMatchRounds = await MatchRound?.findAll({
     where: {
       MatchId: { [Op.in]: playoffsMatches.map((pom) => pom.id) },
     },
     raw: true,
   });
+
+  if (
+    !seasons ||
+    !teams ||
+    !teamStandings ||
+    !groupStageMatches ||
+    !playoffsMatches ||
+    !playoffsMatchRounds
+  ) {
+    return {
+      notFound: true,
+    };
+  }
 
   // add group stage losses / wins
   teams = teams.map((team) => {

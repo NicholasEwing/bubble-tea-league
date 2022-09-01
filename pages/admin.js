@@ -26,13 +26,13 @@ export const getStaticProps = async () => {
     MatchRound,
   } = sequelize.models;
 
-  const provider = await Provider.findOne({ raw: true });
-  const seasons = await Season.findAll({ raw: true });
-  const teams = await Team.findAll({ raw: true });
-  const allPlayers = await Player.findAll({ raw: true });
-  const matches = await Match.findAll({ raw: true });
-  const matchRounds = await MatchRound.findAll({ raw: true });
-  const playerTeamHistory = await PlayerTeamHistory.findAll({ raw: true });
+  const provider = await Provider?.findOne({ raw: true });
+  const seasons = await Season?.findAll({ raw: true });
+  const teams = await Team?.findAll({ raw: true });
+  const allPlayers = await Player?.findAll({ raw: true });
+  const matches = await Match?.findAll({ raw: true });
+  const matchRounds = await MatchRound?.findAll({ raw: true });
+  const playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
 
   if (
     !provider ||
