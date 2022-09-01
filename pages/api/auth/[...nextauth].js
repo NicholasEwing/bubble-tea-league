@@ -11,6 +11,7 @@ export const authOptions = {
     }),
     // ...add more providers here
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: SequelizeAdapter(sequelize),
   callbacks: {
     async session({ session, token, user }) {
