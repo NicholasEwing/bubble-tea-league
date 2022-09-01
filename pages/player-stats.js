@@ -4,6 +4,7 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { findTeamName, percentageFormatter } from "../lib/utils";
 import EditableTable from "../components/admin/EditableTable";
 import TextHeadingContainer from "../components/admin/TextHeadingContainer";
+import sequelize from "../sequelize";
 const {
   Season,
   Player,
@@ -14,7 +15,6 @@ const {
   MatchRoundPlayerStats,
   MatchRoundTeamStats,
 } = sequelize.models;
-const sequelize = require("../sequelize/index");
 
 export const getStaticProps = async () => {
   const seasons = await Season?.findAll({ raw: true });

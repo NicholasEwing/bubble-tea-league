@@ -6,7 +6,7 @@ import RegularSeason from "../components/standings/RegularSeason";
 import SeasonItem from "../components/standings/SeasonItem";
 import SeasonSelector from "../components/standings/SeasonSelector";
 import StageSelector from "../components/standings/StageSelector";
-const sequelize = require("../sequelize/index");
+import sequelize from "../sequelize";
 const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
 
 export const getStaticProps = async () => {
