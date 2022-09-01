@@ -12,32 +12,31 @@ const applyAssociations = (sequelize) => {
 
   // Associate matches with seasons
   Season.hasMany(Match, { foreignKey: "season", constraints: false });
-  Match.belongsTo(Season, { foreignKey: "season", constraints: false });
+  Match.belongsTo(Season, { foreignKey: "season" });
 
   // Associate teams with seasons
   Season.hasMany(Team, { foreignKey: "season", constraints: false });
-  Team.belongsTo(Season, { foreignKey: "season", constraints: false });
+  Team.belongsTo(Season, { foreignKey: "season" });
 
   // Associate matches with match rounds (ex: A best of three match can have up to three rounds)
   Match.hasMany(MatchRound, { constraints: false });
-  MatchRound.belongsTo(Match, { constraints: false });
+  MatchRound.belongsTo(Match);
 
   // Associate matches with match winning teams
   Team.hasMany(Match, { foreignKey: "matchWinnerTeamId", constraints: false });
   Match.belongsTo(Team, {
     foreignKey: "matchWinnerTeamId",
-    constraints: false,
   });
 
   Team.hasMany(Match, { foreignKey: "matchLoserTeamId", constraints: false });
-  Match.belongsTo(Team, { foreignKey: "matchLoserTeamId", constraints: false });
+  Match.belongsTo(Team, { foreignKey: "matchLoserTeamId" });
 
   Team.hasMany(Match, { foreignKey: "teamOne", constraints: false });
-  Match.belongsTo(Team, { foreignKey: "teamTwo", constraints: false });
+  Match.belongsTo(Team, { foreignKey: "teamTwo" });
 
   // Keep track of seasonal team standings
   Team.hasOne(TeamStanding, { constraints: false });
-  TeamStanding.belongsTo(Team, { constraints: false });
+  TeamStanding.belongsTo(Team);
 
   // Associate winning / losing teams with match rounds
   Team.hasMany(MatchRound, {
@@ -46,7 +45,6 @@ const applyAssociations = (sequelize) => {
   });
   MatchRound.belongsTo(Team, {
     foreignKey: "winningTeamId",
-    constraints: false,
   });
 
   Team.hasMany(MatchRound, {
@@ -55,7 +53,6 @@ const applyAssociations = (sequelize) => {
   });
   MatchRound.belongsTo(Team, {
     foreignKey: "blueTeamId",
-    constraints: false,
   });
 
   // Associate teams with players per season (team has one season, player can have a new team per season)
