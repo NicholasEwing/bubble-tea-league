@@ -8,32 +8,24 @@ import MatchesSection from "../components/admin/Sections/MatchesSection";
 import Warning from "../components/tournament-codes/warning";
 import SectionContainer from "../components/admin/table/SectionContainer";
 import { Op } from "sequelize";
+const { Match, MatchRound, Team, Player } = sequelize.models;
 
 export const getStaticProps = async () => {
-  let playerEmails, teams, matches, matchRounds;
-  try {
-    const { Match, MatchRound, Team, Player } = sequelize.models;
-
-    const playerEmailObjs = await Player?.findAll({
-      raw: true,
-      attributes: ["email"],
-    });
-    playerEmails = playerEmailObjs?.map((o) => o.email);
-    teams = await Team?.findAll({ raw: true });
-    matches = await Match?.findAll({
-      raw: true,
-      where: {
-        matchWinnerTeamId: {
-          [Op.is]: null,
-        },
+  const playerEmailObjs = await Player?.findAll({
+    raw: true,
+    attributes: ["email"],
+  });
+  const playerEmails = playerEmailObjs?.map((o) => o.email);
+  const teams = await Team?.findAll({ raw: true });
+  const matches = await Match?.findAll({
+    raw: true,
+    where: {
+      matchWinnerTeamId: {
+        [Op.is]: null,
       },
-    });
-    matchRounds = await MatchRound?.findAll({ raw: true });
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
+    },
+  });
+  const matchRounds = await MatchRound?.findAll({ raw: true });
 
   if (!playerEmails || !teams || !matches || !matchRounds) {
     return {

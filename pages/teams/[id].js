@@ -10,15 +10,14 @@ import SupportIcon from "../../components/teams/Icons/SupportIcon";
 import TopIcon from "../../components/teams/Icons/TopIcon";
 import Name from "../../components/teams/Name";
 import sequelize from "../../sequelize";
+const { Team, Player, PlayerTeamHistory } = sequelize.models;
 
 export const getStaticPaths = async () => {
-  let teams;
-  try {
-    const { Team, Player, PlayerTeamHistory } = sequelize.models;
-    teams = await Team?.findAll({ raw: true });
-  } catch (error) {
+  const teams = await Team?.findAll({ raw: true });
+
+  if (!teams) {
     return {
-      paths: [],
+      paths,
       fallback: false,
     };
   }
@@ -30,11 +29,6 @@ export const getStaticPaths = async () => {
       },
     };
   });
-
-  return {
-    paths,
-    fallback: false,
-  };
 };
 
 export const getStaticProps = async (context) => {

@@ -11,37 +11,21 @@ import TeamSummary from "../../components/match-results/TeamSummary";
 import { replaceTimelinePUUIDs } from "../../lib/jest-api-helpers";
 import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
 import sequelize from "../../sequelize";
+const {
+  Match,
+  MatchRound,
+  MatchRoundTeamStats,
+  MatchRoundPlayerStats,
+  Team,
+  Player,
+} = sequelize.models;
 
 export const getStaticPaths = async () => {
-  let matches;
-
-  try {
-    const {
-      Match,
-      MatchRound,
-      MatchRoundTeamStats,
-      MatchRoundPlayerStats,
-      Team,
-      Player,
-    } = sequelize.models;
-    matches = await Match?.findAll({ raw: true });
-  } catch (error) {
-    return {
-      paths: [],
-      fallback: false,
-    };
-  }
+  const matches = await Match?.findAll({ raw: true });
 
   // Only generate match pages that have
   // FINISHED match rounds associated with them
-  if (!matches) {
-    return {
-      paths: [],
-      fallback: false,
-    };
-  }
-
-  const matchIds = matches.map((m) => m.id);
+  const matchIds = matches?.map((m) => m.id);
 
   const results = await MatchRound.findAll({
     where: {
@@ -53,6 +37,13 @@ export const getStaticPaths = async () => {
     attributes: { exclude: ["metaData"] },
     raw: true,
   });
+
+  if (!matches || !results) {
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
 
   const pagesToGenerate = [
     ...new Set(results.flatMap((result) => result.MatchId)),

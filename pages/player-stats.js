@@ -4,47 +4,31 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { findTeamName, percentageFormatter } from "../lib/utils";
 import EditableTable from "../components/admin/EditableTable";
 import TextHeadingContainer from "../components/admin/TextHeadingContainer";
+const {
+  Season,
+  Player,
+  Team,
+  PlayerTeamHistory,
+  Match,
+  MatchRound,
+  MatchRoundPlayerStats,
+  MatchRoundTeamStats,
+} = sequelize.models;
+const sequelize = require("../sequelize/index");
 
 export const getStaticProps = async () => {
-  let seasons,
-    teams,
-    players,
-    playerTeamHistories,
-    matches,
-    matchRounds,
-    matchRoundTeamStats,
-    matchRoundPlayerStats;
-
-  try {
-    const sequelize = require("../sequelize/index");
-    const {
-      Season,
-      Player,
-      Team,
-      PlayerTeamHistory,
-      Match,
-      MatchRound,
-      MatchRoundPlayerStats,
-      MatchRoundTeamStats,
-    } = sequelize.models;
-
-    seasons = await Season?.findAll({ raw: true });
-    teams = await Team?.findAll({ raw: true });
-    players = await Player?.findAll({ raw: true });
-    playerTeamHistories = await PlayerTeamHistory?.findAll({ raw: true });
-    matches = await Match?.findAll({ raw: true });
-    matchRounds = await MatchRound?.findAll({ raw: true });
-    matchRoundTeamStats = await MatchRoundTeamStats?.findAll({
-      raw: true,
-    });
-    matchRoundPlayerStats = await MatchRoundPlayerStats?.findAll({
-      raw: true,
-    });
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
+  const seasons = await Season?.findAll({ raw: true });
+  const teams = await Team?.findAll({ raw: true });
+  const players = await Player?.findAll({ raw: true });
+  const playerTeamHistories = await PlayerTeamHistory?.findAll({ raw: true });
+  const matches = await Match?.findAll({ raw: true });
+  const matchRounds = await MatchRound?.findAll({ raw: true });
+  const matchRoundTeamStats = await MatchRoundTeamStats?.findAll({
+    raw: true,
+  });
+  const matchRoundPlayerStats = await MatchRoundPlayerStats?.findAll({
+    raw: true,
+  });
 
   if (
     !seasons ||

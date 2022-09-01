@@ -7,20 +7,12 @@ import ScheduleBanner from "../components/home/ScheduleBanner";
 import WhatIsBtl from "../components/home/WhatIsBtl";
 import { dateInPast, isToday } from "../lib/utils";
 import sequelize from "../sequelize";
+const { Match, MatchRound, Team } = sequelize.models;
 
 export const getStaticProps = async () => {
-  let matches, matchRounds, teams;
-  try {
-    const { Match, MatchRound, Team } = sequelize.models;
-
-    matches = await Match?.findAll({ raw: true });
-    matchRounds = await MatchRound?.findAll({ raw: true });
-    teams = await Team?.findAll({ raw: true });
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
+  const matches = await Match?.findAll({ raw: true });
+  const matchRounds = await MatchRound?.findAll({ raw: true });
+  const teams = await Team?.findAll({ raw: true });
 
   if (!teams || !matches || !matchRounds) {
     return {
