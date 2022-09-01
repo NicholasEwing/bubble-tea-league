@@ -32,6 +32,13 @@ export const getStaticPaths = async () => {
 
   // Only generate match pages that have
   // FINISHED match rounds associated with them
+  if (!matches) {
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
+
   const matchIds = matches.map((m) => m.id);
 
   const results = await MatchRound.findAll({

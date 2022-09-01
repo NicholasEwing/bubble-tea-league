@@ -47,9 +47,7 @@ for (const modelDefiner of modelDefiners) {
 }
 
 const syncModels = async () => {
-  console.log("inside sync models", sequelize);
   for (const model in sequelize.models) {
-    console.log("model?", model);
     await sequelize.models[model].sync();
   }
 
