@@ -51,6 +51,7 @@ const modelDefiners = [
 ];
 
 for (const modelDefiner of modelDefiners) {
+  console.log("defining model for...", modelDefiner);
   modelDefiner(sequelize);
 }
 
