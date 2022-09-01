@@ -19,7 +19,8 @@ export const getStaticPaths = async () => {
   } catch (error) {
     // https://nextjs.org/docs/api-reference/data-fetching/get-static-props#notfound
     return {
-      notFound: true,
+      paths: [],
+      fallback: false,
     };
   }
 
@@ -33,7 +34,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: true,
+    fallback: false,
   };
 };
 
@@ -49,6 +50,12 @@ export const getStaticProps = async (context) => {
     attributes: ["PlayerId", "role"],
     raw: true,
   });
+
+  if (!team || !playerHistories) {
+    return {
+      notFound: true,
+    };
+  }
 
   const playerIds = playerHistories.map((ph) => ph.PlayerId);
 
