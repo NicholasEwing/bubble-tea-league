@@ -8,12 +8,20 @@ import TeamsSection from "../components/admin/Sections/TeamsSection";
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import PlayersSection from "../components/admin/Sections/PlayersSection";
 import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
-import sequelize from "../sequelize";
 import admins from "../sequelize/admins";
-const { Provider, Season, Team, Player, Match, PlayerTeamHistory, MatchRound } =
-  sequelize.models;
+import { sequelize } from "../sequelize/models";
 
 export const getStaticProps = async () => {
+  const {
+    Provider,
+    Season,
+    Team,
+    Player,
+    Match,
+    PlayerTeamHistory,
+    MatchRound,
+  } = sequelize;
+
   const provider = await Provider?.findOne({ raw: true });
   const seasons = await Season?.findAll({ raw: true });
   const teams = await Team?.findAll({ raw: true });
