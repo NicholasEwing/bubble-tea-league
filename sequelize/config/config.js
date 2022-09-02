@@ -1,3 +1,5 @@
+const mysql2 = require("mysql2"); // Needed to fix sequelize issues with WebPack
+
 module.exports = {
   test: {
     username: "root",
