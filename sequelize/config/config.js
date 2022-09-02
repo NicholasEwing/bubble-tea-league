@@ -20,7 +20,9 @@ module.exports = {
     use_env_variable: "DB_CONNECTION_STRING",
     ssl: true,
     dialectOptions: {
-      ssl: true,
+      ssl: {
+        rejectUnauthorized: true,
+      },
     },
   },
 };
