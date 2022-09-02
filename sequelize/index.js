@@ -2,40 +2,30 @@ const Sequelize = require("sequelize");
 const applyAssociations = require("./applyAssociations");
 const config = require("./config/config");
 
-let database, username, password, host, port, dialect, dialectOptions;
-
-if (process.env.NODE_ENV === "test") {
-  ({ database, username, password, host, port, dialect } = config.test);
-  dialectOptions = {};
-} else if (process.env.NODE_ENV === "development") {
-  ({ database, username, password, host, port, dialect } = config.development);
-  dialectOptions = {};
-} else if (process.env.NODE_ENV === "production") {
-  ({ database, username, password, host, port, dialect } = config.production);
-  dialectOptions = {
-    ssl: {
-      rejectUnauthorized: true,
-      ca: fs.readFileSync(__dirname + "/ca-certificates.crt"),
-    },
-  };
-}
-
-const sequelize = new Sequelize(database, username, password, {
+let sequelize,
+  database,
+  username,
+  password,
   host,
   port,
   dialect,
-  dialectOptions,
-  // query: { raw: true }, // this breaks next-auth lol
-});
+  dialectOptions;
 
-const syncModels = async () => {
-  for (const model in sequelize.models) {
-    console.log("Syncing model", model);
-    await sequelize.models[model].sync();
-  }
+if (process.env.NODE_ENV === "test") {
+  ({ database, username, password, host, port, dialect } = config.test);
+} else if (process.env.NODE_ENV === "development") {
+  ({ database, username, password, host, port, dialect } = config.development);
+} else if (process.env.NODE_ENV === "production") {
+  const sequelize = new Sequelize(process.env.DB_CONNECTION_STRING);
+}
 
-  return true;
-};
+if (process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development")
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    port,
+    dialect,
+    // query: { raw: true }, // this breaks next-auth lol
+  });
 
 // Define all models and then attaches them to sequelize.models
 const modelDefiners = [
@@ -52,28 +42,18 @@ const modelDefiners = [
 ];
 
 for (const modelDefiner of modelDefiners) {
-  console.log("defining model for...", modelDefiner);
   modelDefiner(sequelize);
 }
 
-syncModels()
+applyAssociations(sequelize);
+
+sequelize
+  .authenticate()
   .then(() => {
-    console.log("Synced all models.");
-    // Apply our associations to all models
-    applyAssociations(sequelize);
-
-    sequelize
-      .authenticate()
-      .then(() => {
-        console.log("Connection has been established successfully.");
-      })
-      .catch((err) => {
-        console.log("Unable to connect to the database:", err);
-      });
-
-    // export the sequelize instance to be used elsewhere
-    module.exports = sequelize;
+    console.log("Connection has been established successfully.");
   })
-  .catch((error) => {
-    console.log("Failed to sync models.", error);
+  .catch((err) => {
+    console.log("Unable to connect to the database:", err);
   });
+
+module.exports = sequelize;
