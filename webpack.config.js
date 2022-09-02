@@ -1,12 +1,12 @@
 const path = require("path");
 const fs = require("fs");
 
-const externals = ["pg-hstore"];
-externals.push(
-  fs.readdirSync("node_modules").filter((x) => {
-    return x !== ".bin";
-  })
-);
+// const externals = ["pg-hstore"];
+// externals.push(
+//   fs.readdirSync("node_modules").filter((x) => {
+//     return x !== ".bin";
+//   })
+// );
 
 module.exports = {
   entry: "./src/lambda.js",
@@ -19,7 +19,10 @@ module.exports = {
     // library: 'serverlessExpressEdge',
     libraryTarget: "commonjs2",
   },
-  externals,
+  externals: ["pg-hstore"],
+  // externals: fs.readdirSync("node_modules").filter((x) => {
+  //   return x !== ".bin";
+  // }),
   // optimization: {
   //   concatenateModules: false,
   // },
