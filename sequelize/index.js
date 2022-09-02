@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "test") {
   dialectOptions = {
     ssl: {
       rejectUnauthorized: true,
+      ca: fs.readFileSync(__dirname + "/ca-certificates.crt"),
     },
   };
 }
