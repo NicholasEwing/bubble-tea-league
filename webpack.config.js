@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const nodeExternals = require("webpack-node-externals");
 
 // const externals = ["pg-hstore"];
 // externals.push(
@@ -20,9 +21,8 @@ module.exports = {
     libraryTarget: "commonjs2",
   },
   // externals: ["pg-hstore"],
-  externals: fs.readdirSync("node_modules").filter((x) => {
-    return x !== ".bin";
-  }),
+  externals: [nodeExternals()],
+  externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.
   // optimization: {
   //   concatenateModules: false,
   // },
