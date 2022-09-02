@@ -20,8 +20,16 @@ module.exports = {
     // library: 'serverlessExpressEdge',
     libraryTarget: "commonjs2",
   },
+  resolve: {
+    alias: {
+      pg: path.resolve(__dirname, "empty_module"),
+      sqlite3: path.resolve(__dirname, "empty_module"),
+      "pg-hstore": path.resolve(__dirname, "empty_module"),
+      tedious: path.resolve(__dirname, "empty_module"),
+    },
+  },
   // externals: ["pg-hstore"],
-  externals: [nodeExternals()],
+  // externals: [nodeExternals()],
   externalsPresets: { node: true }, // in order to ignore built-in modules like path, fs, etc.
   // optimization: {
   //   concatenateModules: false,
