@@ -6,9 +6,11 @@ import RecentVods from "../components/home/RecentVods";
 import ScheduleBanner from "../components/home/ScheduleBanner";
 import WhatIsBtl from "../components/home/WhatIsBtl";
 import { dateInPast, isToday } from "../lib/utils";
-import { Match, MatchRound, Team } from "../sequelize/models";
+import { sequelize } from "../sequelize/models";
 
 export const getStaticProps = async () => {
+  console.log("SEQLEIZE?", sequelize);
+  const { Match, MatchRound, Team } = sequelize;
   const matches = await Match?.findAll({ raw: true });
   const matchRounds = await MatchRound?.findAll({ raw: true });
   const teams = await Team?.findAll({ raw: true });
