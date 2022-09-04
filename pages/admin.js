@@ -12,6 +12,7 @@ import admins from "../sequelize/admins";
 import { sequelize } from "../sequelize/models";
 
 export const getStaticProps = async () => {
+  // Did the thing!
   const {
     Provider,
     Season,
