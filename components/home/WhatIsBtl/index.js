@@ -10,9 +10,9 @@ export default function WhatIsBtl() {
             <span className="text-btl-blue">Bubble Tea League?</span>
           </h2>
           <p className="mt-5 text-white sm:text-sm md:text-base lg:text-xl">
-            The BTL is an exclusive gaming community focused on improvement &amp;
-            competition. Every year, 50 players compete for fun and bragging
-            rights as the action is broadcast live on{" "}
+            The BTL is an exclusive gaming community focused on improvement
+            &amp; competition. Every year, 50 players compete for fun and
+            bragging rights as the action is broadcast live on{" "}
             <a
               href="https://www.twitch.tv/thebubbletealeague"
               className="font-medium text-btl-pink underline underline-offset-4"
@@ -22,8 +22,14 @@ export default function WhatIsBtl() {
             .
           </p>
         </div>
-        <div className="h-128 w-full bg-black lg:w-1/2">
-          {/* TODO: put video from Elena here, maybe overlay as bg on mobile */}
+        <div className="h-128 w-full bg-black lg:w-1/2 ">
+          <video autoPlay loop muted className="h-full w-full object-cover ">
+            <source src="/seize-the-throne.mp4" type="video/mp4" />
+            <source
+              src="/seize-the-throne.webm"
+              type="video/webm; codecs=vp9"
+            />
+          </video>
         </div>
       </div>
     </div>

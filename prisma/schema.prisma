@@ -1,0 +1,251 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model MatchRoundPlayerStats {
+  id                   Int        @id @default(autoincrement())
+  kills                Int        @db.UnsignedInt
+  assists              Int        @db.UnsignedInt
+  deaths               Int        @db.UnsignedInt
+  champLevel           Int        @db.UnsignedInt
+  goldEarned           Int        @db.UnsignedInt
+  visionScore          Int        @db.UnsignedInt
+  firstBlood           Boolean
+  totalDmgToChamps     Int        @db.UnsignedInt
+  kda                  Int        @db.UnsignedInt
+  championName         String     @db.VarChar(255)
+  championTransform    Int        @default(0) @db.UnsignedInt
+  item0                Int        @db.UnsignedInt
+  item1                Int        @db.UnsignedInt
+  item2                Int        @db.UnsignedInt
+  item3                Int        @db.UnsignedInt
+  item4                Int        @db.UnsignedInt
+  item5                Int        @db.UnsignedInt
+  item6                Int        @db.UnsignedInt
+  summoner1Id          Int        @db.UnsignedInt
+  summoner2Id          Int        @db.UnsignedInt
+  teamPosition         String     @db.VarChar(255)
+  totalMinionsKilled   Int
+  statPerks            String     @db.VarChar(255)
+  primaryRunePath      Int        @db.UnsignedInt
+  primaryRunePerks     String     @db.VarChar(255)
+  secondaryRunePath    Int        @db.UnsignedInt
+  secondaryRunePerks   String     @db.VarChar(255)
+  killParticipation    String     @db.VarChar(255)
+  teamDamagePercentage String     @db.VarChar(255)
+  wardsPlaced          Int        @db.UnsignedInt
+  wardTakedowns        Int        @db.UnsignedInt
+  summonerName         String     @db.VarChar(255)
+  attackDamage         Int        @db.UnsignedInt
+  abilityPower         Int        @db.UnsignedInt
+  attackSpeed          Int        @db.UnsignedInt
+  lifesteal            Int        @db.UnsignedInt
+  armor                Int        @db.UnsignedInt
+  magicResist          Int        @db.UnsignedInt
+  teamSide             String     @db.VarChar(255)
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  matchRound           MatchRound @relation(fields: [matchRoundId], references: [id])
+  matchRoundId         Int
+  Player               Player     @relation(fields: [playerId], references: [id])
+  playerId             Int
+
+  @@index([matchRoundId, playerId])
+}
+
+model MatchRoundTeamStats {
+  id                  Int        @id @default(autoincrement())
+  kills               Int        @db.UnsignedInt
+  goldEarned          Int        @db.UnsignedInt
+  towersDestroyed     Int        @db.UnsignedInt
+  heraldsKilled       Int        @db.UnsignedInt
+  dragonsKilled       Int        @db.UnsignedInt
+  inhibitorsDestroyed Int        @db.UnsignedInt
+  baronsKilled        Int        @db.UnsignedInt
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  matchRound          MatchRound @relation(fields: [matchRoundId], references: [id])
+  matchRoundId        Int
+  team                Team       @relation(fields: [teamId], references: [id])
+  teamId              Int
+
+  @@index([matchRoundId, teamId])
+}
+
+model MatchRound {
+  id                    Int                     @id @default(autoincrement())
+  gameId                String?                 @db.VarChar(255)
+  tournamentCode        String                  @db.VarChar(255)
+  metaData              String?                 @db.VarChar(255)
+  gameDuration          Int?                    @db.UnsignedInt
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  winningTeam           Team?                   @relation(name: "winningTeam", fields: [winningTeamId], references: [id])
+  redTeam               Team?                   @relation(name: "redTeam", fields: [redTeamId], references: [id])
+  blueTeam              Team?                   @relation(name: "blueTeam", fields: [blueTeamId], references: [id])
+  winningTeamId         Int?
+  redTeamId             Int?
+  blueTeamId            Int?
+  MatchRoundPlayerStats MatchRoundPlayerStats[]
+  MatchRoundTeamStats   MatchRoundTeamStats[]
+  match                 Match                   @relation(fields: [matchId], references: [id])
+  matchId               Int
+
+  @@index([winningTeamId, redTeamId, blueTeamId])
+}
+
+model Match {
+  id                Int          @id @default(autoincrement())
+  isPlayoffsMatch   Boolean
+  isUpperBracket    Boolean?
+  bracketRound      Int?         @db.UnsignedInt
+  scheduledTime     DateTime?    @db.DateTime(0)
+  vodLink           String?      @unique(map: "vodLink") @db.VarChar(255)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  season            Season       @relation(fields: [seasonId], references: [id])
+  seasonId          Int          @db.UnsignedInt
+  matchWinner       Team?        @relation(name: "matchWinner", fields: [matchWinnerTeamId], references: [id])
+  matchWinnerTeamId Int?
+  matchLoser        Team?        @relation(name: "matchLoser", fields: [matchLoserTeamId], references: [id])
+  matchLoserTeamId  Int?
+  teamOne           Team?        @relation(name: "teamOne", fields: [teamOneId], references: [id])
+  teamOneId         Int?
+  teamTwo           Team?        @relation(name: "teamTwo", fields: [teamTwoId], references: [id])
+  teamTwoId         Int?
+  MatchRound        MatchRound[]
+
+  @@index([matchWinnerTeamId, matchLoserTeamId, teamOneId, teamTwoId])
+}
+
+model PlayerTeamHistory {
+  id       Int     @id @default(autoincrement())
+  role     String? @default("Fill") @db.VarChar(255)
+  player   Player? @relation(fields: [playerId], references: [id])
+  playerId Int?
+
+  @@index([playerId])
+}
+
+model Player {
+  id                    Int                     @id @default(autoincrement())
+  PUUID                 String                  @unique(map: "PUUID") @db.VarChar(255)
+  summonerName          String                  @unique(map: "summonerName") @db.VarChar(255)
+  discordName           String                  @unique(map: "discordName") @db.VarChar(255)
+  email                 String?                 @unique(map: "email") @db.VarChar(255)
+  firstName             String?                 @db.VarChar(255)
+  lastName              String?                 @db.VarChar(255)
+  isFreeAgent           Boolean                 @default(false)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  MatchRoundPlayerStats MatchRoundPlayerStats[]
+  PlayerTeamHistory     PlayerTeamHistory[]
+}
+
+model Provider {
+  id         Int      @id @default(autoincrement())
+  providerId Int      @unique(map: "providerId") @db.UnsignedInt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model Season {
+  id           Int      @id @default(autoincrement())
+  tournamentId Int      @unique(map: "tournamentId") @db.UnsignedInt
+  year         Int      @db.UnsignedInt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Matches      Match[]
+  Teams        Team[]
+}
+
+model TeamStanding {
+  id        Int  @id @default(autoincrement())
+  placement Int
+  team      Team @relation(fields: [teamId], references: [id])
+  teamId    Int  @unique
+
+  @@index([teamId])
+}
+
+model Team {
+  id                  Int                   @id @default(autoincrement())
+  teamName            String                @unique(map: "teamName") @db.VarChar(255)
+  logoImgPath         String?               @db.VarChar(255)
+  description         String?               @db.Text
+  tricode             String?               @unique(map: "tricode") @db.VarChar(255)
+  season              Season                @relation(fields: [seasonId], references: [id])
+  seasonId            Int                   @db.UnsignedInt
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  MatchRoundTeamStats MatchRoundTeamStats[]
+  MatchWinner         Match[]               @relation(name: "matchWinner")
+  MatchLoser          Match[]               @relation(name: "matchLoser")
+  teamOne             Match[]               @relation(name: "teamOne")
+  teamTwo             Match[]               @relation(name: "teamTwo")
+  winningTeam         MatchRound[]          @relation(name: "winningTeam")
+  redTeam             MatchRound[]          @relation(name: "redTeam")
+  blueTeam            MatchRound[]          @relation(name: "blueTeam")
+  TeamStanding        TeamStanding?
+
+  @@index([seasonId])
+}
+
+// add this to user table from nextauth
+// enum Role {
+//   USER
+//   PLAYER
+//   ADMIN
+// }

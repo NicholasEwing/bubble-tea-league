@@ -13,7 +13,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { PlusSmIcon } from "@heroicons/react/solid";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import MobileNavLink from "./MobileNavLink";
-import admins from "../../sequelize/admins";
+import admins from "../../admins";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

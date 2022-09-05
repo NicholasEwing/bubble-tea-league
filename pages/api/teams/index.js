@@ -1,8 +1,6 @@
-const sequelize = require("../../../sequelize");
-const { Team } = sequelize.models;
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import admins from "../../../sequelize/admins";
+import { prisma } from "../../../prisma/db";
 
 export default async function handler(req, res) {
   try {
@@ -14,11 +12,15 @@ export default async function handler(req, res) {
 
     switch (req.method) {
       case "GET":
-        const teams = await Team.findAll();
+        const teams = await prisma.team.findMany();
         res.status(200).json(teams);
         break;
       case "POST":
-        const team = await Team.create(req.body);
+        // TODO: ADD team info
+        console.log(req.body);
+        // const team = await prisma.create({ data: {
+
+        // } });
         res.status(201).end();
         break;
       case "UPDATE":

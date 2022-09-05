@@ -5,20 +5,14 @@ import LiveMatch from "../components/schedule/LiveMatch";
 import FutureMatch from "../components/schedule/FutureMatch";
 import EventDate from "../components/schedule/EventDate";
 import DividerLive from "../components/schedule/DividerLive";
-import sequelize from "../sequelize";
 import { dateInPast, isToday } from "../lib/utils";
-const { Match, MatchRound, Team } = sequelize.models;
+import SectionContainer from "../components/admin/table/SectionContainer";
 
 export const getStaticProps = async () => {
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
-
-  if (!teams || !matches || !matchRounds) {
-    return {
-      notFound: true,
-    };
-  }
+  const { prisma } = require("../prisma/db");
+  const matches = await prisma.match.findMany();
+  const matchRounds = await prisma.matchRound.findMany();
+  let teams = await prisma.team.findMany();
 
   const groupStageMatches = matches.filter(
     (m) => m.matchWinnerTeamId && !m.isPlayoffsMatch
@@ -59,7 +53,7 @@ export const getStaticProps = async () => {
 
     const datesWithMatchRounds = games.map((game) => {
       const matchRoundsForThisGame = matchRounds.filter(
-        (mr) => mr.MatchId === game.id
+        (mr) => mr.matchId === game.id
       );
       return { ...game, matchRounds: matchRoundsForThisGame };
     });
@@ -99,7 +93,7 @@ export default function Schedule({ schedule, teams }) {
                       teamOne={teams.find((t) => t.id === match.teamOne)}
                       teamTwo={teams.find((t) => t.id === match.teamTwo)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
-                      seasonNumber={match.seasonNumber}
+                      seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
                       matchWinnerTeamId={match.matchWinnerTeamId}
                       matchLoserTeamId={match.matchLoserTeamId}
@@ -117,11 +111,11 @@ export default function Schedule({ schedule, teams }) {
                   .map((match) => (
                     <LiveMatch
                       key={`Live-${match.id}`}
-                      MatchId={match.id}
+                      matchId={match.id}
                       teamOne={teams.find((t) => t.id === match.teamOne)}
                       teamTwo={teams.find((t) => t.id === match.teamTwo)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
-                      seasonNumber={match.seasonNumber}
+                      seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
                       matchWinnerTeamId={match.matchWinnerTeamId}
                       matchLoserTeamId={match.matchLoserTeamId}
@@ -139,11 +133,11 @@ export default function Schedule({ schedule, teams }) {
                   .map((match) => (
                     <FutureMatch
                       key={`Future-${match.id}`}
-                      MatchId={match.id}
+                      matchId={match.id}
                       teamOne={teams.find((t) => t.id === match.teamOne)}
                       teamTwo={teams.find((t) => t.id === match.teamTwo)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
-                      seasonNumber={match.seasonNumber}
+                      seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
                       scheduledTime={match.scheduledTime}
                     />
@@ -160,9 +154,11 @@ export default function Schedule({ schedule, teams }) {
           }
         })
       ) : (
-        <h2 className="text-3xl text-white">
-          No matches found. Come back later!
-        </h2>
+        <SectionContainer>
+          <h2 className="text-center text-3xl text-white">
+            No matches found. Come back later!
+          </h2>
+        </SectionContainer>
       )}
     </div>
   );

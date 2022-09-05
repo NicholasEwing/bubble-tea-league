@@ -8,41 +8,21 @@ import TeamsSection from "../components/admin/Sections/TeamsSection";
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import PlayersSection from "../components/admin/Sections/PlayersSection";
 import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
-import admins from "../sequelize/admins";
-import { sequelize } from "../sequelize/models";
+
+import admins from "../admins";
 
 export const getStaticProps = async () => {
-  const {
-    Provider,
-    Season,
-    Team,
-    Player,
-    Match,
-    PlayerTeamHistory,
-    MatchRound,
-  } = sequelize;
+  const { prisma } = require("../prisma/db");
 
-  const provider = await Provider?.findOne({ raw: true });
-  const seasons = await Season?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
-  const allPlayers = await Player?.findAll({ raw: true });
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const playerTeamHistory = await PlayerTeamHistory?.findAll({ raw: true });
-
-  if (
-    !provider ||
-    !seasons ||
-    !teams ||
-    !allPlayers ||
-    !matches ||
-    !matchRounds ||
-    !playerTeamHistory
-  ) {
-    return {
-      notFound: true,
-    };
-  }
+  const provider = await prisma.season.findMany();
+  const seasons = await prisma.season.findMany();
+  const teams = await prisma.team.findMany();
+  const allPlayers = await prisma.player.findMany();
+  const matches = await prisma.match.findMany();
+  const matchRounds = await prisma.matchRound.findMany();
+  const matchRoundTeamStats = await prisma.matchRoundTeamStats.findMany();
+  const matchRoundPlayerStats = await prisma.matchRoundPlayerStats.findMany();
+  const playerTeamHistories = await prisma.playerTeamHistory.findMany();
 
   const players = allPlayers.filter((p) => !p.isFreeAgent);
   const freeAgents = allPlayers.filter((p) => p.isFreeAgent);
@@ -56,7 +36,7 @@ export const getStaticProps = async () => {
       freeAgents: JSON.parse(JSON.stringify(freeAgents)),
       matches: JSON.parse(JSON.stringify(matches)),
       matchRounds: JSON.parse(JSON.stringify(matchRounds)),
-      playerTeamHistory: JSON.parse(JSON.stringify(playerTeamHistory)),
+      playerTeamHistories: JSON.parse(JSON.stringify(playerTeamHistories)),
     },
   };
 };
@@ -69,7 +49,7 @@ export default function Dashboard({
   freeAgents = null,
   matches = null,
   matchRounds = null,
-  playerTeamHistory = null,
+  playerTeamHistories = null,
 }) {
   const router = useRouter();
 
@@ -99,7 +79,7 @@ export default function Dashboard({
 
   return (
     <RefreshWrapper>
-      {!provider && <ProviderSection provider={provider} />}
+      {provider.length === 0 && <ProviderSection provider={provider} />}
       <SeasonsSection items={seasons} />
       <TeamsSection items={teams} />
       <MatchesSection items={matches} teams={teams} matchRounds={matchRounds} />
@@ -107,7 +87,7 @@ export default function Dashboard({
         items={players}
         teams={teams}
         seasons={seasons}
-        playerTeamHistory={playerTeamHistory}
+        playerTeamHistories={playerTeamHistories}
       />
       <FreeAgentsSection items={freeAgents} />
     </RefreshWrapper>
