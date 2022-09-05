@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
 }
 
 datasource db {
@@ -95,34 +95,34 @@ model MatchRound {
   blueTeamId            Int?
   MatchRoundPlayerStats MatchRoundPlayerStats[]
   MatchRoundTeamStats   MatchRoundTeamStats[]
-  Matches               Match[]
+  match                 Match                   @relation(fields: [matchId], references: [id])
+  matchId               Int
 
   @@index([winningTeamId, redTeamId, blueTeamId])
 }
 
 model Match {
-  id                Int        @id @default(autoincrement())
+  id                Int          @id @default(autoincrement())
   isPlayoffsMatch   Boolean
   isUpperBracket    Boolean?
-  bracketRound      Int?       @db.UnsignedInt
-  scheduledTime     DateTime?  @db.DateTime(0)
-  vodLink           String?    @unique(map: "vodLink") @db.VarChar(255)
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  season            Season     @relation(fields: [seasonNumber], references: [number])
-  seasonNumber      Int        @db.UnsignedInt
-  matchWinner       Team       @relation(name: "matchWinner", fields: [matchWinnerTeamId], references: [id])
-  matchWinnerTeamId Int
-  matchLoser        Team       @relation(name: "matchLoser", fields: [matchLoserTeamId], references: [id])
-  matchLoserTeamId  Int
-  teamOne           Team       @relation(name: "teamOne", fields: [teamOneId], references: [id])
-  teamOneId         Int
-  teamTwo           Team       @relation(name: "teamTwo", fields: [teamTwoId], references: [id])
-  teamTwoId         Int
-  matchRound        MatchRound @relation(fields: [matchRoundId], references: [id])
-  matchRoundId      Int
+  bracketRound      Int?         @db.UnsignedInt
+  scheduledTime     DateTime?    @db.DateTime(0)
+  vodLink           String?      @unique(map: "vodLink") @db.VarChar(255)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  season            Season       @relation(fields: [seasonId], references: [id])
+  seasonId          Int          @db.UnsignedInt
+  matchWinner       Team?        @relation(name: "matchWinner", fields: [matchWinnerTeamId], references: [id])
+  matchWinnerTeamId Int?
+  matchLoser        Team?        @relation(name: "matchLoser", fields: [matchLoserTeamId], references: [id])
+  matchLoserTeamId  Int?
+  teamOne           Team?        @relation(name: "teamOne", fields: [teamOneId], references: [id])
+  teamOneId         Int?
+  teamTwo           Team?        @relation(name: "teamTwo", fields: [teamTwoId], references: [id])
+  teamTwoId         Int?
+  MatchRound        MatchRound[]
 
-  @@index([matchWinnerTeamId, matchLoserTeamId, teamOneId, teamTwoId, matchRoundId])
+  @@index([matchWinnerTeamId, matchLoserTeamId, teamOneId, teamTwoId])
 }
 
 model PlayerTeamHistory {
@@ -157,7 +157,7 @@ model Provider {
 }
 
 model Season {
-  number       Int      @id @unique(map: "number") @default(autoincrement()) @db.UnsignedInt
+  id           Int      @id @default(autoincrement())
   tournamentId Int      @unique(map: "tournamentId") @db.UnsignedInt
   year         Int      @db.UnsignedInt
   createdAt    DateTime @default(now())
@@ -167,9 +167,12 @@ model Season {
 }
 
 model TeamStanding {
-  id        Int    @id @default(autoincrement())
+  id        Int  @id @default(autoincrement())
   placement Int
-  team      Team[]
+  team      Team @relation(fields: [teamId], references: [id])
+  teamId    Int  @unique
+
+  @@index([teamId])
 }
 
 model Team {
@@ -178,8 +181,8 @@ model Team {
   logoImgPath         String?               @db.VarChar(255)
   description         String?               @db.Text
   tricode             String?               @unique(map: "tricode") @db.VarChar(255)
-  season              Season                @relation(fields: [seasonNumber], references: [number])
-  seasonNumber        Int                   @db.UnsignedInt
+  season              Season                @relation(fields: [seasonId], references: [id])
+  seasonId            Int                   @db.UnsignedInt
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   MatchRoundTeamStats MatchRoundTeamStats[]
@@ -190,10 +193,9 @@ model Team {
   winningTeam         MatchRound[]          @relation(name: "winningTeam")
   redTeam             MatchRound[]          @relation(name: "redTeam")
   blueTeam            MatchRound[]          @relation(name: "blueTeam")
-  TeamStanding        TeamStanding?         @relation(fields: [teamStandingId], references: [id])
-  teamStandingId      Int?
+  TeamStanding        TeamStanding?
 
-  @@index([teamStandingId, seasonNumber])
+  @@index([seasonId])
 }
 
 // add this to user table from nextauth
