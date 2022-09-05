@@ -6,13 +6,12 @@ import RecentVods from "../components/home/RecentVods";
 import ScheduleBanner from "../components/home/ScheduleBanner";
 import WhatIsBtl from "../components/home/WhatIsBtl";
 import { dateInPast, isToday } from "../lib/utils";
-import { sequelize } from "../sequelize/models";
 
 export const getStaticProps = async () => {
-  const { Match, MatchRound, Team } = sequelize;
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
+  const { prisma } = require("../prisma/db");
+  const matches = await prisma.match.findMany();
+  const matchRounds = await prisma.matchRound.findMany();
+  let teams = await prisma.team.findMany();
 
   if (!teams || !matches || !matchRounds) {
     return {
@@ -28,10 +27,10 @@ export const getStaticProps = async () => {
   teams = teams.map((team) => {
     // return team object WITH new info
     const groupStageWins = groupStageMatches.filter(
-      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+      (m) => m.matchWinnerTeamId === team.id && m.seasonId === team.seasonId
     );
     const groupStageLosses = groupStageMatches.filter(
-      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+      (m) => m.matchLoserTeamId === team.id && m.seasonId === team.seasonId
     );
     return { ...team, groupStageWins, groupStageLosses };
   });
@@ -59,7 +58,7 @@ export const getStaticProps = async () => {
 
     const datesWithMatchRounds = games.map((game) => {
       const matchRoundsForThisGame = matchRounds.filter(
-        (mr) => mr.MatchId === game.id
+        (mr) => mr.matchId === game.id
       );
       return { ...game, matchRounds: matchRoundsForThisGame };
     });
@@ -109,7 +108,9 @@ export default function Home({ schedule = null, teams = null }) {
 
   return (
     <>
-      <ScheduleBanner schedule={futureSchedule} teams={teams} />
+      {futureSchedule.length > 0 && (
+        <ScheduleBanner schedule={futureSchedule} teams={teams} />
+      )}
       {featuredMatch && (
         <HomeContent
           teamOne={teams.find((t) => t.id === featuredMatch?.teamOne)}
@@ -120,9 +121,11 @@ export default function Home({ schedule = null, teams = null }) {
         />
       )}
       <WhatIsBtl />
-      <SectionContainer>
-        <RecentVods teams={teams} pastSchedule={pastSchedule} />
-      </SectionContainer>
+      {pastSchedule.length > 0 && (
+        <SectionContainer>
+          <RecentVods teams={teams} pastSchedule={pastSchedule} />
+        </SectionContainer>
+      )}
     </>
   );
 }

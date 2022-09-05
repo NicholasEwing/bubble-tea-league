@@ -42,6 +42,7 @@ export default function PlayersModal({ players, closeModal }) {
     return () => setFormSubmitted(false);
   }, []);
 
+  // TODO: make this work on prod
   const checkPlayerPUUID = async (summonerName) => {
     // do some stuff to check puuid from server here
     const res = await fetch(`http://localhost:3000/api/check-puuid/`, {

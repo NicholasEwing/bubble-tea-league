@@ -26,7 +26,7 @@ export default function ProviderWarning({ applying, sendProviderRequest }) {
                 {applying ? (
                   <span className="flex items-center">
                     <LoadingSpinner />
-                    <p className="font-medium text-gray-600">
+                    <p className="font-medium text-gray-700">
                       Registering with Riot Games...
                     </p>
                   </span>
