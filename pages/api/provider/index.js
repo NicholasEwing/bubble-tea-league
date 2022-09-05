@@ -1,9 +1,10 @@
 import { createProviderId } from "../../../lib/riot-games-api-helpers";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import admins from "../../../sequelize/admins";
-const sequelize = require("../../../sequelize");
-const { Provider } = sequelize.models;
+import { PrismaClient } from "@prisma/client";
+import admins from "../../../admins";
+
+const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
@@ -13,7 +14,7 @@ export default async function handler(req, res) {
       if (!userIsAdmin) res.status(401).end();
     }
 
-    const providers = await Provider.findAll();
+    const providers = await prisma.provider.findMany();
 
     switch (req.method) {
       case "GET":
@@ -28,11 +29,13 @@ export default async function handler(req, res) {
             );
         } else {
           // delete all Provider records so we only have one at all times
-          await Provider.sync({ force: true });
+          // await Provider.sync({ force: true });
+          await prisma.provider.deleteMany({});
 
           // Create Provider record with new ID
-          const providerId = await createProviderId();
-          await Provider.create({ providerId });
+          let providerId = await createProviderId();
+          providerId = parseInt(providerId);
+          await prisma.provider.create({ data: { providerId } });
           res.status(201).send({ providerId });
         }
 

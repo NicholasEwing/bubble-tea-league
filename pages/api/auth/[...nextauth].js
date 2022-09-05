@@ -1,7 +1,9 @@
 import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
-import SequelizeAdapter from "@next-auth/sequelize-adapter";
-import sequelize from "../../../sequelize/index.js";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const authOptions = {
   providers: [
@@ -12,7 +14,7 @@ export const authOptions = {
     // ...add more providers here
   ],
   secret: process.env.NEXTAUTH_SECRET,
-  adapter: SequelizeAdapter(sequelize),
+  adapter: PrismaAdapter(prisma),
   callbacks: {
     async session({ session, token, user }) {
       session.user.id = user.id; // used to uniquely identify user
