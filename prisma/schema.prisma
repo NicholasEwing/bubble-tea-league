@@ -50,8 +50,8 @@ model MatchRoundPlayerStats {
   armor                Int        @db.UnsignedInt
   magicResist          Int        @db.UnsignedInt
   teamSide             String     @db.VarChar(255)
-  createdAt            DateTime   @db.DateTime(0)
-  updatedAt            DateTime   @db.DateTime(0)
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
   matchRound           MatchRound @relation(fields: [matchRoundId], references: [id])
   matchRoundId         Int
   Player               Player     @relation(fields: [playerId], references: [id])
@@ -69,8 +69,8 @@ model MatchRoundTeamStats {
   dragonsKilled       Int        @db.UnsignedInt
   inhibitorsDestroyed Int        @db.UnsignedInt
   baronsKilled        Int        @db.UnsignedInt
-  createdAt           DateTime   @db.DateTime(0)
-  updatedAt           DateTime   @db.DateTime(0)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
   matchRound          MatchRound @relation(fields: [matchRoundId], references: [id])
   matchRoundId        Int
   team                Team       @relation(fields: [teamId], references: [id])
@@ -85,8 +85,8 @@ model MatchRound {
   tournamentCode        String                  @db.VarChar(255)
   metaData              String?                 @db.VarChar(255)
   gameDuration          Int?                    @db.UnsignedInt
-  createdAt             DateTime                @db.DateTime(0)
-  updatedAt             DateTime                @db.DateTime(0)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
   winningTeam           Team?                   @relation(name: "winningTeam", fields: [winningTeamId], references: [id])
   redTeam               Team?                   @relation(name: "redTeam", fields: [redTeamId], references: [id])
   blueTeam              Team?                   @relation(name: "blueTeam", fields: [blueTeamId], references: [id])
@@ -107,8 +107,8 @@ model Match {
   bracketRound      Int?       @db.UnsignedInt
   scheduledTime     DateTime?  @db.DateTime(0)
   vodLink           String?    @unique(map: "vodLink") @db.VarChar(255)
-  createdAt         DateTime   @db.DateTime(0)
-  updatedAt         DateTime   @db.DateTime(0)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
   season            Season     @relation(fields: [seasonNumber], references: [number])
   seasonNumber      Int        @db.UnsignedInt
   matchWinner       Team       @relation(name: "matchWinner", fields: [matchWinnerTeamId], references: [id])
@@ -143,8 +143,8 @@ model Player {
   firstName             String?                 @db.VarChar(255)
   lastName              String?                 @db.VarChar(255)
   isFreeAgent           Boolean                 @default(false)
-  createdAt             DateTime                @db.DateTime(0)
-  updatedAt             DateTime                @db.DateTime(0)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
   MatchRoundPlayerStats MatchRoundPlayerStats[]
   PlayerTeamHistory     PlayerTeamHistory[]
 }
@@ -152,16 +152,16 @@ model Player {
 model Provider {
   id         Int      @id @default(autoincrement())
   providerId Int      @unique(map: "providerId") @db.UnsignedInt
-  createdAt  DateTime @db.DateTime(0)
-  updatedAt  DateTime @db.DateTime(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Season {
   number       Int      @id @unique(map: "number") @default(autoincrement()) @db.UnsignedInt
   tournamentId Int      @unique(map: "tournamentId") @db.UnsignedInt
   year         Int      @db.UnsignedInt
-  createdAt    DateTime @db.DateTime(0)
-  updatedAt    DateTime @db.DateTime(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   Matches      Match[]
   Teams        Team[]
 }
@@ -180,8 +180,8 @@ model Team {
   tricode             String?               @unique(map: "tricode") @db.VarChar(255)
   season              Season                @relation(fields: [seasonNumber], references: [number])
   seasonNumber        Int                   @db.UnsignedInt
-  createdAt           DateTime              @db.DateTime(0)
-  updatedAt           DateTime              @db.DateTime(0)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
   MatchRoundTeamStats MatchRoundTeamStats[]
   MatchWinner         Match[]               @relation(name: "matchWinner")
   MatchLoser          Match[]               @relation(name: "matchLoser")
@@ -195,3 +195,10 @@ model Team {
 
   @@index([teamStandingId, seasonNumber])
 }
+
+// add this to user table from nextauth
+// enum Role {
+//   USER
+//   PLAYER
+//   ADMIN
+// }
