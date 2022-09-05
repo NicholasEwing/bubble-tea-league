@@ -62,11 +62,6 @@ export default function ProviderSection({ provider }) {
             <Failed closeError={handleCloseError} errorMsg={errorMsg} />
           </div>
         )}
-        {/* <p className="mt-2 text-sm text-gray-400">
-          A list of all the free agents in the Bubble Tea League. Free agents
-          are team-agnostic, so they don't have a team or role associated with
-          them.
-        </p> */}
       </TextHeadingContainer>
     </SectionContainer>
   );

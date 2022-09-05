@@ -4,7 +4,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import { PrismaClient } from "@prisma/client";
 import admins from "../../../admins";
 
-const prisma = require("../../../prisma/db");
+const { prisma } = require("../../../prisma/db");
 
 export default async function handler(req, res) {
   try {
@@ -29,7 +29,6 @@ export default async function handler(req, res) {
             );
         } else {
           // delete all Provider records so we only have one at all times
-          // await Provider.sync({ force: true });
           await prisma.provider.deleteMany({});
 
           // Create Provider record with new ID
@@ -43,5 +42,6 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error("Error inside /api/providers", error);
+    res.status(404).send(error.message);
   }
 }
