@@ -4,7 +4,7 @@ import { authOptions } from "../auth/[...nextauth]";
 import { PrismaClient } from "@prisma/client";
 import admins from "../../../admins";
 
-const prisma = new PrismaClient();
+const prisma = require("../../../prisma/db");
 
 export default async function handler(req, res) {
   try {

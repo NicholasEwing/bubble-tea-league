@@ -1,88 +1,71 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Op } from "sequelize";
 import PlayoffsBrackets from "../components/standings/PlayoffsBrackets";
 import RegularSeason from "../components/standings/RegularSeason";
 import SeasonItem from "../components/standings/SeasonItem";
 import SeasonSelector from "../components/standings/SeasonSelector";
 import StageSelector from "../components/standings/StageSelector";
-import sequelize from "../sequelize";
-const { Team, Season, Match, MatchRound, TeamStanding } = sequelize.models;
 
 export const getStaticProps = async () => {
-  const teams = await Team?.findAll({ raw: true });
-  const seasons = await Season?.findAll({ raw: true });
+  const { prisma } = require("../prisma/db");
+  let teams = await prisma.team.findMany();
+  const seasons = await prisma.season.findMany();
 
-  const teamStandings = await TeamStanding?.findAll({
-    raw: true,
-    order: [["placement", "ASC"]],
-  });
+  // TODO: query and sort this in order: order: [["placement", "ASC"]]
+  const teamStandings = await prisma.teamStanding.findMany();
 
-  const groupStageMatches = await Match?.findAll({
+  const groupStageMatches = await prisma.match.findMany({
     where: {
       isPlayoffsMatch: false,
     },
-    raw: true,
   });
 
-  const groupStageMatchRounds = await MatchRound?.findAll({
+  const groupStageMatchRounds = await prisma.matchRound.findMany({
     where: {
-      MatchId: { [Op.in]: groupStageMatches.map((m) => m.id) },
+      // matchId: where groupStageMatches.map(m => m.id);
+      // find matches that include a match id from the group stage matches
     },
-    raw: true,
   });
 
-  const playoffsMatches = await Match?.findAll({
+  const playoffsMatches = await prisma.match.findMany({
     where: {
       isPlayoffsMatch: true,
     },
-    raw: true,
   });
 
-  const playoffsMatchRounds = await MatchRound?.findAll({
+  const playoffsMatchRounds = await prisma.matchRound.findMany({
     where: {
-      MatchId: { [Op.in]: playoffsMatches.map((pom) => pom.id) },
+      // matchId: where playoffsMatches.map(m => m.id);
+      // find matches that include a match id from the playoffs matches
     },
-    raw: true,
   });
-
-  if (
-    !seasons ||
-    !teams ||
-    !teamStandings ||
-    !groupStageMatches ||
-    !playoffsMatches ||
-    !playoffsMatchRounds
-  ) {
-    return {
-      notFound: true,
-    };
-  }
 
   // add group stage losses / wins
-  teams = teams.map((team) => {
-    // return team object WITH new info
-    const groupStageWins = groupStageMatches.filter(
-      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
-    );
-    const groupStageLosses = groupStageMatches.filter(
-      (m) => m.matchLoserTeamId === team.id && m.season === team.season
-    );
+  if (teams.length > 0) {
+    teams = teams.map((team) => {
+      // return team object WITH new info
+      const groupStageWins = groupStageMatches.filter(
+        (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+      );
+      const groupStageLosses = groupStageMatches.filter(
+        (m) => m.matchLoserTeamId === team.id && m.season === team.season
+      );
 
-    const playoffsWins = playoffsMatches.filter(
-      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
-    );
-    const playoffsLosses = playoffsMatches.filter(
-      (m) => m.matchLoserTeamId === team.id && m.season === team.season
-    );
-    return {
-      ...team,
-      groupStageWins,
-      groupStageLosses,
-      playoffsWins,
-      playoffsLosses,
-    };
-  });
+      const playoffsWins = playoffsMatches.filter(
+        (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+      );
+      const playoffsLosses = playoffsMatches.filter(
+        (m) => m.matchLoserTeamId === team.id && m.season === team.season
+      );
+      return {
+        ...team,
+        groupStageWins,
+        groupStageLosses,
+        playoffsWins,
+        playoffsLosses,
+      };
+    });
+  }
 
   return {
     props: {

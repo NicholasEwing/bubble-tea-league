@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.team.deleteMany({});
+  // await prisma.team.deleteMany({});
 }
 
 main()

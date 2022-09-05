@@ -4,45 +4,18 @@ import SectionContainer from "../components/admin/table/SectionContainer";
 import { findTeamName, percentageFormatter } from "../lib/utils";
 import EditableTable from "../components/admin/EditableTable";
 import TextHeadingContainer from "../components/admin/TextHeadingContainer";
-import sequelize from "../sequelize";
-const {
-  Season,
-  Player,
-  Team,
-  PlayerTeamHistory,
-  Match,
-  MatchRound,
-  MatchRoundPlayerStats,
-  MatchRoundTeamStats,
-} = sequelize.models;
 
 export const getStaticProps = async () => {
-  const seasons = await Season?.findAll({ raw: true });
-  const teams = await Team?.findAll({ raw: true });
-  const players = await Player?.findAll({ raw: true });
-  const playerTeamHistories = await PlayerTeamHistory?.findAll({ raw: true });
-  const matches = await Match?.findAll({ raw: true });
-  const matchRounds = await MatchRound?.findAll({ raw: true });
-  const matchRoundTeamStats = await MatchRoundTeamStats?.findAll({
-    raw: true,
-  });
-  const matchRoundPlayerStats = await MatchRoundPlayerStats?.findAll({
-    raw: true,
-  });
+  const { prisma } = require("../prisma/db");
 
-  if (
-    !seasons ||
-    !teams ||
-    !players ||
-    !matches ||
-    !matchRounds ||
-    !matchRoundTeamStats ||
-    !matchRoundPlayerStats
-  ) {
-    return {
-      notFound: true,
-    };
-  }
+  const seasons = await prisma.season.findMany();
+  const teams = await prisma.team.findMany();
+  const players = await prisma.player.findMany();
+  const playerTeamHistories = await prisma.playerTeamHistory.findMany();
+  const matches = await prisma.match.findMany();
+  const matchRounds = await prisma.matchRound.findMany();
+  const matchRoundTeamStats = await prisma.matchRoundTeamStats.findMany();
+  const matchRoundPlayerStats = await prisma.matchRoundPlayerStats.findMany();
 
   // calculates the avg of anything per game for a player, (avg damage, avg cs, avg deaths, etc)
   function calculateStatPerMin(
@@ -57,7 +30,7 @@ export const getStaticProps = async () => {
 
       const matchRoundId = mr.id;
       const playerMatch = playerMatches.find(
-        (m) => m.PlayerId === PlayerId && m.MatchRoundId === matchRoundId
+        (m) => m.playerId === playerId && m.matchRoundId === matchRoundId
       );
       const gameStat = playerMatch[statKey];
 
@@ -84,17 +57,17 @@ export const getStaticProps = async () => {
 
     // parse a player's seasonal stats in a big object
     for (const history of playerTeamHistories) {
-      const { PlayerId, TeamId, role } = history;
-      const player = players.find((p) => p.id === PlayerId);
-      const team = findTeamName(TeamId, teams);
+      const { playerId, teamId, role } = history;
+      const player = players.find((p) => p.id === playerId);
+      const team = findTeamName(teamId, teams);
       const { summonerName } = player;
 
       // find all finished match ids for the season with this player's team in it
       const seasonMatches = matches.filter(
         (m) =>
-          m.season === season.number &&
+          m.season === season.id &&
           m.matchWinnerTeamId &&
-          (m.teamOne === TeamId || m.teamTwo === TeamId)
+          (m.teamOne === teamId || m.teamTwo === teamId)
       );
 
       // no matches yet? skip this player
@@ -102,25 +75,25 @@ export const getStaticProps = async () => {
 
       const seasonMatchIds = seasonMatches.map((m) => m.id);
       const seasonMatchRounds = matchRounds.filter((mr) =>
-        seasonMatchIds.includes(mr.MatchId)
+        seasonMatchIds.includes(mr.matchId)
       );
       const seasonMatchRoundIds = seasonMatchRounds.map((mr) => mr.id);
 
       // all match rounds with this player's team involved that have a winner
       const playerTeamMatchRounds = matchRounds.filter(
         (mr) =>
-          (mr.redTeamId === TeamId || mr.blueTeamId === TeamId) &&
+          (mr.redTeamId === teamId || mr.blueTeamId === teamId) &&
           mr.winningTeamId
       );
 
       // filter down to stat records for this player and their team
       const playerMatches = matchRoundPlayerStats.filter(
         (mrps) =>
-          seasonMatchRoundIds.includes(mrps.MatchRoundId) &&
-          mrps.PlayerId === PlayerId
+          seasonMatchRoundIds.includes(mrps.matchRoundId) &&
+          mrps.playerId === playerId
       );
       const teamMatches = matchRoundTeamStats.filter(
-        (mrts) => mrts.TeamId === TeamId
+        (mrts) => mrts.teamId === teamId
       );
 
       const kills = playerMatches.reduce(
@@ -168,7 +141,7 @@ export const getStaticProps = async () => {
         .toLocaleString("en-US");
 
       const goldPerMin = calculateStatPerMin(
-        PlayerId,
+        playerId,
         playerTeamMatchRounds,
         playerMatches,
         "goldEarned",
@@ -181,7 +154,7 @@ export const getStaticProps = async () => {
       const visionScorePerGame =
         Math.round((visionScore / gamesPlayed) * 100) / 100;
       const visionScorePerMin = calculateStatPerMin(
-        PlayerId,
+        playerId,
         playerTeamMatchRounds,
         playerMatches,
         "visionScore",
@@ -209,7 +182,7 @@ export const getStaticProps = async () => {
         .reduce((dmg, stats) => (dmg += stats.totalDmgToChamps), 0)
         .toLocaleString("en-US");
       const dmgToChampsPerMin = calculateStatPerMin(
-        PlayerId,
+        playerId,
         playerTeamMatchRounds,
         playerMatches,
         "totalDmgToChamps",
@@ -222,7 +195,7 @@ export const getStaticProps = async () => {
       );
 
       const playerStatRow = {
-        season: season.number,
+        season: season.id,
         summonerName,
         role,
         team,
@@ -392,11 +365,13 @@ export default function PlayerStats({ seasons = null, seasonRows = null }) {
             per-minute stats.
           </p>
         </TextHeadingContainer>
-        <SeasonSelector
-          seasons={seasons}
-          activeSeason={activeSeason}
-          handleActiveSeason={handleActiveSeason}
-        />
+        {seasons.length > 0 && (
+          <SeasonSelector
+            seasons={seasons}
+            activeSeason={activeSeason}
+            handleActiveSeason={handleActiveSeason}
+          />
+        )}
         <EditableTable
           items={rowsToDisplay}
           columns={playerStatsColumns}

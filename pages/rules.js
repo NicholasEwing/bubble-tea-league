@@ -4,14 +4,14 @@ import TextHeadingContainer from "../components/admin/TextHeadingContainer";
 
 export default function Rules() {
   return (
-    <div className="relative overflow-hidden bg-black py-16">
+    <div className="relative overflow-hidden bg-[#0a0e13] py-16">
       <div className="hidden lg:absolute lg:inset-y-0 lg:block lg:h-full lg:w-full">
         <div
           className="relative mx-auto h-full max-w-prose text-lg opacity-50"
           aria-hidden="true"
         >
           <svg
-            className="absolute top-12 left-full translate-x-96 transform text-btl-pink"
+            className="absolute top-12 left-full translate-x-32 transform text-btl-pink 2xl:translate-x-96"
             width={404}
             height={384}
             fill="currentColor"
@@ -26,17 +26,18 @@ export default function Rules() {
                 height={20}
                 patternUnits="userSpaceOnUse"
               >
-                <rect x={0} y={0} width={4} height={4} fill="currentColor" />
+                <rect x={0} y={0} width={4} height={4} />
               </pattern>
             </defs>
             <rect
               width={404}
               height={384}
+              // eslint-disable-next-line
               fill="url(#74b3fd99-0a6f-4271-bef2-e80eeafdf357)"
             />
           </svg>
           <svg
-            className="absolute top-1/2 right-full -translate-y-1/2 -translate-x-96 transform text-btl-blue"
+            className="absolute top-1/2 right-full -translate-y-1/2 -translate-x-32 transform text-btl-blue 2xl:-translate-x-96"
             width={404}
             height={384}
             fill="currentColor"
@@ -51,17 +52,18 @@ export default function Rules() {
                 height={20}
                 patternUnits="userSpaceOnUse"
               >
-                <rect x={0} y={0} width={4} height={4} fill="currentColor" />
+                <rect x={0} y={0} width={4} height={4} />
               </pattern>
             </defs>
             <rect
               width={404}
               height={384}
+              // eslint-disable-next-line
               fill="url(#f210dbf6-a58d-4871-961e-36d5016a0f49)"
             />
           </svg>
           <svg
-            className="absolute bottom-12 left-full translate-x-96 transform text-btl-pink"
+            className="absolute bottom-12 left-full translate-x-32 transform text-btl-pink 2xl:translate-x-96"
             width={404}
             height={384}
             fill="currentColor"
@@ -76,12 +78,13 @@ export default function Rules() {
                 height={20}
                 patternUnits="userSpaceOnUse"
               >
-                <rect x={0} y={0} width={4} height={4} fill="currentColor" />
+                <rect x={0} y={0} width={4} height={4} />
               </pattern>
             </defs>
             <rect
               width={404}
               height={384}
+              // eslint-disable-next-line
               fill="url(#d3eb07ae-5182-43e6-857d-35c643af9034)"
             />
           </svg>

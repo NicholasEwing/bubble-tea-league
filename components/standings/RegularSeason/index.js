@@ -36,7 +36,7 @@ export default function RegularSeason({
           );
         })
       ) : (
-        <h1 className="m-8 flex justify-center text-5xl font-thin text-white">
+        <h1 className="m-8 flex justify-center text-2xl font-light text-white">
           No teams registered for this season yet...
         </h1>
       )}
