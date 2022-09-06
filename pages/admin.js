@@ -14,7 +14,7 @@ import admins from "../admins";
 export const getStaticProps = async () => {
   const { prisma } = require("../prisma/db");
 
-  const provider = await prisma.season.findMany();
+  const provider = await prisma.provider.findMany();
   const seasons = await prisma.season.findMany();
   const teams = await prisma.team.findMany();
   const allPlayers = await prisma.player.findMany();
@@ -76,6 +76,8 @@ export default function Dashboard({
   if (status !== "authenticated") {
     return <h2>Loading...</h2>;
   }
+
+  console.log("provider", provider);
 
   return (
     <RefreshWrapper>

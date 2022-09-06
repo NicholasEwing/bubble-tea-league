@@ -81,7 +81,7 @@ export default function SeasonsModal({ closeModal, seasons }) {
     setLoading(true);
 
     try {
-      let res = await fetch("http://localhost:3000/api/seasons", {
+      let res = await fetch("/api/seasons", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

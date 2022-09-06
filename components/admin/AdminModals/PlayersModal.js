@@ -45,7 +45,7 @@ export default function PlayersModal({ players, closeModal }) {
   // TODO: make this work on prod
   const checkPlayerPUUID = async (summonerName) => {
     // do some stuff to check puuid from server here
-    const res = await fetch(`http://localhost:3000/api/check-puuid/`, {
+    const res = await fetch(`/api/check-puuid/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +131,7 @@ export default function PlayersModal({ players, closeModal }) {
     setLoading(true);
 
     try {
-      let res = await fetch("http://localhost:3000/api/players", {
+      let res = await fetch("/api/players", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

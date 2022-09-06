@@ -175,7 +175,7 @@ export default function EditableTable({
       body.append("file", file);
       body.append("id", id);
 
-      const res = await fetch(`http://localhost:3000/api/${tableName}/upload`, {
+      const res = await fetch(`/api/${tableName}/upload`, {
         method: "POST",
         body,
         headers: {
@@ -398,16 +398,13 @@ export default function EditableTable({
       const idsToDelete = dbIds.filter((id) => !tableIds.includes(id));
 
       if (idsToDelete.length) {
-        const deleteRes = await fetch(
-          `http://localhost:3000/api/${tableName}/`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ idsToDelete }),
-          }
-        );
+        const deleteRes = await fetch(`/api/${tableName}/`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idsToDelete }),
+        });
         if (!deleteRes.ok) {
           throw new Error("Cannot delete players with BTL match history.");
         }
@@ -428,16 +425,13 @@ export default function EditableTable({
         const idsToDelete = dbIds.filter((id) => !tableIds.includes(id));
 
         if (idsToDelete.length) {
-          const foreignDeleteRes = await fetch(
-            `http://localhost:3000/api/${foreignApiName}/`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ idsToDelete }),
-            }
-          );
+          const foreignDeleteRes = await fetch(`/api/${foreignApiName}/`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ idsToDelete }),
+          });
 
           if (!foreignDeleteRes.ok) {
             throw new Error("Cannot delete foreign data.");
@@ -451,7 +445,7 @@ export default function EditableTable({
         setSavedFiles([]);
       }
 
-      const res = await fetch(`http://localhost:3000/api/${tableName}/`, {
+      const res = await fetch(`/api/${tableName}/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -468,16 +462,13 @@ export default function EditableTable({
         const { foreignApiName, foreignRecordName } =
           foreignColumns[0].updateForeignValue;
 
-        const foreignRes = await fetch(
-          `http://localhost:3000/api/${foreignApiName}/`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ [foreignRecordName]: foreignItemsState }),
-          }
-        );
+        const foreignRes = await fetch(`/api/${foreignApiName}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ [foreignRecordName]: foreignItemsState }),
+        });
 
         if (!foreignRes.ok) {
           throw new Error("Failed to apply changes.");

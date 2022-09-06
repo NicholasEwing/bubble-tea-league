@@ -26,7 +26,7 @@ export default function ProviderSection({ provider }) {
   const sendProviderRequest = async () => {
     setApplying(true);
 
-    const res = await fetch(`http://localhost:3000/api/provider/`, {
+    const res = await fetch(`/api/provider/`, {
       method: "POST",
     });
 
