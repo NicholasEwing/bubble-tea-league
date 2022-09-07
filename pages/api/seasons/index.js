@@ -45,8 +45,10 @@ export default async function handler(req, res) {
         const { providerId } = providers[0];
 
         // Hit Riot Games API to create a "tournament" for the Season
-        // const tournamentId = await createTournamentId(providerId, name);
-        const tournamentId = 124;
+        const tournamentId = await createTournamentId(
+          providerId,
+          "Bubble Tea League"
+        );
 
         await prisma.$transaction(async (prisma) => {
           // Create season
@@ -56,13 +58,14 @@ export default async function handler(req, res) {
               year: parseInt(year),
             },
           });
+          const seasonId = season.id;
 
           // Create new placeholder teams with random info
           const newTeams = createTeams(10, season.id);
           await prisma.team.createMany({ data: newTeams });
           const teams = await prisma.team.findMany({
             where: {
-              seasonId: season.id,
+              seasonId,
             },
           });
 
@@ -82,17 +85,17 @@ export default async function handler(req, res) {
 
               const matchupAlreadyExists = matchObjs.some((match) => {
                 return (
-                  (match.teamOne === team.id &&
-                    match.teamTwo === comparedTeam.id) ||
-                  (match.teamOne === comparedTeam.id &&
-                    match.teamTwo === team.id)
+                  (match.teamOneId === team.id &&
+                    match.teamTwoId === comparedTeam.id) ||
+                  (match.teamOneId === comparedTeam.id &&
+                    match.teamTwoId === team.id)
                 );
               });
 
               if (comparingSameTeam || matchupAlreadyExists) return null;
 
               return {
-                seasonId: season.id,
+                seasonId,
                 isPlayoffsMatch: false,
                 teamOneId: team.id,
                 teamTwoId: comparedTeam.id,
@@ -107,32 +110,30 @@ export default async function handler(req, res) {
           await prisma.match.createMany({ data: matchObjs });
           const groupStageMatches = await prisma.match.findMany({
             where: {
-              seasonId: season.id,
+              seasonId,
             },
           });
-          const MatchIds = groupStageMatches.map((m) => m.id);
 
           // Create Match Rounds
           const bestOf = 1;
           const tournamentCodes = await generateTournamentCodes(
             bestOf,
             tournamentId,
-            MatchIds,
             matchObjs.length
           );
           const matchRoundObjs = tournamentCodes.map((tournamentCode, i) => {
             // 50% chance to assign a team to red / blue
-            const { teamOne, teamTwo, id: MatchId } = groupStageMatches[i];
-            const redTeamId = Math.random() < 0.5 ? teamOne : teamTwo;
-            const blueTeamId = redTeamId === teamOne ? teamTwo : teamOne; // whichever team was NOT picked for the red team;
+            const { teamOneId, teamTwoId, id: matchId } = groupStageMatches[i];
+            const redTeamId = Math.random() < 0.5 ? teamOneId : teamTwoId;
+            const blueTeamId = redTeamId === teamOneId ? teamTwoId : teamOneId; // whichever team was NOT picked for the red team;
             return {
-              MatchId,
+              matchId,
               tournamentCode,
               redTeamId,
               blueTeamId,
             };
           });
-          const groupStageMatchRounds = await prisma.matchRound.createMany({
+          await prisma.matchRound.createMany({
             data: matchRoundObjs,
           });
 
@@ -140,13 +141,16 @@ export default async function handler(req, res) {
           const playoffsMatchObjs = [];
           for (let i = 0; i < 14; i++) {
             playoffsMatchObjs.push({
-              seasonId: seasonNumber,
+              seasonId,
               isPlayoffsMatch: true,
             });
           }
           // set to Jan 1st of next year + 46 days
-          let playoffsScheduledTime = new Date();
-          new Date().getFullYear() + 1, 0, 46;
+          let playoffsScheduledTime = new Date(
+            new Date().getFullYear() + 1,
+            0,
+            46
+          ); // set to Jan 1st of next year + 46 days
           // wrote a loop but it was annoying to
           // maintain so I'm just hardcoding 14 objects, sue me ¯\_(ツ)_/¯
           playoffsMatchObjs[0].isUpperBracket = true; // start upper bracket
@@ -178,29 +182,34 @@ export default async function handler(req, res) {
           playoffsMatchObjs[12].bracketRound = 4;
           playoffsMatchObjs[13].bracketRound = 5;
           for (const obj of playoffsMatchObjs) {
-            obj.scheduledTime = scheduledTime.setDate(
-              scheduledTime.getDate() + 1
+            obj.scheduledTime = new Date(
+              playoffsScheduledTime.setDate(playoffsScheduledTime.getDate() + 1)
             );
           }
-          const playoffsMatches = await prisma.match.createMany({
+          await prisma.match.createMany({
             data: playoffsMatchObjs,
           });
+          const playoffsMatches = await prisma.match.findMany({
+            where: {
+              seasonId,
+              isPlayoffsMatch: true,
+            },
+          });
+          const playoffsMatchesIds = playoffsMatches.map((m) => m.id);
 
           // Create Playoff Match Rounds
           const playoffsBestOf = 3;
-          const PlayoffsMatchIds = playoffsMatches.map((m) => m.id);
-          const playoffTournamentCodes = await generateTournamentCodes(
+          const playoffsTournamentCodes = await generateTournamentCodes(
             playoffsBestOf,
             tournamentId,
-            PlayoffsMatchIds,
             playoffsMatches.length
           );
           let j = 0;
-          const playoffMatchRoundObjs = tournamentCodes.map(
+          const playoffMatchRoundObjs = playoffsTournamentCodes.map(
             (tournamentCode, i) => {
               const iPlusOne = i + 1;
               const obj = {
-                MatchId: MatchIds[j],
+                matchId: playoffsMatchesIds[j],
                 tournamentCode,
               };
               if (i > 0 && iPlusOne % 3 === 0) {
@@ -209,7 +218,7 @@ export default async function handler(req, res) {
               return obj;
             }
           );
-          const playoffsMatchRounds = await prisma.matchRound.createMany({
+          await prisma.matchRound.createMany({
             data: playoffMatchRoundObjs,
           });
         });
@@ -223,9 +232,17 @@ export default async function handler(req, res) {
     case "PATCH":
       try {
         const { seasons } = req.body;
-        // await Season.bulkCreate(seasons, {
-        //   updateOnDuplicate: ["year"],
-        // });
+        for (const season of seasons) {
+          const { id, year } = season;
+          await prisma.season.update({
+            where: {
+              id,
+            },
+            data: {
+              year,
+            },
+          });
+        }
         res.status(200).send();
       } catch (error) {
         res.status(500).send({ error });
