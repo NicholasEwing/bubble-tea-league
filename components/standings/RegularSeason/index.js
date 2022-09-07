@@ -13,9 +13,9 @@ export default function RegularSeason({
       </div>
       {seasonStandings.length && seasonTeams.length ? (
         seasonStandings.map((standing) => {
-          const { TeamId, placement } = standing;
+          const { teamId, placement } = standing;
           // find team obj from seasonTeams
-          const team = seasonTeams.find((t) => t.id === TeamId);
+          const team = seasonTeams.find((t) => t.id === teamId);
           const { id, tricode, teamName, groupStageWins, groupStageLosses } =
             team;
           return (

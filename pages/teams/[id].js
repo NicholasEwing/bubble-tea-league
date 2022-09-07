@@ -37,7 +37,7 @@ export const getStaticProps = async (context) => {
 
   const playerHistories = await PlayerTeamHistory.findAll({
     where: {
-      TeamId: id,
+      teamId: id,
     },
     attributes: ["PlayerId", "role"],
     raw: true,

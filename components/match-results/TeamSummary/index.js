@@ -16,7 +16,7 @@ export default function TeamSummary({
     <section
       className={`${
         toggleState === count ? "block" : "hidden"
-      } team-summary pt-4 pb-0 pr-4 pl-4 bg-[#0a0e13] text-white text-sm items-center border-b-gray-300 border-b-1`}
+      } team-summary border-b-1 items-center border-b-gray-300 bg-[#0a0e13] pt-4 pb-0 pr-4 pl-4 text-sm text-white`}
     >
       <DragonComparison dragonEvents={dragonEvents} />
       <GoldComparison
@@ -26,7 +26,7 @@ export default function TeamSummary({
       <div className="details flex">
         {matchRoundTeamStats.map((teamStats, i) => (
           <TeamObjectives
-            key={teamStats.TeamId}
+            key={teamStats.teamId}
             teamSide={i === 0 ? "blue" : "red"}
             count={count}
             {...teamStats}

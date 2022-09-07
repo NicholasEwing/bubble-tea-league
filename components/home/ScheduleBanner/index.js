@@ -39,8 +39,8 @@ export default function ScheduleBanner({ schedule, teams }) {
                     .map((match) => (
                       <LiveMatchBannerItem
                         key={match.id}
-                        teamOne={teams.find((t) => t.id === match.teamOne)}
-                        teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                        teamOne={teams.find((t) => t.id === match.teamOneId)}
+                        teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                         bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
                         scheduledTime={match.scheduledTime}
                         date={date}
@@ -57,8 +57,8 @@ export default function ScheduleBanner({ schedule, teams }) {
                     .map((match) => (
                       <FutureMatchBannerItem
                         key={`Future-${match.id}`}
-                        teamOne={teams.find((t) => t.id === match.teamOne)}
-                        teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                        teamOne={teams.find((t) => t.id === match.teamOneId)}
+                        teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                         bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
                         scheduledTime={match.scheduledTime}
                         date={date}

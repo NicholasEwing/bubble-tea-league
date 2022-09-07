@@ -113,8 +113,8 @@ export default function Home({ schedule = null, teams = null }) {
       )}
       {featuredMatch && (
         <HomeContent
-          teamOne={teams.find((t) => t.id === featuredMatch?.teamOne)}
-          teamTwo={teams.find((t) => t.id === featuredMatch?.teamTwo)}
+          teamOne={teams.find((t) => t.id === featuredMatch?.teamOneId)}
+          teamTwo={teams.find((t) => t.id === featuredMatch?.teamTwoId)}
           bestOf={featuredMatch?.isPlayoffsMatch ? "Bo3" : "Bo1"}
           scheduledTime={featuredMatch?.scheduledTime}
           season={featuredMatch?.season}
