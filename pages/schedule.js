@@ -63,6 +63,12 @@ export const getStaticProps = async () => {
     return { [dateKey]: datesWithMatchRounds };
   });
 
+  schedule.sort((a, b) => {
+    const dateA = Object.keys(a)[0];
+    const dateB = Object.keys(b)[0];
+    return new Date(dateA) - new Date(dateB);
+  });
+
   return {
     props: {
       schedule: JSON.parse(JSON.stringify(schedule)),
