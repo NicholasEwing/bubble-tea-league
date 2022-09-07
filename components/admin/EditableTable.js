@@ -405,6 +405,7 @@ export default function EditableTable({
           },
           body: JSON.stringify({ idsToDelete }),
         });
+        // TODO: make this error not so hardcoded...
         if (!deleteRes.ok) {
           throw new Error("Cannot delete players with BTL match history.");
         }
@@ -445,6 +446,7 @@ export default function EditableTable({
         setSavedFiles([]);
       }
 
+      // TODO: really should only send this if anything actually changed...
       const res = await fetch(`/api/${tableName}/`, {
         method: "PATCH",
         headers: {
@@ -520,7 +522,7 @@ export default function EditableTable({
     setItemsState(newEditState);
 
     // remove entire row from foreign state, if any
-    if (foreignEditState.length) {
+    if (foreignEditState?.length) {
       const foreignColumns = columns.filter((c) => c.updateForeignValue);
       const { foreignApiName, foreignRecordName, foreignKeyAsId } =
         foreignColumns[0].updateForeignValue;
@@ -605,7 +607,7 @@ export default function EditableTable({
                     let formatterArgs = { [valueKey]: cellValue };
 
                     if (needsEditState) formatterArgs.editState = editState;
-                    if (needsForeignEditState && foreignEditState.length)
+                    if (needsForeignEditState && foreignEditState?.length)
                       formatterArgs.foreignEditState = foreignEditState;
                     if (customInfo) {
                       // grab info from other columns

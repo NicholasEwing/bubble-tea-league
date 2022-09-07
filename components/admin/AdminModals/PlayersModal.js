@@ -11,7 +11,11 @@ import SubmitFail from "../../modal/SubmitFail";
 import LoadingSpinner from "../../modal/LoadingSpinner";
 import { useRefreshContext } from "../context/refreshData";
 
-export default function PlayersModal({ players, closeModal }) {
+export default function PlayersModal({
+  players,
+  closeModal,
+  isFreeAgent = false,
+}) {
   const refreshData = useRefreshContext();
 
   const [playerValues, setPlayerValues] = useState({
@@ -30,6 +34,9 @@ export default function PlayersModal({ players, closeModal }) {
 
   const [discordNameState, setDiscordNameState] = useState("");
   const [discordNameValid, setDiscordNameValid] = useState();
+  const [discordNameWarning, setDiscordNameWarning] = useState(
+    "❌ Discord name is invalid!"
+  );
 
   const [summonerNameState, setSummonerNameState] = useState("");
   const [summonerNameValid, setSummonerNameValid] = useState();
@@ -115,9 +122,21 @@ export default function PlayersModal({ players, closeModal }) {
     setDiscordNameState(discordName);
     const isValid = /^.{3,32}#[0-9]{4}$/gim.test(e.target.value);
 
-    if (isValid) {
+    const discordNameAlreadyExists =
+      players.filter(
+        (p) =>
+          p.discordName.toUpperCase().trim() ===
+          e.target.value.toUpperCase().trim()
+      ).length > 0;
+
+    if (discordNameAlreadyExists) {
+      setDiscordNameValid(false);
+      setDiscordNameWarning("❌ Discord name already exists!");
+      setCanSubmit(false);
+    } else if (isValid) {
       setDiscordNameValid(true);
       setPlayerValues({ ...playerValues, discordName: e.target.value });
+      setCanSubmit(true);
     } else {
       setDiscordNameValid(false);
     }
@@ -136,22 +155,22 @@ export default function PlayersModal({ players, closeModal }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...playerValues }),
+        body: JSON.stringify({ ...playerValues, isFreeAgent }),
       });
-
-      const resJson = await res.json();
 
       if (res.ok) {
         setFormSubmitted(true);
         refreshData();
-      }
-
-      if (!res.ok && resJson.message) {
-        throw resJson.message;
+      } else {
+        const resJson = await res.json();
+        console.log("json", resJson);
+        throw new Error(resJson.message);
       }
     } catch (error) {
       setFormSubmitted(false);
-      setErrorMessage(error);
+      if (error.message) {
+        setErrorMessage(error.message);
+      }
       setFormError(true);
     }
 
@@ -220,7 +239,7 @@ export default function PlayersModal({ players, closeModal }) {
                 </p>
               ) : (
                 <p className="mt-4 text-sm text-red-300">
-                  ❌ Discord name invalid!
+                  {discordNameWarning}
                 </p>
               ))}
           </ModalTextInput>

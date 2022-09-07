@@ -17,15 +17,12 @@ export const getStaticProps = async () => {
   const provider = await prisma.provider.findMany();
   const seasons = await prisma.season.findMany();
   const teams = await prisma.team.findMany();
-  const allPlayers = await prisma.player.findMany();
+  const players = await prisma.player.findMany();
   const matches = await prisma.match.findMany();
   const matchRounds = await prisma.matchRound.findMany();
   const matchRoundTeamStats = await prisma.matchRoundTeamStats.findMany();
   const matchRoundPlayerStats = await prisma.matchRoundPlayerStats.findMany();
   const playerTeamHistories = await prisma.playerTeamHistory.findMany();
-
-  const players = allPlayers.filter((p) => !p.isFreeAgent);
-  const freeAgents = allPlayers.filter((p) => p.isFreeAgent);
 
   return {
     props: {
@@ -33,7 +30,6 @@ export const getStaticProps = async () => {
       seasons: JSON.parse(JSON.stringify(seasons)),
       teams: JSON.parse(JSON.stringify(teams)),
       players: JSON.parse(JSON.stringify(players)),
-      freeAgents: JSON.parse(JSON.stringify(freeAgents)),
       matches: JSON.parse(JSON.stringify(matches)),
       matchRounds: JSON.parse(JSON.stringify(matchRounds)),
       playerTeamHistories: JSON.parse(JSON.stringify(playerTeamHistories)),
@@ -46,7 +42,6 @@ export default function Dashboard({
   seasons = null,
   teams = null,
   players = null,
-  freeAgents = null,
   matches = null,
   matchRounds = null,
   playerTeamHistories = null,
@@ -77,7 +72,8 @@ export default function Dashboard({
     return <h2>Loading...</h2>;
   }
 
-  console.log("provider", provider);
+  const assignedPlayers = players.filter((p) => !p.isFreeAgent);
+  const freeAgents = players.filter((p) => p.isFreeAgent);
 
   return (
     <RefreshWrapper>
@@ -86,12 +82,13 @@ export default function Dashboard({
       <TeamsSection items={teams} />
       <MatchesSection items={matches} teams={teams} matchRounds={matchRounds} />
       <PlayersSection
-        items={players}
+        items={assignedPlayers}
+        players={players}
         teams={teams}
         seasons={seasons}
         playerTeamHistories={playerTeamHistories}
       />
-      <FreeAgentsSection items={freeAgents} />
+      <FreeAgentsSection players={players} freeAgents={freeAgents} />
     </RefreshWrapper>
   );
 }

@@ -39,7 +39,7 @@ export default function ProviderSection({ provider }) {
       setApplying(false);
       setTimeout(() => {
         refreshData();
-      }, 4000);
+      }, 3000);
     }
   };
 

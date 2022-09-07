@@ -11,6 +11,7 @@ import SeasonSelector from "./SeasonSelector";
 export default function PlayersSection({
   items,
   teams,
+  players,
   seasons,
   playerTeamHistory,
 }) {
@@ -38,18 +39,18 @@ export default function PlayersSection({
   const playerTeamFormatter = (playerId, foreignEditState) => {
     const seasonTeamIds = seasonTeams.map((st) => st.id);
     const playersCurrentSeason = playerTeamHistory.find(
-      (pth) => pth.PlayerId === playerId && seasonTeamIds.includes(pth.TeamId)
+      (pth) => pth.playerId === playerId && seasonTeamIds.includes(pth.teamId)
     );
 
     const editStateRow = foreignEditState.find(
-      (stateItem) => stateItem.PlayerId === playerId
+      (stateItem) => stateItem.playerId === playerId
     );
 
     // if item is edited and has no db info
     if (editStateRow && !playersCurrentSeason) {
       // show edited info
-      if (editStateRow.TeamId) {
-        return findTeamName(editStateRow.TeamId, seasonTeams);
+      if (editStateRow.teamId) {
+        return findTeamName(editStateRow.teamId, seasonTeams);
       } else {
         // if no edited role, show "-"
         return "-";
@@ -59,8 +60,8 @@ export default function PlayersSection({
     // if item hasn't been edited and has a db record
     if (!editStateRow && playersCurrentSeason) {
       // show db info...
-      if (playersCurrentSeason.TeamId) {
-        return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+      if (playersCurrentSeason.teamId) {
+        return findTeamName(playersCurrentSeason.teamId, seasonTeams);
       } else {
         // if no db info, on record, show "-"
         return "-";
@@ -70,14 +71,14 @@ export default function PlayersSection({
     // if item is edited and has db info
     if (editStateRow && playersCurrentSeason) {
       const teamHasNotChanged =
-        playersCurrentSeason.TeamId === editStateRow.TeamId;
+        playersCurrentSeason.teamId === editStateRow.teamId;
 
       if (teamHasNotChanged) {
         // show db info
-        return findTeamName(playersCurrentSeason.TeamId, seasonTeams);
+        return findTeamName(playersCurrentSeason.teamId, seasonTeams);
       } else {
         // show edited info
-        return findTeamName(editStateRow.TeamId, seasonTeams);
+        return findTeamName(editStateRow.teamId, seasonTeams);
       }
     }
   };
@@ -85,11 +86,11 @@ export default function PlayersSection({
   const playerRoleFormatter = (playerId, foreignEditState) => {
     const seasonTeamIds = seasonTeams.map((st) => st.id);
     const playersCurrentSeason = playerTeamHistory.find(
-      (pth) => pth.PlayerId === playerId && seasonTeamIds.includes(pth.TeamId)
+      (pth) => pth.playerId === playerId && seasonTeamIds.includes(pth.teamId)
     );
 
     const editStateRow = foreignEditState.find(
-      (stateItem) => stateItem.PlayerId === playerId
+      (stateItem) => stateItem.playerId === playerId
     );
 
     // if item is edited and has no db info
@@ -140,49 +141,6 @@ export default function PlayersSection({
       pattern: "^[a-zA-Z0-9,._ ]{1,255}$",
     },
     {
-      valueKey: "id",
-      name: "Player Role",
-      canEdit: true,
-      inputType: "select",
-      needsForeignEditState: true,
-      updateForeignValue: {
-        foreignKeyAsId: "PlayerId",
-        foreignKeyToChange: "role",
-        foreignApiName: "player-team-history",
-        foreignRecordName: "playerTeamHistory",
-      },
-      customFormatter: ({ id, foreignEditState }) =>
-        playerRoleFormatter(id, foreignEditState),
-      options: [
-        { value: "Top" },
-        { value: "Jungle" },
-        { value: "Middle" },
-        { value: "Bottom" },
-        { value: "Support" },
-        { value: "Fill" },
-      ],
-    },
-    // TODO WHEN LIVE:
-    // make new season (literally can't test this until it goes live due to dev key restrictions, thanks riot Dx)
-    // make sure changing seasons works AND dropdown still works
-    // what if someone changes seasons while editing? break out of edit mode?? idk
-    {
-      valueKey: "id",
-      name: "Team",
-      canEdit: true,
-      needsForeignEditState: true,
-      updateForeignValue: {
-        foreignKeyAsId: "PlayerId",
-        foreignKeyToChange: "TeamId",
-        foreignApiName: "player-team-history",
-        foreignRecordName: "playerTeamHistory",
-      },
-      customFormatter: ({ id, foreignEditState }) =>
-        playerTeamFormatter(id, foreignEditState),
-      inputType: "select",
-      options: teamOptions,
-    },
-    {
       valueKey: "discordName",
       name: "Discord",
       canEdit: true,
@@ -196,6 +154,54 @@ export default function PlayersSection({
     },
   ];
 
+  if (playerTeamHistory && playerTeamHistory.length > 0) {
+    // TODO WHEN LIVE:
+    // make new season (literally can't test this until it goes live due to dev key restrictions, thanks riot Dx)
+    // make sure changing seasons works AND dropdown still works
+    // what if someone changes seasons while editing? break out of edit mode?? idk
+    playersColumns.push(
+      {
+        valueKey: "id",
+        name: "Player Role",
+        canEdit: true,
+        inputType: "select",
+        needsForeignEditState: true,
+        updateForeignValue: {
+          foreignKeyAsId: "playerId",
+          foreignKeyToChange: "role",
+          foreignApiName: "player-team-history",
+          foreignRecordName: "playerTeamHistory",
+        },
+        customFormatter: ({ id, foreignEditState }) =>
+          playerRoleFormatter(id, foreignEditState),
+        options: [
+          { value: "Top" },
+          { value: "Jungle" },
+          { value: "Middle" },
+          { value: "Bottom" },
+          { value: "Support" },
+          { value: "Fill" },
+        ],
+      },
+      {
+        valueKey: "id",
+        name: "Team",
+        canEdit: true,
+        needsForeignEditState: true,
+        updateForeignValue: {
+          foreignKeyAsId: "playerId",
+          foreignKeyToChange: "teamId",
+          foreignApiName: "player-team-history",
+          foreignRecordName: "playerTeamHistory",
+        },
+        customFormatter: ({ id, foreignEditState }) =>
+          playerTeamFormatter(id, foreignEditState),
+        inputType: "select",
+        options: teamOptions,
+      }
+    );
+  }
+
   return (
     <SectionContainer>
       <TextHeadingContainer>
@@ -208,11 +214,13 @@ export default function PlayersSection({
           role and team name (depending on the season).
         </p>
       </TextHeadingContainer>
-      <SeasonSelector
-        seasons={seasons}
-        activeSeason={activeSeason}
-        handleActiveSeason={handleActiveSeason}
-      />
+      {items.length > 0 && (
+        <SeasonSelector
+          seasons={seasons}
+          activeSeason={activeSeason}
+          handleActiveSeason={handleActiveSeason}
+        />
+      )}
       <EditableTable
         items={items}
         foreignItems={playerTeamHistory}
@@ -222,7 +230,7 @@ export default function PlayersSection({
         canDelete
       />
       <Modal open={open} closeModal={closeModal}>
-        <PlayersModal players={items} closeModal={closeModal} />
+        <PlayersModal players={players} closeModal={closeModal} />
       </Modal>
     </SectionContainer>
   );

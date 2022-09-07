@@ -14,7 +14,7 @@ export default function SeasonsSection({ items }) {
 
   const seasonColumns = [
     {
-      valueKey: "number",
+      valueKey: "id",
       name: "Number",
       canEdit: false,
       small: true,

@@ -6,7 +6,7 @@ import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
-export default function FreeAgentsSection({ items }) {
+export default function FreeAgentsSection({ players, freeAgents }) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => setOpen(true);
@@ -40,19 +40,19 @@ export default function FreeAgentsSection({ items }) {
         </div>
         <p className="mt-2 text-sm text-gray-400">
           A list of all the free agents in the Bubble Tea League. Free agents
-          are team-agnostic, so they don&apos;t have a team or role associated with
-          them.
+          are team-agnostic, so they don&apos;t have a team or role associated
+          with them.
         </p>
       </TextHeadingContainer>
       <EditableTable
-        items={items}
+        items={freeAgents}
         columns={playersColumns}
         tableName="players"
         bulkEdit
         canDelete
       />
       <Modal open={open} closeModal={closeModal}>
-        <PlayersModal players={items} closeModal={closeModal} />
+        <PlayersModal players={players} closeModal={closeModal} isFreeAgent />
       </Modal>
     </SectionContainer>
   );

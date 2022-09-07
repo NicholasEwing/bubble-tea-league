@@ -6,9 +6,9 @@ export default function SeasonSelector({
 }) {
   return (
     <>
-      <p className="text-gray-300 text-sm mt-2 mb-1">Season Selector:</p>
+      <p className="mt-2 mb-1 text-sm text-gray-300">Season Selector:</p>
 
-      <span className="relative z-0 inline-flex shadow-sm rounded-md mb-2 items-center">
+      <span className="relative z-0 mb-2 inline-flex items-center rounded-md shadow-sm">
         {seasons.map((season, i) => {
           const isSolo = (seasons.length = 1);
           const isFirst = i === 0;
@@ -16,15 +16,15 @@ export default function SeasonSelector({
 
           return (
             <button
-              key={`season-selector-${season.number}`}
+              key={`season-selector-${season.id}`}
               type="button"
-              onClick={() => handleActiveSeason(season.number)}
+              onClick={() => handleActiveSeason(season.id)}
               className={`${isFirst && !isSolo && "rounded-l-md"} 
             ${isLast && "rounded-r-md"} ${
                 isSolo && "rounded-md"
-              } relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-teal-accent focus:border-teal-accent`}
+              } relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-teal-accent focus:outline-none focus:ring-1 focus:ring-teal-accent`}
             >
-              {season.number}
+              {season.id}
             </button>
           );
         })}

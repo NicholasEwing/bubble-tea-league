@@ -24,7 +24,7 @@ export default function MatchesSection({
       needsForeignEditState: true,
       customFormatter: ({ id, foreignEditState }) => {
         const tournamentCodes = foreignEditState
-          .filter((fes) => fes.MatchId === id)
+          .filter((fes) => fes.matchId === id)
           .map((i) => i.tournamentCode);
 
         return (
@@ -83,19 +83,19 @@ export default function MatchesSection({
       inputType: "datetime-local",
     },
     {
-      valueKey: "season",
+      valueKey: "seasonId",
       name: "Season",
       small: true,
     },
     {
-      valueKey: "teamOne",
+      valueKey: "teamOneId",
       name: "Team One",
-      customFormatter: ({ teamOne }) => findTeamName(teamOne, teams),
+      customFormatter: ({ teamOneId }) => findTeamName(teamOneId, teams),
     },
     {
-      valueKey: "teamTwo",
+      valueKey: "teamTwoId",
       name: "Team Two",
-      customFormatter: ({ teamTwo }) => findTeamName(teamTwo, teams),
+      customFormatter: ({ teamTwoId }) => findTeamName(teamTwoId, teams),
     },
     {
       valueKey: "matchWinnerTeamId",

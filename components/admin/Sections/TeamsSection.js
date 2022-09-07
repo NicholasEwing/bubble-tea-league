@@ -41,7 +41,7 @@ export default function TeamsSection({ items }) {
       pattern: "^[a-zA-Z]{0,3}$",
     },
     {
-      valueKey: "season",
+      valueKey: "seasonId",
       name: "Season",
       small: true,
     },
@@ -59,7 +59,7 @@ export default function TeamsSection({ items }) {
       <EditableTable
         items={items}
         columns={teamColumns}
-        tableName="teams"
+        tableName="Team"
         bulkEdit
       />
     </SectionContainer>
