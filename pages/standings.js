@@ -100,7 +100,7 @@ export default function Standings({
   useEffect(() => {
     const seasonTeamIds = seasonTeams.map((t) => t.id);
     const seasonStandings = teamStandings.filter((standing) =>
-      seasonTeamIds.includes(standing.TeamId)
+      seasonTeamIds.includes(standing.teamId)
     );
     setSeasonStanding(seasonStandings);
   }, [seasonTeams, teamStandings]);
@@ -145,10 +145,10 @@ export default function Standings({
             {seasons &&
               seasons.map((season) => (
                 <SeasonItem
-                  key={`season-item-${season.number}`}
+                  key={`season-item-${season.id}`}
                   season={season}
                   handleActiveSeason={handleActiveSeason}
-                  isActive={activeSeason === season.number}
+                  isActive={activeSeason === season.id}
                 />
               ))}
           </ul>

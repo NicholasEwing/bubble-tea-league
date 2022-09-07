@@ -90,8 +90,8 @@ export default function Schedule({ schedule, teams }) {
                     <PastMatch
                       key={`Past-${match.id}`}
                       MatchId={match.id}
-                      teamOne={teams.find((t) => t.id === match.teamOne)}
-                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      teamOne={teams.find((t) => t.id === match.teamOneId)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
                       seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
@@ -112,8 +112,8 @@ export default function Schedule({ schedule, teams }) {
                     <LiveMatch
                       key={`Live-${match.id}`}
                       matchId={match.id}
-                      teamOne={teams.find((t) => t.id === match.teamOne)}
-                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      teamOne={teams.find((t) => t.id === match.teamOneId)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
                       seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
@@ -134,8 +134,8 @@ export default function Schedule({ schedule, teams }) {
                     <FutureMatch
                       key={`Future-${match.id}`}
                       matchId={match.id}
-                      teamOne={teams.find((t) => t.id === match.teamOne)}
-                      teamTwo={teams.find((t) => t.id === match.teamTwo)}
+                      teamOne={teams.find((t) => t.id === match.teamOneId)}
+                      teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
                       seasonId={match.seasonId}
                       matchRounds={match.matchRounds}
