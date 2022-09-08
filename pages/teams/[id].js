@@ -28,30 +28,40 @@ export const getStaticPaths = async () => {
       },
     };
   });
+
+  return {
+    paths,
+    fallback: false,
+  };
 };
 
 export const getStaticProps = async (context) => {
   const { id } = context.params;
+  const teamId = parseInt(id);
 
-  const team = await Team.findByPk(id, { raw: true });
-
-  const playerHistories = await PlayerTeamHistory.findAll({
+  const team = await prisma.team.findUnique({
     where: {
-      teamId: id,
+      id: teamId,
     },
-    attributes: ["PlayerId", "role"],
-    raw: true,
   });
 
-  const playerIds = playerHistories.map((ph) => ph.PlayerId);
+  const playerHistories = await prisma.playerTeamHistory.findMany({
+    where: {
+      teamId,
+    },
+    select: {
+      playerId: true,
+      role: true,
+    },
+  });
+  const playerIds = playerHistories.map((ph) => ph.playerId);
 
-  let players = await Player.findAll({
+  let players = await prisma.player.findMany({
     where: {
       id: {
-        [Op.in]: playerIds,
+        in: playerIds,
       },
     },
-    raw: true,
   });
 
   if (!team || !playerHistories) {
@@ -61,7 +71,7 @@ export const getStaticProps = async (context) => {
   }
 
   players = players.map((player) => {
-    const playerHistory = playerHistories.find((h) => h.PlayerId === player.id);
+    const playerHistory = playerHistories.find((h) => h.playerId === player.id);
     const playerRole = playerHistory.role;
 
     return { ...player, role: playerRole };
@@ -109,11 +119,11 @@ export default function TeamPage({ team = null, players = null }) {
                 {team.teamName} - {team.tricode}
               </p>
               <p className="text-md tracking-tight text-[#8fa3b0] lg:text-2xl">
-                Season {team.season}
+                Season {team.seasonId}
               </p>
             </span>
           </div>
-          <OpGGButton players={players} />
+          {players.length > 0 && <OpGGButton players={players} />}
         </section>
       </div>
       <div className="roster flex h-full w-full flex-row items-start text-white">
