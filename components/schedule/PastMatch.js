@@ -6,7 +6,7 @@ import Team from "./Team";
 import Time from "./Time";
 
 export default function PastMatch({
-  MatchId,
+  matchId,
   matchRounds,
   teamOne,
   teamTwo,
@@ -53,11 +53,11 @@ export default function PastMatch({
   }
 
   return (
-    <div className="text-white bg-[#0f1519] border-y border-y-[#252c32]">
-      <Link href={`/match-results/${MatchId}`}>
-        <a className="single past event mx-4 w-auto h-20 lg:h-28 lg:mx-8 flex flex-row items-center relative">
+    <div className="flex h-20 flex-col justify-center border-y border-y-[#252c32] bg-[#0f1519] text-white lg:h-28">
+      <Link href={`/match-results/${matchId}`}>
+        <a className="relative mx-4 flex w-auto items-center lg:mx-8">
           <Time hour={hour} minute={minute} ampm={ampm} />
-          <div className="teams w-[calc(((100%-165px)/12)*4+60px)] flex flex-col lg:flex-row justify-center grow text-center relative lg:w-auto">
+          <div className="teams relative flex w-[calc(((100%-165px)/12)*4+60px)] grow flex-col justify-center text-center lg:w-auto lg:flex-row">
             <Team
               teamName={teamOne.teamName}
               tricode={teamOne.tricode}
