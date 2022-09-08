@@ -59,7 +59,7 @@ export default function TeamsSection({ items }) {
       <EditableTable
         items={items}
         columns={teamColumns}
-        tableName="Team"
+        tableName="teams"
         bulkEdit
       />
     </SectionContainer>
