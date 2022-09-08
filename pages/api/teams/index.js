@@ -15,25 +15,23 @@ export default async function handler(req, res) {
         const teams = await prisma.team.findMany();
         res.status(200).json(teams);
         break;
-      case "POST":
-        // TODO: ADD team info
-        console.log(req.body);
-        // const team = await prisma.create({ data: {
-
-        // } });
-        res.status(201).end();
-        break;
-      case "UPDATE":
-        await Team.create(req.body);
-        res.status(201).end();
-        break;
       case "PATCH":
         try {
           const { teams } = req.body;
-          await Team.bulkCreate(teams, {
-            updateOnDuplicate: ["teamName", "tricode"],
-          });
-          res.status(200).send();
+          for (const team of teams) {
+            const { teamName, tricode, id } = team;
+
+            await prisma.team.update({
+              where: {
+                id,
+              },
+              data: {
+                teamName,
+                tricode,
+              },
+            });
+          }
+          res.status(200).end();
         } catch (error) {
           res.status(500).send({ error });
         }

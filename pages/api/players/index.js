@@ -78,7 +78,6 @@ export default async function handler(req, res) {
           });
           res.status(200).end();
         } catch (error) {
-          console.log("error", error);
           res.status(404).send({ error });
         }
         break;
