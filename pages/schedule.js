@@ -95,7 +95,7 @@ export default function Schedule({ schedule, teams }) {
                   .map((match) => (
                     <PastMatch
                       key={`Past-${match.id}`}
-                      MatchId={match.id}
+                      matchId={match.id}
                       teamOne={teams.find((t) => t.id === match.teamOneId)}
                       teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
@@ -139,7 +139,6 @@ export default function Schedule({ schedule, teams }) {
                   .map((match) => (
                     <FutureMatch
                       key={`Future-${match.id}`}
-                      matchId={match.id}
                       teamOne={teams.find((t) => t.id === match.teamOneId)}
                       teamTwo={teams.find((t) => t.id === match.teamTwoId)}
                       bestOf={match.isPlayoffsMatch ? "Bo3" : "Bo1"}
