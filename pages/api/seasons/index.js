@@ -77,9 +77,9 @@ export default async function handler(req, res) {
             })),
           });
 
-          // Create Matches
+          // Create group stage match objects
           let scheduledTime = new Date(new Date().getFullYear() + 1, 0, 1); // set to Jan 1st of next year
-          const matchObjs = teams.reduce((matchObjs, team) => {
+          const groupStageMatchObjs = teams.reduce((matchObjs, team) => {
             const allMatchesForTeam = teams.map((comparedTeam) => {
               const comparingSameTeam = team.id === comparedTeam.id;
 
@@ -107,37 +107,8 @@ export default async function handler(req, res) {
 
             return [...matchObjs, ...allMatchesForTeam.filter((m) => m)];
           }, []);
-          await prisma.match.createMany({ data: matchObjs });
-          const groupStageMatches = await prisma.match.findMany({
-            where: {
-              seasonId,
-            },
-          });
 
-          // Create Match Rounds
-          const bestOf = 1;
-          const tournamentCodes = await generateTournamentCodes(
-            bestOf,
-            tournamentId,
-            matchObjs.length
-          );
-          const matchRoundObjs = tournamentCodes.map((tournamentCode, i) => {
-            // 50% chance to assign a team to red / blue
-            const { teamOneId, teamTwoId, id: matchId } = groupStageMatches[i];
-            const redTeamId = Math.random() < 0.5 ? teamOneId : teamTwoId;
-            const blueTeamId = redTeamId === teamOneId ? teamTwoId : teamOneId; // whichever team was NOT picked for the red team;
-            return {
-              matchId,
-              tournamentCode,
-              redTeamId,
-              blueTeamId,
-            };
-          });
-          await prisma.matchRound.createMany({
-            data: matchRoundObjs,
-          });
-
-          // Create Playoff Matches
+          // Create playoff matches objects
           const playoffsMatchObjs = [];
           for (let i = 0; i < 14; i++) {
             playoffsMatchObjs.push({
@@ -186,46 +157,82 @@ export default async function handler(req, res) {
               playoffsScheduledTime.setDate(playoffsScheduledTime.getDate() + 1)
             );
           }
+
+          // Make group stage / playoffs matches in db
+          await prisma.match.createMany({
+            data: groupStageMatchObjs,
+          });
           await prisma.match.createMany({
             data: playoffsMatchObjs,
+          });
+          const groupStageMatches = await prisma.match.findMany({
+            where: {
+              seasonId,
+              isPlayoffsMatch: false,
+            },
           });
           const playoffsMatches = await prisma.match.findMany({
             where: {
               seasonId,
               isPlayoffsMatch: true,
             },
+            select: {
+              id: true,
+            },
           });
           const playoffsMatchesIds = playoffsMatches.map((m) => m.id);
 
-          // Create Playoff Match Rounds
-          const playoffsBestOf = 3;
-          const playoffsTournamentCodes = await generateTournamentCodes(
-            playoffsBestOf,
+          // Make all tournament codes
+          const count =
+            groupStageMatchObjs.length + playoffsMatchObjs.length * 3;
+          const tournamentCodes = await generateTournamentCodes(
             tournamentId,
-            playoffsMatches.length
+            count
           );
+
+          // Create group stage match rounds
+          const groupStageMatchRoundObjs = groupStageMatches.map((gsm, i) => {
+            const { teamOneId, teamTwoId, id: matchId } = gsm;
+
+            const redTeamId = Math.random() < 0.5 ? teamOneId : teamTwoId;
+            const blueTeamId = redTeamId === teamOneId ? teamTwoId : teamOneId; // whichever team was NOT picked for the red team
+
+            return {
+              matchId,
+              redTeamId,
+              blueTeamId,
+              tournamentCode: tournamentCodes[i],
+            };
+          });
+
+          // Create playoffs match rounds
           let j = 0;
-          const playoffMatchRoundObjs = playoffsTournamentCodes.map(
-            (tournamentCode, i) => {
-              const iPlusOne = i + 1;
-              const obj = {
-                matchId: playoffsMatchesIds[j],
-                tournamentCode,
-              };
-              if (i > 0 && iPlusOne % 3 === 0) {
-                j++;
-              }
-              return obj;
+          let playoffsMatchRoundObjs = [];
+          for (let i = 0; i < playoffsMatchObjs.length * 3; i++) {
+            const tournyCodeIndex = i + 45;
+            const iPlusOne = i + 1;
+            const matchRound = {
+              matchId: playoffsMatchesIds[j],
+              tournamentCode: tournamentCodes[tournyCodeIndex],
+            };
+            if (i > 0 && iPlusOne % 3 === 0) {
+              j++;
             }
-          );
+            playoffsMatchRoundObjs.push(matchRound);
+          }
+
+          // Create group stage / playoffs match rounds in db
           await prisma.matchRound.createMany({
-            data: playoffMatchRoundObjs,
+            data: groupStageMatchRoundObjs,
+          });
+          await prisma.matchRound.createMany({
+            data: playoffsMatchRoundObjs,
           });
         });
 
         res.status(201).send({ tournamentId });
       } catch (error) {
-        console.error(error);
+        console.log("ERROR:", error);
         res.status(424).send({ message: error.message });
       }
       break;
