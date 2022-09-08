@@ -178,10 +178,11 @@ export default function EditableTable({
       const res = await fetch(`/api/${tableName}/upload`, {
         method: "POST",
         body,
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload files.");
+      }
     }
   };
 
