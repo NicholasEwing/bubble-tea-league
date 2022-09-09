@@ -92,7 +92,6 @@ export default async function handler(req, res) {
                 playerId: p.id,
               };
             });
-            console.log("player team history obj", playerTeamHistoryObjs);
             await prisma.playerTeamHistory.createMany({
               data: playerTeamHistoryObjs,
             });

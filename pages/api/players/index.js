@@ -37,10 +37,6 @@ export default async function handler(req, res) {
           res.status(409).json(error);
         }
         break;
-      case "GET":
-        const players = await Player.findAll();
-        res.status(200).json(players);
-        break;
       case "PATCH":
         try {
           const { players } = req.body;

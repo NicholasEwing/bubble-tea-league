@@ -11,10 +11,6 @@ export default async function handler(req, res) {
     }
 
     switch (req.method) {
-      case "GET":
-        const teams = await prisma.team.findMany();
-        res.status(200).json(teams);
-        break;
       case "PATCH":
         try {
           const { teams } = req.body;

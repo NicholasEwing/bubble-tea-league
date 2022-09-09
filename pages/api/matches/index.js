@@ -15,10 +15,6 @@ export default async function handler(req, res) {
       if (!userIsAdmin) res.status(401).end();
     }
     switch (req.method) {
-      case "GET":
-        const matches = await Match.findAll();
-        res.status(200).json(matches);
-        break;
       case "PATCH":
         try {
           const { matches } = req.body;
