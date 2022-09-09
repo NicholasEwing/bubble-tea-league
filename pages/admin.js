@@ -49,7 +49,6 @@ export default function Dashboard({
   const router = useRouter();
 
   const sessionInfo = useSession();
-
   const { status } = useSession();
   const isAdmin = admins.includes(sessionInfo?.data?.user?.email);
 

@@ -9,9 +9,11 @@ import PlayerFocus from "../../components/match-results/TeamPlayerStats/PlayerFo
 import TeamSummary from "../../components/match-results/TeamSummary";
 import { replaceTimelinePUUIDs } from "../../lib/jest-api-helpers";
 import { getTimelineEvents } from "../../lib/riot-games-api-helpers";
+import { exclude } from "../../lib/utils";
+
+const { prisma } = require("../../prisma/db");
 
 export const getStaticPaths = async () => {
-  const { prisma } = require("../../prisma/db");
   const matches = await prisma.match.findMany();
 
   if (matches.length === 0) {
@@ -25,20 +27,26 @@ export const getStaticPaths = async () => {
   // FINISHED match rounds associated with them
   const matchIds = matches?.map((m) => m.id);
 
-  // TODO: refactor this with prisma
-  const results = await MatchRound.findAll({
+  const resultsWithApiKey = await prisma.matchRound.findMany({
     where: {
-      MatchId: { [Op.in]: matchIds },
-      winningTeamId: { [Op.not]: null },
-      blueTeamId: { [Op.not]: null },
-      redTeamId: { [Op.not]: null },
+      matchId: {
+        in: matchIds,
+      },
+      winningTeamId: {
+        not: null,
+      },
+      blueTeamId: {
+        not: null,
+      },
+      redTeamId: {
+        not: null,
+      },
     },
-    attributes: { exclude: ["metaData"] },
-    raw: true,
   });
+  const results = exclude(resultsWithApiKey, "metaData");
 
   const pagesToGenerate = [
-    ...new Set(results.flatMap((result) => result.MatchId)),
+    ...new Set(results.flatMap((result) => result.matchId)),
   ];
 
   const paths = pagesToGenerate.reduce((acc, elem) => {
@@ -54,18 +62,22 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const { id } = context.params;
-  const match = await Match.findByPk(id, { raw: true });
-
-  let matchRounds = await MatchRound.findAll({
+  const matchId = parseInt(id);
+  const match = await prisma.match.findUnique({
     where: {
-      MatchId: id,
-      winningTeamId: { [Op.not]: null },
-      blueTeamId: { [Op.not]: null },
-      redTeamId: { [Op.not]: null },
+      id: matchId,
     },
-    attributes: { exclude: ["metaData"] },
-    raw: true,
   });
+
+  const matchRoundsWithApiKey = await prisma.matchRound.findMany({
+    where: {
+      matchId,
+      winningTeamId: { not: null },
+      blueTeamId: { not: null },
+      redTeamId: { not: null },
+    },
+  });
+  let matchRounds = exclude(matchRoundsWithApiKey, "metaData");
 
   if (!match || !matchRounds) {
     return {
@@ -77,9 +89,12 @@ export const getStaticProps = async (context) => {
   matchRounds = await Promise.all(
     matchRounds.map(async (round) => {
       const { blueTeamId, redTeamId, winningTeamId } = round;
-      const teams = await Team.findAll({
-        attributes: ["id", "teamName", "tricode"],
-        raw: true,
+      const teams = await prisma.team.findMany({
+        select: {
+          id: true,
+          teamName: true,
+          tricode: true,
+        },
       });
       const blueTeam = teams.find((team) => team.id === blueTeamId);
       const redTeam = teams.find((team) => team.id === redTeamId);
@@ -106,22 +121,20 @@ export const getStaticProps = async (context) => {
 
   const matchRoundTeamStats = await Promise.all(
     matchRounds.map(async (round) => {
-      const teamStats = await MatchRoundTeamStats.findAll({
-        where: { MatchRoundId: round.id },
-        raw: true,
+      const teamStats = prisma.matchRoundTeamStats.findMany({
+        where: {
+          matchRoundId: round.id,
+        },
       });
-
       return teamStats;
     })
   );
 
   let matchRoundPlayerStats = await Promise.all(
     matchRounds.map(async (round) => {
-      const playerStats = await MatchRoundPlayerStats.findAll({
-        where: { MatchRoundId: round.id },
-        raw: true,
+      const playerStats = await prisma.matchRoundPlayerStats.findMany({
+        where: { matchRoundId: round.id },
       });
-
       return playerStats;
     })
   );
@@ -135,21 +148,18 @@ export const getStaticProps = async (context) => {
       ) {
         // get player ids
         const playerIds = matchRoundPlayerStats[0].map((player) => {
-          return player.PlayerId;
+          return player.playerId;
         });
 
         // get puuids from db
-        const playerPUUIDs = (
-          await Player.findAll({
-            where: {
-              id: {
-                [Op.or]: playerIds,
-              },
+        const players = await prisma.player.findMany({
+          where: {
+            id: {
+              in: playerIds,
             },
-            attributes: ["PUUID"],
-            raw: true,
-          })
-        ).map((p) => p.PUUID);
+          },
+        });
+        const playerPUUIDs = players.map((p) => p.puuid);
 
         replaceTimelinePUUIDs(timelineEvents, playerPUUIDs);
       }
