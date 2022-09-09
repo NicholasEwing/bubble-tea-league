@@ -69,9 +69,7 @@ export default function EditableTable({
     if (customIdKey) {
       editItem = editState.find((editItem) => editItem[customIdKey] == itemId);
     } else {
-      editItem = editState.find(
-        (editItem) => (editItem.id || editItem.number) == itemId
-      );
+      editItem = editState.find((editItem) => editItem.id == itemId);
     }
 
     let formattedValue;
@@ -114,11 +112,11 @@ export default function EditableTable({
       }
     } else {
       const newItemsState = itemsState.map((i) => {
-        if ((i.number || i.id) == (item.number || item.id)) {
+        if (i.id == item.id) {
           return newItem;
         } else {
           const editStateItem = editState.find(
-            (editItem) => (editItem.id || editItem.number) == (i.id || i.number)
+            (editItem) => editItem.id == i.id
           );
 
           const alreadyEditedItem = !isEqual(editStateItem, i);
@@ -223,7 +221,7 @@ export default function EditableTable({
           setForeignEditState(newForeignEditState);
         }
       } else {
-        const item = itemsState.find((i) => (i.id || i.number) == itemId);
+        const item = itemsState.find((i) => i.id == itemId);
         const newItemsState = updateTableRowValue(
           editState,
           itemsState,
@@ -239,8 +237,8 @@ export default function EditableTable({
 
   const checkIfRowCanSave = (id) => {
     // see if this row's data changed
-    const draftedItem = editState.find((es) => (es.id || es.number) == id);
-    const currentItem = itemsState.find((is) => (is.id || is.number) == id);
+    const draftedItem = editState.find((es) => es.id == id);
+    const currentItem = itemsState.find((is) => is.id == id);
 
     let canSave = !isEqual(draftedItem, currentItem);
     if (canSave) return true;
@@ -254,10 +252,10 @@ export default function EditableTable({
     if (columnWithForeignValue) {
       const { foreignKeyAsId } = columnWithForeignValue.updateForeignValue;
 
-      const foreignDraftedItem = foreignEditState.find(
+      const foreignDraftedItem = foreignEditState?.find(
         (fes) => fes[foreignKeyAsId] == id
       );
-      const foreignCurrentItem = foreignItemsState.find(
+      const foreignCurrentItem = foreignItemsState?.find(
         (fis) => fis[foreignKeyAsId] == id
       );
 
@@ -274,13 +272,11 @@ export default function EditableTable({
     setEditingItems([...newEditingItems]);
 
     // find the row we changed
-    const editStateItem = editState.find(
-      (editItem) => (editItem.id || editItem.number) == id
-    );
+    const editStateItem = editState.find((editItem) => editItem.id == id);
 
     // return the items state, but add in the new one we changed
     const newItemsState = itemsState.map((stateItem) =>
-      (stateItem.id || stateItem.number) == id ? editStateItem : stateItem
+      stateItem.id == id ? editStateItem : stateItem
     );
 
     setItemsState(newItemsState);
@@ -340,13 +336,11 @@ export default function EditableTable({
     setEditingItems([...newEditingItems]);
 
     // only revert THIS item to it's itemState
-    const oldItem = itemsState.find(
-      (stateItem) => (stateItem.id || stateItem.number) == id
-    );
+    const oldItem = itemsState.find((stateItem) => stateItem.id == id);
 
     // return the normal edit state, but change the oldItem
     const newEditState = editState.map((editItem) =>
-      (editItem.id || editItem.number) == id ? oldItem : editItem
+      editItem.id == id ? oldItem : editItem
     );
 
     setEditState(newEditState);
@@ -503,7 +497,7 @@ export default function EditableTable({
 
   function handleBulkEdit() {
     const newEditingItems = [...editingItems].concat(
-      selectedItems.map((si) => si.id || si.number)
+      selectedItems.map((si) => si.id)
     );
 
     setEditingItems(newEditingItems);
@@ -580,7 +574,7 @@ export default function EditableTable({
           <TableBody>
             {editState.map((item, i) => (
               <Row
-                key={`${[tableName]}-${item.id || item.number || i}`}
+                key={`${[tableName]}-${item.id || i}`}
                 selectedItems={selectedItems}
                 item={item}
                 setSelectedItems={setSelectedItems}
@@ -622,9 +616,7 @@ export default function EditableTable({
 
                   return (
                     <Cell
-                      key={`${tableName}-${name}-cell-${
-                        item.id || item.number
-                      }`}
+                      key={`${tableName}-${name}-cell-${item.id}`}
                       selectedItems={j === 0 ? selectedItems : undefined}
                       item={item}
                       originalValue={originalValue}
@@ -632,8 +624,8 @@ export default function EditableTable({
                       inputName={valueKey}
                       inputType={inputType}
                       canEdit={canEdit}
-                      editing={editingItems.includes(item.id || item.number)}
-                      id={item.id || item.number}
+                      editing={editingItems.includes(item.id)}
+                      id={item.id}
                       pattern={pattern}
                       handleChanges={handleChanges}
                       updateForeignValue={updateForeignValue}
@@ -648,12 +640,12 @@ export default function EditableTable({
                 })}
                 {!isPublic && (
                   <EditButton
-                    id={item.id || item.number}
+                    id={item.id}
                     saveChanges={saveChanges}
                     cancelChanges={cancelChanges}
                     checkIfRowCanSave={checkIfRowCanSave}
                     handleEditRows={handleEditRows}
-                    editing={editingItems.includes(item.id || item.number)}
+                    editing={editingItems.includes(item.id)}
                   />
                 )}
               </Row>

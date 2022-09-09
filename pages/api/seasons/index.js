@@ -69,6 +69,35 @@ export default async function handler(req, res) {
             },
           });
 
+          // If this is the first season, then assign 50 random players to our 10 teams
+          // otherwise our <EditableTable /> breaks in a million ways...
+          const seasons = await prisma.season.findMany();
+          if (seasons.length === 1) {
+            const players = await prisma.player.findMany();
+            const regularPlayers = players.filter((p) => !p.isFreeAgent);
+            if (regularPlayers.length < 50)
+              throw new Error(
+                "Need 50 players (not free agents) in order to generate the first season."
+              );
+
+            // For every 5 players, assign them to a team
+            let j = 0;
+            const playerTeamHistoryObjs = regularPlayers.map((p, i) => {
+              const team = teams[j];
+              const iPlusOne = i + 1;
+              if (i > 0 && iPlusOne % 5 === 0) j++;
+
+              return {
+                teamId: team.id,
+                playerId: p.id,
+              };
+            });
+            console.log("player team history obj", playerTeamHistoryObjs);
+            await prisma.playerTeamHistory.createMany({
+              data: playerTeamHistoryObjs,
+            });
+          }
+
           // Create default team standing records
           await prisma.teamStanding.createMany({
             data: teams.map((t, i) => ({

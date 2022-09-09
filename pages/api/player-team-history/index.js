@@ -1,28 +1,28 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const sequelize = require("../../../sequelize");
-const { PlayerTeamHistory } = sequelize.models;
+const { prisma } = require("../../../prisma/db");
 
 export default async function handler(req, res) {
   try {
     switch (req.method) {
       case "PATCH":
         try {
-          const { playerTeamHistory } = req.body;
-          for (const history of playerTeamHistory) {
-            const { id, teamId, role } = player;
+          const { playerTeamHistories } = req.body;
+          for (const history of playerTeamHistories) {
+            const { id, teamId, role } = history;
 
             await prisma.playerTeamHistory.update({
               where: {
                 id,
               },
               data: {
-                teamId,
+                teamId: parseInt(teamId),
                 role,
               },
             });
           }
           res.status(200).send();
         } catch (error) {
+          console.log("error", error);
           res.status(500).send({ error });
         }
         break;

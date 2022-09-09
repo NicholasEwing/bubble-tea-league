@@ -7,7 +7,6 @@ export default function SeasonSelector({
   return (
     <>
       <p className="mt-2 mb-1 text-sm text-gray-300">Season Selector:</p>
-
       <span className="relative z-0 mb-2 inline-flex items-center rounded-md shadow-sm">
         {seasons.map((season, i) => {
           const isSolo = (seasons.length = 1);

@@ -12,7 +12,9 @@ export const getStaticProps = async () => {
   const seasons = await prisma.season.findMany();
 
   // TODO: query and sort this in order: order: [["placement", "ASC"]]
-  const teamStandings = await prisma.teamStanding.findMany();
+  const teamStandings = await prisma.teamStanding.findMany({
+    orderBy: [{ placement: "asc" }],
+  });
 
   const groupStageMatches = await prisma.match.findMany({
     where: {
@@ -22,8 +24,9 @@ export const getStaticProps = async () => {
 
   const groupStageMatchRounds = await prisma.matchRound.findMany({
     where: {
-      // matchId: where groupStageMatches.map(m => m.id);
-      // find matches that include a match id from the group stage matches
+      matchId: {
+        in: groupStageMatches.map((m) => m.id),
+      },
     },
   });
 
@@ -35,8 +38,9 @@ export const getStaticProps = async () => {
 
   const playoffsMatchRounds = await prisma.matchRound.findMany({
     where: {
-      // matchId: where playoffsMatches.map(m => m.id);
-      // find matches that include a match id from the playoffs matches
+      matchId: {
+        in: playoffsMatches.map((m) => m.id),
+      },
     },
   });
 
@@ -45,17 +49,17 @@ export const getStaticProps = async () => {
     teams = teams.map((team) => {
       // return team object WITH new info
       const groupStageWins = groupStageMatches.filter(
-        (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+        (m) => m.matchWinnerTeamId === team.id && m.seasonId === team.seasonId
       );
       const groupStageLosses = groupStageMatches.filter(
-        (m) => m.matchLoserTeamId === team.id && m.season === team.season
+        (m) => m.matchLoserTeamId === team.id && m.seasonId === team.seasonId
       );
 
       const playoffsWins = playoffsMatches.filter(
-        (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+        (m) => m.matchWinnerTeamId === team.id && m.seasonId === team.seasonId
       );
       const playoffsLosses = playoffsMatches.filter(
-        (m) => m.matchLoserTeamId === team.id && m.season === team.season
+        (m) => m.matchLoserTeamId === team.id && m.seasonId === team.seasonId
       );
       return {
         ...team,
@@ -88,12 +92,12 @@ export default function Standings({
   const ifTeams = teams.length;
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPlayoffs, setShowPlayoffs] = useState(false);
-  const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
+  const [activeSeason, setActiveSeason] = useState(seasons[0]?.id || 1);
   const [seasonStandings, setSeasonStanding] = useState([]);
   const [seasonTeams, setSeasonTeams] = useState([]);
 
   useEffect(() => {
-    const seasonTeams = teams.filter((t) => t.season === activeSeason);
+    const seasonTeams = teams.filter((t) => t.seasonId === activeSeason);
     setSeasonTeams(seasonTeams);
   }, [activeSeason, teams]);
 
@@ -112,7 +116,7 @@ export default function Standings({
   const seasonPlayoffMatchIds = seasonPlayoffsMatches.map((spom) => spom.id);
 
   const seasonPlayoffsMatchRounds = playoffsMatchRounds.filter((pomr) =>
-    seasonPlayoffMatchIds.includes(pomr.MatchId)
+    seasonPlayoffMatchIds.includes(pomr.matchId)
   );
 
   const handleDropdown = () => {

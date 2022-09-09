@@ -13,22 +13,22 @@ export default function PlayersSection({
   teams,
   players,
   seasons,
-  playerTeamHistory,
+  playerTeamHistories,
 }) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
 
-  const [activeSeason, setActiveSeason] = useState(seasons[0]?.number || 1);
+  const [activeSeason, setActiveSeason] = useState(seasons[0]?.id || 1);
   const [seasonTeams, setSeasonTeams] = useState(
-    teams.filter((t) => t.season === activeSeason)
+    teams.filter((t) => t.seasonId === activeSeason)
   );
 
   const handleActiveSeason = (number) => setActiveSeason(number);
 
   useEffect(() => {
-    const seasonTeams = teams.filter((t) => t.season === activeSeason);
+    const seasonTeams = teams.filter((t) => t.seasonId === activeSeason);
     setSeasonTeams(seasonTeams);
   }, [activeSeason, teams]);
 
@@ -38,11 +38,11 @@ export default function PlayersSection({
 
   const playerTeamFormatter = (playerId, foreignEditState) => {
     const seasonTeamIds = seasonTeams.map((st) => st.id);
-    const playersCurrentSeason = playerTeamHistory.find(
+    const playersCurrentSeason = playerTeamHistories?.find(
       (pth) => pth.playerId === playerId && seasonTeamIds.includes(pth.teamId)
     );
 
-    const editStateRow = foreignEditState.find(
+    const editStateRow = foreignEditState?.find(
       (stateItem) => stateItem.playerId === playerId
     );
 
@@ -85,11 +85,11 @@ export default function PlayersSection({
 
   const playerRoleFormatter = (playerId, foreignEditState) => {
     const seasonTeamIds = seasonTeams.map((st) => st.id);
-    const playersCurrentSeason = playerTeamHistory.find(
+    const playersCurrentSeason = playerTeamHistories?.find(
       (pth) => pth.playerId === playerId && seasonTeamIds.includes(pth.teamId)
     );
 
-    const editStateRow = foreignEditState.find(
+    const editStateRow = foreignEditState?.find(
       (stateItem) => stateItem.playerId === playerId
     );
 
@@ -154,7 +154,7 @@ export default function PlayersSection({
     },
   ];
 
-  if (playerTeamHistory && playerTeamHistory.length > 0) {
+  if (playerTeamHistories && playerTeamHistories.length > 0) {
     // TODO WHEN LIVE:
     // make new season (literally can't test this until it goes live due to dev key restrictions, thanks riot Dx)
     // make sure changing seasons works AND dropdown still works
@@ -170,7 +170,7 @@ export default function PlayersSection({
           foreignKeyAsId: "playerId",
           foreignKeyToChange: "role",
           foreignApiName: "player-team-history",
-          foreignRecordName: "playerTeamHistory",
+          foreignRecordName: "playerTeamHistories",
         },
         customFormatter: ({ id, foreignEditState }) =>
           playerRoleFormatter(id, foreignEditState),
@@ -192,7 +192,7 @@ export default function PlayersSection({
           foreignKeyAsId: "playerId",
           foreignKeyToChange: "teamId",
           foreignApiName: "player-team-history",
-          foreignRecordName: "playerTeamHistory",
+          foreignRecordName: "playerTeamHistories",
         },
         customFormatter: ({ id, foreignEditState }) =>
           playerTeamFormatter(id, foreignEditState),
@@ -214,7 +214,7 @@ export default function PlayersSection({
           role and team name (depending on the season).
         </p>
       </TextHeadingContainer>
-      {items.length > 0 && (
+      {items.length > 0 && seasons.length > 0 && (
         <SeasonSelector
           seasons={seasons}
           activeSeason={activeSeason}
@@ -223,7 +223,7 @@ export default function PlayersSection({
       )}
       <EditableTable
         items={items}
-        foreignItems={playerTeamHistory}
+        foreignItems={playerTeamHistories}
         columns={playersColumns}
         tableName="players"
         bulkEdit
