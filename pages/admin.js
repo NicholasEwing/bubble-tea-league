@@ -78,7 +78,7 @@ export default function Dashboard({
   return (
     <RefreshWrapper>
       {provider.length === 0 && <ProviderSection provider={provider} />}
-      <SeasonsSection items={seasons} />
+      <SeasonsSection items={seasons} players={players} />
       <TeamsSection items={teams} />
       <MatchesSection items={matches} teams={teams} matchRounds={matchRounds} />
       <PlayersSection

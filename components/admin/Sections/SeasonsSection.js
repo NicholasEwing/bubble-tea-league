@@ -6,7 +6,7 @@ import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
 
-export default function SeasonsSection({ items }) {
+export default function SeasonsSection({ items, players }) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => setOpen(true);
@@ -28,12 +28,18 @@ export default function SeasonsSection({ items }) {
     },
   ];
 
+  const regularPlayers = players.filter((p) => !p.isFreeAgent);
+
   return (
     <SectionContainer>
       <TextHeadingContainer>
         <div className="flex justify-between">
           <h1 className="text-xl font-semibold text-white">Seasons</h1>
-          <AddButton buttonText="Add season" buttonAction={openModal} />
+          <AddButton
+            buttonText="Add season"
+            buttonAction={openModal}
+            disabled={regularPlayers.length < 50}
+          />
         </div>
         <p className="mt-2 text-sm text-gray-400">
           A list of all Bubble Tea League seasons registered including their
@@ -49,8 +55,13 @@ export default function SeasonsSection({ items }) {
           finished.
         </p>
         <p className="mt-2 text-sm text-gray-400">
+          There must be at player 50 players (not free agents) in the system in
+          order to generate a season.
+        </p>
+        <p className="mt-2 text-sm text-gray-400">
           After you&apos;ve made a season, be sure to rename teams, create
-          players / assign them to teams, and assign times to all matches.
+          additional players as needed players / attach them to teams, and
+          assign times to all matches.
         </p>
       </TextHeadingContainer>
       <EditableTable
