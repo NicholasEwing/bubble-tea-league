@@ -175,9 +175,10 @@ model PlayerTeamHistory {
   role     String @default("Fill") @db.VarChar(255)
   team     Team   @relation(fields: [teamId], references: [id])
   player   Player @relation(fields: [playerId], references: [id])
-  playerId Int
   teamId   Int
+  playerId Int
 
+  @@unique([teamId, playerId])
   @@index([teamId, playerId])
 }
 
@@ -192,8 +193,8 @@ model Player {
   isFreeAgent           Boolean                 @default(false)
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
-  MatchRoundPlayerStats MatchRoundPlayerStats[]
-  PlayerTeamHistory     PlayerTeamHistory[]
+  matchRoundPlayerStats MatchRoundPlayerStats[]
+  playerTeamHistories   PlayerTeamHistory[]
 }
 
 model Provider {
@@ -209,8 +210,8 @@ model Season {
   year         Int      @db.UnsignedInt
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  Matches      Match[]
-  Teams        Team[]
+  matches      Match[]
+  teams        Team[]
 }
 
 model TeamStanding {
@@ -232,16 +233,16 @@ model Team {
   seasonId            Int                   @db.UnsignedInt
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-  MatchRoundTeamStats MatchRoundTeamStats[]
-  MatchWinner         Match[]               @relation(name: "matchWinner")
-  MatchLoser          Match[]               @relation(name: "matchLoser")
+  matchRoundTeamStats MatchRoundTeamStats[]
+  matchWinner         Match[]               @relation(name: "matchWinner")
+  matchLoser          Match[]               @relation(name: "matchLoser")
   teamOne             Match[]               @relation(name: "teamOne")
   teamTwo             Match[]               @relation(name: "teamTwo")
   winningTeam         MatchRound[]          @relation(name: "winningTeam")
   redTeam             MatchRound[]          @relation(name: "redTeam")
   blueTeam            MatchRound[]          @relation(name: "blueTeam")
-  TeamStanding        TeamStanding?
-  PlayerTeamHistory   PlayerTeamHistory[]
+  teamStanding        TeamStanding?
+  playerTeamHistories PlayerTeamHistory[]
 
   @@index([seasonId])
 }

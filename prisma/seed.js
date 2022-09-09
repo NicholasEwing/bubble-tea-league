@@ -1,6 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const { btlPlayers } = require("../lib/hardcoded-btl-teams");
+const { getPlayerPUUID } = require("../lib/riot-games-api-helpers");
+
+console.log(process.env.RIOT_GAMES_API_KEY);
+
 async function main() {
   await prisma.match.deleteMany();
   await prisma.matchRound.deleteMany();
@@ -11,6 +16,17 @@ async function main() {
   await prisma.season.deleteMany();
   await prisma.teamStanding.deleteMany();
   await prisma.team.deleteMany();
+  await prisma.provider.deleteMany();
+
+  // todo: probably rate limit this in the future...
+  for (const player of btlPlayers) {
+    const PUUID = await getPlayerPUUID(player.summonerName);
+    player.PUUID = PUUID;
+  }
+
+  await prisma.player.createMany({
+    data: btlPlayers,
+  });
 }
 
 main()
