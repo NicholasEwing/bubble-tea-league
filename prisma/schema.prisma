@@ -64,7 +64,7 @@ model MatchRoundPlayerStats {
   visionScore          Int        @db.UnsignedInt
   firstBlood           Boolean
   totalDmgToChamps     Int        @db.UnsignedInt
-  kda                  Int        @db.UnsignedInt
+  kda                  Float
   championName         String     @db.VarChar(255)
   championTransform    Int        @default(0) @db.UnsignedInt
   item0                Int        @db.UnsignedInt
@@ -83,8 +83,8 @@ model MatchRoundPlayerStats {
   primaryRunePerks     String     @db.VarChar(255)
   secondaryRunePath    Int        @db.UnsignedInt
   secondaryRunePerks   String     @db.VarChar(255)
-  killParticipation    String     @db.VarChar(255)
-  teamDamagePercentage String     @db.VarChar(255)
+  killParticipation    Int        @db.UnsignedInt
+  teamDamagePercentage Int        @db.UnsignedInt
   wardsPlaced          Int        @db.UnsignedInt
   wardTakedowns        Int        @db.UnsignedInt
   summonerName         String     @db.VarChar(255)

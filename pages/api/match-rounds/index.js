@@ -1,422 +1,497 @@
-// import { Op } from "sequelize";
-// import {
-//   parsePlayerStats,
-//   parseTeamStats,
-// } from "../../../lib/general-api-helpers";
-// import { replaceFakePlayerInfo } from "../../../lib/jest-api-helpers";
-// import {
-//   findTeamIdsFromMatchResults,
-//   getTimelineEvents,
-//   v5getMatch,
-// } from "../../../lib/riot-games-api-helpers";
-// import { seedPlayoffs } from "../../../lib/general-api-helpers";
-// import { sortStandings } from "../../../lib/utils";
-// import { unstable_getServerSession } from "next-auth/next";
-// import { authOptions } from "../auth/[...nextauth]";
-// import admins from "../../../sequelize/admins";
+import {
+  parsePlayerStats,
+  parseTeamStats,
+} from "../../../lib/general-api-helpers";
+import { replaceFakePlayerInfo } from "../../../lib/jest-api-helpers";
+import {
+  findTeamIdsFromMatchResults,
+  getTimelineEvents,
+  v5getMatch,
+} from "../../../lib/riot-games-api-helpers";
+import { seedPlayoffs } from "../../../lib/general-api-helpers";
+import { sortStandings } from "../../../lib/utils";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
-// // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-// const sequelize = require("../../../sequelize");
-// const {
-//   Match,
-//   MatchRound,
-//   Player,
-//   MatchRoundTeamStats,
-//   MatchRoundPlayerStats,
-//   PlayerTeamHistory,
-//   Team,
-//   TeamStanding,
-// } = sequelize.models;
-// const { default: fetch } = require("node-fetch");
+import admins from "../../../admins";
 
-// export default async function handler(req, res) {
-//   try {
-//     if (process.env.NODE_ENV === "production") {
-//       const session = await unstable_getServerSession(req, res, authOptions);
-//       const userIsAdmin = admins.includes(session?.user?.email);
-//       if (!userIsAdmin) res.status(401).end();
-//     }
-//     switch (req.method) {
-//       case "GET":
-//         const matchRounds = await MatchRound.findAll();
-//         res.status(200).json(matchRounds);
-//         break;
-//       case "POST":
-//         // where a lot of the magic happens
-//         const { metaData, gameId, winningTeam, losingTeam, shortCode } =
-//           req.body;
-//         let riotAuth;
-//         if (process.env.NODE_ENV === "production")
-//           riotAuth = JSON.parse(metaData).riotAuth;
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+const { prisma } = require("../../../prisma/db");
 
-//         const { MatchId } = await MatchRound.findOne({
-//           raw: true,
-//           where: {
-//             tournamentCode: shortCode,
-//           },
-//           attributes: ["MatchId"],
-//         });
+export default async function handler(req, res) {
+  try {
+    if (process.env.NODE_ENV === "production") {
+      const session = await unstable_getServerSession(req, res, authOptions);
+      const userIsAdmin = admins.includes(session?.user?.email);
+      if (!userIsAdmin) res.status(401).end();
+    }
+    switch (req.method) {
+      case "POST":
+        // where a lot of the magic happens
+        await prisma.$transaction(async (prisma) => {
+          try {
+            const { metaData, gameId, winningTeam, losingTeam, shortCode } =
+              req.body;
+            let riotAuth;
+            if (process.env.NODE_ENV === "production")
+              riotAuth = JSON.parse(metaData).riotAuth;
 
-//         // find season # from Match table
-//         const { season } = await Match.findOne({
-//           raw: true,
-//           where: {
-//             id: MatchId,
-//           },
-//           attributes: ["season"],
-//         });
+            const { matchId } = await prisma.matchRound.findUniqueOrThrow({
+              where: {
+                tournamentCode: shortCode,
+              },
+              select: {
+                matchId: true,
+              },
+            });
 
-//         // make sure Riot callback includes our API key
-//         if (
-//           process.env.NODE_ENV === "production" &&
-//           riotAuth !== process.env.BTL_API_KEY
-//         ) {
-//           res
-//             .status(401)
-//             .send("You are not authorized to send results to the BTL API.");
-//         }
+            // find season # from Match table
+            const { seasonId } = await prisma.match.findUniqueOrThrow({
+              where: {
+                id: matchId,
+              },
+              select: {
+                seasonId: true,
+              },
+            });
 
-//         // reach out to Riot Games API for all stats
-//         let matchRoundResults = await v5getMatch(gameId);
+            // make sure Riot callback includes our API key
+            if (
+              process.env.NODE_ENV === "production" &&
+              riotAuth !== process.env.BTL_API_KEY
+            ) {
+              res
+                .status(401)
+                .send("You are not authorized to send results to the BTL API.");
+            }
 
-//         // parse useful info
-//         const teamIds = await findTeamIdsFromMatchResults(req.body, season);
-//         const { winningTeamId, losingTeamId } = teamIds;
+            // reach out to Riot Games API for all stats
+            let matchRoundResults = await v5getMatch(gameId);
 
-//         const winningNames = winningTeam.map((p) => p.summonerName);
-//         const losingNames = losingTeam.map((p) => p.summonerName);
+            // parse useful info
+            const winningPlayers = await prisma.player.findMany({
+              where: {
+                summonerName: {
+                  in: winningTeam.map((p) => p.summonerName),
+                },
+              },
+              select: {
+                id: true,
+                PUUID: true,
+                summonerName: true,
+              },
+            });
+            const losingPlayers = await prisma.player.findMany({
+              where: {
+                summonerName: {
+                  in: losingTeam.map((p) => p.summonerName),
+                },
+              },
+              select: {
+                id: true,
+                PUUID: true,
+                summonerName: true,
+              },
+            });
+            const teamIds = await findTeamIdsFromMatchResults(
+              req.body,
+              seasonId,
+              winningPlayers,
+              losingPlayers
+            );
+            const { winningTeamId, losingTeamId } = teamIds;
 
-//         const winningPlayers = await Player.findAll({
-//           where: {
-//             summonerName: {
-//               [Op.in]: winningNames,
-//             },
-//           },
-//           raw: true,
-//         });
+            // Get timeline events
+            let timelineEvents = await getTimelineEvents(gameId);
 
-//         const losingPlayers = await Player.findAll({
-//           where: {
-//             summonerName: {
-//               [Op.in]: losingNames,
-//             },
-//           },
-//           raw: true,
-//         });
+            // mutate matchRoundResults to use correct PUUIDs when testing
+            // mutate timelineResults to use correct PUUIDs when testing
+            if (
+              process.env.NODE_ENV === "test" ||
+              process.env.NODE_ENV === "development"
+            ) {
+              [matchRoundResults, timelineEvents] = await replaceFakePlayerInfo(
+                matchRoundResults,
+                timelineEvents,
+                winningPlayers,
+                losingPlayers
+              );
+            }
 
-//         // Get timeline events
-//         let timelineEvents = await getTimelineEvents(gameId);
+            // get player puuids
+            const bluePlayers = matchRoundResults.info.participants.filter(
+              (participant) => {
+                return participant.teamId === 100;
+              }
+            );
 
-//         // mutate matchRoundResults to use correct PUUIDs when testing
-//         // mutate timelineResults to use correct PUUIDs when testing
-//         if (
-//           process.env.NODE_ENV === "test" ||
-//           process.env.NODE_ENV === "development"
-//         ) {
-//           [matchRoundResults, timelineEvents] = await replaceFakePlayerInfo(
-//             matchRoundResults,
-//             timelineEvents,
-//             winningPlayers,
-//             losingPlayers
-//           );
-//         }
+            const redPlayers = matchRoundResults.info.participants.filter(
+              (participant) => {
+                return participant.teamId === 200;
+              }
+            );
 
-//         // get player puuids
-//         const bluePlayers = matchRoundResults.info.participants.filter(
-//           (participant) => {
-//             return participant.teamId === 100;
-//           }
-//         );
+            // we know the winning / losing team Ids, now we need to know
+            // which color side they were on
+            let blueTeamId;
+            for (const player of bluePlayers) {
+              if (player.puuid) {
+                const { playerTeamHistories: bluePlayerHistories } =
+                  await prisma.player.findUnique({
+                    where: {
+                      PUUID: player.puuid,
+                    },
+                    include: {
+                      playerTeamHistories: {
+                        where: {
+                          teamId: {
+                            in: [winningTeamId, losingTeamId],
+                          },
+                        },
+                        select: {
+                          teamId: true,
+                        },
+                      },
+                    },
+                  });
+                const { teamId } = bluePlayerHistories[0];
+                if (teamId) {
+                  blueTeamId = teamId;
+                  break;
+                }
+              }
+            }
 
-//         const redPlayers = matchRoundResults.info.participants.filter(
-//           (participant) => {
-//             return participant.teamId === 200;
-//           }
-//         );
+            let redTeamId;
+            for (const player of redPlayers) {
+              const { playerTeamHistories: redPlayerHistories } =
+                await prisma.player.findUnique({
+                  where: {
+                    PUUID: player.puuid,
+                  },
+                  include: {
+                    playerTeamHistories: {
+                      where: {
+                        teamId: {
+                          in: [winningTeamId, losingTeamId],
+                        },
+                      },
+                      select: {
+                        teamId: true,
+                      },
+                    },
+                  },
+                });
+              const { teamId } = redPlayerHistories[0];
 
-//         // we know the winning / losing team Ids, now we need to know
-//         // which color side they were on
+              if (teamId) {
+                redTeamId = teamId;
+                break;
+              }
+            }
 
-//         let blueTeamId;
-//         for (const player of bluePlayers) {
-//           const { id: bluePlayerId } = await Player.findOne({
-//             where: {
-//               PUUID: player.puuid,
-//             },
-//             attributes: ["id"],
-//             raw: true,
-//           });
+            // get game length
+            const gameDuration = matchRoundResults.info.gameDuration;
 
-//           const { TeamId } = await PlayerTeamHistory.findOne({
-//             where: { PlayerId: bluePlayerId },
-//             attributes: ["TeamId"],
-//             raw: true,
-//           });
+            const matchRoundObj = {
+              gameId: gameId.toString(),
+              metaData,
+              gameDuration,
+              matchId,
+              winningTeamId,
+              redTeamId,
+              blueTeamId,
+            };
 
-//           if (TeamId) {
-//             blueTeamId = TeamId;
-//             break;
-//           }
-//         }
+            // Update a matchRound record with the winner
+            console.log("match id?", matchId);
+            const { id: emptyMatchRoundId } =
+              await prisma.matchRound.findFirstOrThrow({
+                where: {
+                  matchId,
+                  winningTeamId: null,
+                  gameId: null,
+                },
+                select: {
+                  id: true,
+                },
+              });
 
-//         let redTeamId;
-//         for (const player of redPlayers) {
-//           const { id: redPlayerId } = await Player.findOne({
-//             where: {
-//               PUUID: player.puuid,
-//             },
-//             attributes: ["id"],
-//             raw: true,
-//           });
+            const { id: matchRoundId } = await prisma.matchRound.update({
+              where: {
+                id: emptyMatchRoundId,
+              },
+              data: matchRoundObj,
+              select: {
+                id: true,
+              },
+            });
 
-//           const { TeamId } = await PlayerTeamHistory.findOne({
-//             where: { PlayerId: redPlayerId },
-//             attributes: ["TeamId"],
-//             raw: true,
-//           });
+            // track actual match winner
+            const match = await prisma.match.findUniqueOrThrow({
+              where: {
+                id: matchId,
+              },
+            });
 
-//           if (TeamId) {
-//             redTeamId = TeamId;
-//             break;
-//           }
-//         }
+            let seasonTeams;
+            if (match.isPlayoffsMatch) {
+              // add metadata info on teams if this is our first time seeing it
+              if (!match.blueTeamId && !match.redTeamId) {
+                await prisma.match.update({
+                  where: {
+                    id: matchId,
+                  },
+                  data: {
+                    teamOneId: blueTeamId,
+                    teamTwoId: redTeamId,
+                  },
+                });
+              }
 
-//         // get game length
-//         const gameDuration = matchRoundResults.info.gameDuration;
+              const playoffsMatches = await prisma.matchRound.findMany({
+                where: {
+                  matchId,
+                  winningTeamId: {
+                    not: null,
+                  },
+                },
+              });
 
-//         const matchRoundObj = {
-//           gameId,
-//           metaData,
-//           gameDuration,
-//           MatchId,
-//           winningTeamId,
-//           redTeamId,
-//           blueTeamId,
-//         };
+              if (playoffsMatches.length > 1) {
+                // Playoffs Logic
+                const { redTeamId, blueTeamId } = playoffsMatches[0];
+                const teamIds = [redTeamId, blueTeamId];
 
-//         // Update a MatchRound record with the winner
-//         const emptyMatchRound = await MatchRound.findOne({
-//           raw: false,
-//           where: {
-//             MatchId,
-//             winningTeamId: {
-//               [Op.is]: null,
-//             },
-//             gameId: {
-//               [Op.eq]: null,
-//             },
-//           },
-//         });
+                const matchWinner = teamIds.find((teamId) => {
+                  const teamIdWins = playoffsMatches.filter(
+                    (m) => m.winningTeamId == teamId
+                  );
 
-//         const matchRound = await emptyMatchRound.update(matchRoundObj);
-//         const MatchRoundId = matchRound.dataValues.id;
+                  if (teamIdWins.length === 2) {
+                    return teamId;
+                  } else {
+                    return false;
+                  }
+                });
 
-//         // track actual match winner
-//         const match = await Match.findByPk(MatchId);
+                if (matchWinner) {
+                  await prisma.match.update({
+                    where: {
+                      id: matchId,
+                    },
+                    data: {
+                      matchWinnerTeamId: winningTeamId,
+                      matchLoserTeamId: losingTeamId,
+                    },
+                  });
 
-//         if (match.isPlayoffsMatch) {
-//           // add metadata info on teams if this is our first time seeing it
-//           if (!match.blueTeamId && !match.redTeamId) {
-//             await match.update({
-//               teamOne: blueTeamId,
-//               teamTwo: redTeamId,
-//             });
-//           }
+                  // advance players in playoffs bracket
+                  if (match.isUpperBracket && match.bracketRound < 3) {
+                    // advance winner
+                    const nextWinnerMatch = await prisma.match.findFirstOrThrow(
+                      {
+                        where: {
+                          seasonId,
+                          isUpperBracket: true,
+                          bracketRound: match.bracketRound + 1,
+                        },
+                      }
+                    );
+                    if (nextWinnerMatch.teamOne) {
+                      await prisma.match.update({
+                        where: {
+                          id: nextWinnerMatch.id,
+                        },
+                        data: {
+                          teamTwoId: winningTeamId,
+                        },
+                      });
+                    } else {
+                      await prisma.match.update({
+                        where: {
+                          id: nextWinnerMatch.id,
+                        },
+                        data: {
+                          teamOneId: winningTeamId,
+                        },
+                      });
+                    }
 
-//           const matchRounds = await MatchRound.findAll({ raw: true });
+                    // advance loser to lower bracket
+                    await prisma.match.update({
+                      where: {
+                        seasonId,
+                        isUpperBracket: false,
+                        bracketRound: match.bracketRound + 1,
+                      },
+                      data: {
+                        teamOneId: losingTeamId,
+                      },
+                    });
+                  } else {
+                    // if semifinals...
+                    if (match.bracketRound === 5) {
+                      // ...move to finals
+                      await prisma.match.update({
+                        where: {
+                          seasonId,
+                          isUpperBracket: true,
+                          bracketRound: 4,
+                        },
+                        data: {
+                          teamTwoId: winningTeamId,
+                        },
+                      });
+                    } else {
+                      // otherwise, move up the lower bracket
+                      await prisma.match.update({
+                        where: {
+                          seasonId,
+                          isUpperBracket: false,
+                          bracketRound: match.bracketRound + 1,
+                        },
+                        data: {
+                          teamTwoId: winningTeamId,
+                        },
+                      });
+                    }
+                  }
+                }
+              }
+            } else {
+              // Group Stage Logic
+              await prisma.match.update({
+                where: {
+                  id: matchId,
+                },
+                data: {
+                  matchWinnerTeamId: winningTeamId,
+                  matchLoserTeamId: losingTeamId,
+                },
+              });
 
-//           const playoffsMatches = matchRounds.filter(
-//             (mr) => mr.MatchId === MatchId && mr.winningTeamId
-//           );
+              // Recalculate team standings
+              seasonTeams = await prisma.team.findMany({
+                where: {
+                  seasonId,
+                },
+              });
 
-//           if (playoffsMatches.length > 1) {
-//             // Playoffs Logic
-//             const { redTeamId, blueTeamId } = playoffsMatches[0];
-//             const teamIds = [redTeamId, blueTeamId];
+              const groupStageMatches = await prisma.match.findMany({
+                where: {
+                  seasonId,
+                  isPlayoffsMatch: false,
+                },
+              });
+              const groupStageMatchRounds = await prisma.match.findMany({
+                where: {
+                  seasonId,
+                  isPlayoffsMatch: false,
+                },
+              });
 
-//             const matchWinner = teamIds.find((teamId) => {
-//               const teamIdWins = playoffsMatches.filter(
-//                 (m) => m.winningTeamId == teamId
-//               );
+              seasonTeams = seasonTeams.map((team) => {
+                const groupStageWins = groupStageMatches.filter(
+                  (m) => m.matchWinnerTeamId === team.id
+                );
+                const groupStageLosses = groupStageMatches.filter(
+                  (m) => m.matchLoserTeamId === team.id
+                );
+                return { ...team, groupStageWins, groupStageLosses };
+              });
 
-//               if (teamIdWins.length === 2) {
-//                 return teamId;
-//               } else {
-//                 return false;
-//               }
-//             });
+              seasonTeams = await sortStandings(
+                seasonTeams,
+                groupStageMatches,
+                groupStageMatchRounds
+              );
 
-//             if (matchWinner) {
-//               await match.update({
-//                 matchWinnerTeamId: winningTeamId,
-//                 matchLoserTeamId: losingTeamId,
-//               });
+              const teamStandingRecords = seasonTeams.map((team, i) => {
+                return { teamId: team.id, placement: i + 1 };
+              });
 
-//               // advance players in playoffs bracket
-//               if (match.isUpperBracket && match.bracketRound < 3) {
-//                 // advance winner
-//                 const nextWinnerMatch = await Match.findOne({
-//                   where: {
-//                     season,
-//                     isUpperBracket: true,
-//                     bracketRound: match.bracketRound + 1,
-//                   },
-//                 });
-//                 if (nextWinnerMatch.teamOne) {
-//                   await nextWinnerMatch.update({ teamTwo: winningTeamId });
-//                 } else {
-//                   await nextWinnerMatch.update({ teamOne: winningTeamId });
-//                 }
+              const seasonTeamStandings = await prisma.teamStanding.findMany({
+                where: {
+                  teamId: {
+                    in: seasonTeams.map((t) => t.id), // filtering by teams = filtering by season basically
+                  },
+                },
+              });
 
-//                 // advance loser to lower bracket
-//                 const nextLoserMatch = await Match.findOne({
-//                   where: {
-//                     season,
-//                     isUpperBracket: false,
-//                     bracketRound: match.bracketRound + 1,
-//                   },
-//                 });
-//                 await nextLoserMatch.update({ teamOne: losingTeamId });
-//               } else {
-//                 // if semifinals...
-//                 if (match.bracketRound === 5) {
-//                   // ...move to finals
-//                   const finalsMatch = await Match.findOne({
-//                     where: {
-//                       season,
-//                       isUpperBracket: true,
-//                       bracketRound: 4,
-//                     },
-//                   });
+              for (const standing of seasonTeamStandings) {
+                const { placement } = teamStandingRecords.find(
+                  (r) => r.teamId === standing.teamId
+                );
 
-//                   finalsMatch.update({ teamTwo: winningTeamId });
-//                 } else {
-//                   // otherwise, move up the lower bracket
-//                   const nextWinnerMatch = await Match.findOne({
-//                     where: {
-//                       season,
-//                       isUpperBracket: false,
-//                       bracketRound: match.bracketRound + 1,
-//                     },
-//                   });
-//                   nextWinnerMatch.update({ teamTwo: winningTeamId });
-//                 }
-//               }
-//             }
-//           }
-//         } else {
-//           // Group Stage Logic
-//           await match.update({
-//             matchWinnerTeamId: winningTeamId,
-//             matchLoserTeamId: losingTeamId,
-//           });
+                await prisma.teamStanding.update({
+                  where: {
+                    id: standing.id,
+                  },
+                  data: {
+                    placement,
+                  },
+                });
+              }
 
-//           // Recalculate team standings
-//           let seasonTeams = await Team.findAll({
-//             raw: true,
-//             where: {
-//               season,
-//             },
-//           });
+              // if last (45th) group stage match for the season, seed playoffs
+              const finishedGroupStageMatches = await prisma.match.findMany({
+                where: {
+                  seasonId,
+                  matchWinnerTeamId: {
+                    not: null,
+                  },
+                  matchLoserTeamId: {
+                    not: null,
+                  },
+                  isPlayoffsMatch: false,
+                },
+              });
 
-//           const groupStageMatches = await Match.findAll({
-//             raw: true,
-//           });
-//           const groupStageMatchRounds = await MatchRound.findAll({
-//             raw: true,
-//           });
+              if (finishedGroupStageMatches.length === 45) {
+                await seedPlayoffs(seasonId, seasonTeams);
+              }
+            }
 
-//           seasonTeams = seasonTeams.map((team) => {
-//             const groupStageWins = groupStageMatches.filter(
-//               (m) => m.matchWinnerTeamId === team.id
-//             );
-//             const groupStageLosses = groupStageMatches.filter(
-//               (m) => m.matchLoserTeamId === team.id
-//             );
-//             return { ...team, groupStageWins, groupStageLosses };
-//           });
+            // Create 2 MatchRoundTeamStats records
+            const matchRoundTeamStatsRecords = await parseTeamStats(
+              matchRoundResults,
+              winningTeamId,
+              losingTeamId,
+              matchRoundId
+            );
+            await prisma.matchRoundTeamStats.createMany({
+              data: matchRoundTeamStatsRecords,
+            });
 
-//           seasonTeams = await sortStandings(
-//             seasonTeams,
-//             groupStageMatches,
-//             groupStageMatchRounds
-//           );
-
-//           const teamStandingRecords = seasonTeams.map((team, i) => {
-//             return { TeamId: team.id, placement: i + 1 };
-//           });
-
-//           const seasonTeamStandings = await TeamStanding.findAll({
-//             where: {
-//               TeamId: {
-//                 [Op.in]: seasonTeams.map((t) => t.id), // grab standing for this season
-//               },
-//             },
-//           });
-
-//           for (const standing of seasonTeamStandings) {
-//             const { placement } = teamStandingRecords.find(
-//               (r) => r.TeamId === standing.TeamId
-//             );
-//             await standing.update({ placement });
-//           }
-
-//           // if last (45th) group stage match for the season, seed playoffs
-//           const finishedGroupStageMatches = await Match.findAll({
-//             raw: true,
-//             where: {
-//               season,
-//               matchWinnerTeamId: {
-//                 [Op.not]: null,
-//               },
-//               matchLoserTeamId: {
-//                 [Op.not]: null,
-//               },
-//               isPlayoffsMatch: false,
-//             },
-//           });
-
-//           if (finishedGroupStageMatches.length === 45) {
-//             // TODO: change seed playoffs to pull from db
-//             await seedPlayoffs(season, seasonTeams);
-//           }
-//         }
-
-//         // Create 2 MatchRoundTeamStats records
-//         const matchRoundTeamStatsRecords = await parseTeamStats(
-//           matchRoundResults,
-//           winningTeamId,
-//           losingTeamId,
-//           MatchRoundId
-//         );
-//         await MatchRoundTeamStats.bulkCreate(matchRoundTeamStatsRecords);
-
-//         // // Create 10 MatchRoundPlayerStats records
-//         const allPlayers = [...winningPlayers, ...losingPlayers];
-//         const matchRoundPlayerStatsRecords = await parsePlayerStats(
-//           allPlayers,
-//           MatchRoundId,
-//           matchRoundResults,
-//           blueTeamId,
-//           redTeamId,
-//           matchRoundTeamStatsRecords,
-//           timelineEvents,
-//           winningTeamId,
-//           losingTeamId,
-//           season
-//         );
-//         await MatchRoundPlayerStats.bulkCreate(matchRoundPlayerStatsRecords);
-
-//         res.status(201).end();
-//         break;
-//       case "UPDATE":
-//         //TODO: update player with set() and save() and TEST IT
-//         // await Player.create(req.body);
-//         // res.status(201).end();
-//         break;
-//     }
-//   } catch (error) {
-//     console.error("Error inside /api/match-rounds", error);
-//     res.status(404).send(error.message);
-//   }
-// }
+            // // Create 10 MatchRoundPlayerStats records
+            const allPlayers = [...winningPlayers, ...losingPlayers];
+            const matchRoundPlayerStatsRecords = await parsePlayerStats(
+              allPlayers,
+              matchRoundId,
+              matchRoundResults,
+              blueTeamId,
+              redTeamId,
+              matchRoundTeamStatsRecords,
+              timelineEvents,
+              winningTeamId,
+              losingTeamId,
+              seasonId,
+              seasonTeams
+            );
+            await prisma.matchRoundPlayerStats.createMany({
+              data: matchRoundPlayerStatsRecords,
+            });
+            res.status(201).end();
+          } catch (error) {
+            console.log(error);
+            res.status(424).send(error.message);
+          }
+        });
+        break;
+    }
+  } catch (error) {
+    console.error("Error inside /api/match-rounds", error);
+    res.status(404).send(error.message);
+  }
+}
