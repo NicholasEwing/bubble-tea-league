@@ -51,7 +51,7 @@ export const getStaticProps = async () => {
     return num.toString().padStart(2, "0");
   }
 
-  const seasonRows = [];
+  const seasonRows = {};
   try {
     for (const season of seasons) {
       const seasonRow = [];
@@ -87,7 +87,6 @@ export const getStaticProps = async () => {
             mr.winningTeamId
         );
 
-        // console.log("player stats", matchRoundPlayerStats);
         // filter down to stat records for this player and their team
         const playerMatches = matchRoundPlayerStats.filter(
           (mrps) =>
@@ -172,7 +171,12 @@ export const getStaticProps = async () => {
               100
           ) / 100;
 
-        const kda = playerMatches.reduce((kda, stats) => (kda += stats.kda), 0);
+        const kda =
+          (Math.round(
+            playerMatches.reduce((kda, stats) => (kda += stats.kda), 0)
+          ) *
+            100) /
+          100;
 
         const killParticipationPercent = percentageFormatter(
           (kills + assists) /
@@ -227,7 +231,7 @@ export const getStaticProps = async () => {
       }
 
       // each item in here represents a season
-      seasonRows.push(seasonRow);
+      seasonRows[season.id] = seasonRow;
     }
   } catch (error) {
     console.log("error", error);
@@ -244,7 +248,7 @@ export const getStaticProps = async () => {
 export default function PlayerStats({ seasons = null, seasonRows = null }) {
   const [activeSeason, setActiveSeason] = useState(seasons[0]?.id || 1);
 
-  const rowsToDisplay = seasonRows[activeSeason - 1] || [];
+  const rowsToDisplay = seasonRows[activeSeason] || [];
 
   const handleActiveSeason = (number) => {
     setActiveSeason(number);

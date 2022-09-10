@@ -204,7 +204,6 @@ export default async function handler(req, res) {
             };
 
             // Update a matchRound record with the winner
-            console.log("match id?", matchId);
             const { id: emptyMatchRoundId } =
               await prisma.matchRound.findFirstOrThrow({
                 where: {
