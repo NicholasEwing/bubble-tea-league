@@ -4,7 +4,6 @@ const {
   PHASE_DEVELOPMENT_SERVER,
   PHASE_PRODUCTION_BUILD,
 } = require("next/constants");
-const { default: fetch } = require("node-fetch");
 
 module.exports = async (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER; // npm run dev
