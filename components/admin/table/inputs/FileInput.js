@@ -21,6 +21,7 @@ export default function FileInput({
           saveFiles(e, id);
           uploadToClient(e);
         }}
+        accept="image/png"
       ></input>
     </>
   );

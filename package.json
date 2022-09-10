@@ -2,6 +2,9 @@
   "name": "bubble-tea-league",
   "version": "0.1.0",
   "private": true,
+  "bin": {
+    "aws-s3": "bin/aws-s3.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -16,6 +19,7 @@
     "@heroicons/react": "^1.0.6",
     "@next-auth/prisma-adapter": "^1.0.4",
     "@prisma/client": "^4.3.1",
+    "aws-cdk-lib": "^2.41.0",
     "dotenv": "^16.0.2",
     "formidable": "^2.0.1",
     "mysql2": "^2.3.3",
@@ -44,6 +48,8 @@
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
     "prisma": "^4.3.1",
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^3.1.8",
+    "aws-cdk": "2.27.0",
+    "aws-sdk": "^2.1152.0"
   }
 }
