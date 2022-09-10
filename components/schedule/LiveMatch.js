@@ -23,7 +23,7 @@ export default function LiveMatch({
 
   return (
     <div className="flex h-20 flex-col justify-center border-y border-l-4 border-y-[#252c32] border-l-[#de2f2f] bg-gradient-to-t from-[#0f1519] to-black bg-cover bg-no-repeat lg:h-28">
-      <Link href={`/match-results/${matchId}`}>
+      <Link href="https://www.twitch.tv/thebubbletealeague">
         <a
           href="#"
           className="relative mx-4 flex w-auto items-center text-white lg:mx-8"
