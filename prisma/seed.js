@@ -4,8 +4,6 @@ const prisma = new PrismaClient();
 const { btlPlayers } = require("../lib/hardcoded-btl-teams");
 const { getPlayerPUUID } = require("../lib/riot-games-api-helpers");
 
-console.log(process.env.RIOT_GAMES_API_KEY);
-
 async function main() {
   await prisma.match.deleteMany();
   await prisma.matchRound.deleteMany();
