@@ -22,7 +22,7 @@ export default function TeamLogo({
         alt="Team Logo"
         width={width}
         height={height}
-        onError={() => setSrc("/teams/null.png")}
+        onError={() => setSrc("/team-null.png")}
       />
     </div>
   );
