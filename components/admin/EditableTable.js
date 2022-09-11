@@ -168,12 +168,12 @@ export default function EditableTable({
 
   const uploadFiles = async (e) => {
     for (const fileObj of savedFiles) {
-      const { file } = fileObj;
+      const { file, id } = fileObj;
       const filename = encodeURIComponent(file.name);
       const fileType = encodeURIComponent(file.type);
 
       const res = await fetch(
-        `/api/${tableName}/upload?file=${filename}&fileType=${fileType}`
+        `/api/${tableName}/upload?file=${filename}&fileType=${fileType}&teamId=${id}`
       );
       const { url, fields } = await res.json();
       const formData = new FormData();
@@ -182,36 +182,27 @@ export default function EditableTable({
         formData.append(key, value);
       });
 
+      console.log("url", url);
+      console.log("form data", formData);
+
       const upload = await fetch(url, {
         method: "POST",
         body: formData,
+        mode: process.env.NODE_ENV !== "production" ? "no-cors" : undefined,
       });
 
-      if (upload.ok) {
-        console.log("Uploaded successfully!");
-      } else {
-        console.error("Upload failed.");
+      console.log("upload", upload);
+      if (process.env.NODE_ENV === "production") {
+        if (upload.ok) {
+          console.log("Uploaded successfully!");
+        } else {
+          console.error("Upload failed.");
+        }
+      } else if (upload.status === 0) {
+        console.log("Uploaded successfully from localhost.");
       }
     }
   };
-
-  // const uploadFiles = async () => {
-  //   for (const fileObj of savedFiles) {
-  //     const { file, id } = fileObj;
-  //     const body = new FormData();
-  //     body.append("file", file);
-  //     body.append("id", id);
-
-  //     const res = await fetch(`/api/${tableName}/upload`, {
-  //       method: "POST",
-  //       body,
-  //     });
-
-  //     if (!res.ok) {
-  //       throw new Error("Failed to upload files.");
-  //     }
-  //   }
-  // };
 
   function handleChanges(e, valueKey) {
     const newItemValue = e.target.value;
