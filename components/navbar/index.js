@@ -7,13 +7,13 @@ import DesktopNavLink from "./DesktopNavLink";
 import ProfileDropdown from "./ProfileDropdown";
 import btlLogo from "../../public/btl-logo.png";
 import MobileMenuButton from "./MobileMenuButton";
-import discordLogo from "../../public/discordLogo.png";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { PlusSmIcon } from "@heroicons/react/solid";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import MobileNavLink from "./MobileNavLink";
 import admins from "../../admins";
+import SignInButton from "./SignInButton";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -78,12 +78,15 @@ export default function Navbar() {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* todo, if not signed in, show sign in button */}
                 {/* if signed in, show profile dropdown */}
-                <ProfileDropdown
-                  session={session}
-                  status={status}
-                  discordLogo={discordLogo}
-                  classNames={classNames}
-                />
+                {status !== "authenticated" && !session ? (
+                  <SignInButton session={session} status={status} />
+                ) : (
+                  <ProfileDropdown
+                    session={session}
+                    status={status}
+                    classNames={classNames}
+                  />
+                )}
               </div>
             </div>
           </div>
