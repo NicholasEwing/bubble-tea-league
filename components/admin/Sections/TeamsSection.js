@@ -53,7 +53,8 @@ export default function TeamsSection({ items }) {
         <h1 className="text-xl font-semibold text-white">Teams</h1>
         <p className="mt-2 text-sm text-gray-400">
           A list of all the teams in the Bubble Tea League including their team
-          name, tricode, and season.
+          name, tricode, and season. Logos images be <code>.png</code> files
+          under 8MB.
         </p>
       </TextHeadingContainer>
       <EditableTable

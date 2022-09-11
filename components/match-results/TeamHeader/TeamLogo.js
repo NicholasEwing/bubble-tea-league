@@ -10,7 +10,7 @@ export default function TeamLogo({
   height = 36,
 }) {
   const [src, setSrc] = useState(
-    tbd ? "/team-tbd.png" : `/teams/${tricode}.png`
+    tbd ? "/team-tbd.png" : `${process.env.s3BucketUrl}/teams/${tricode}.png`
   );
 
   return (

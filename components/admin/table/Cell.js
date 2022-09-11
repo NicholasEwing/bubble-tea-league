@@ -131,7 +131,7 @@ export default function Cell({
       {inputType === "file" && (objectUrl?.url || originalValue) && (
         <span className="m-2 align-middle">
           <Image
-            src={objectUrl?.url || originalValue}
+            src={objectUrl?.url || `${process.env.s3BucketUrl}${originalValue}`}
             width={30}
             height={30}
             alt={inputName}
