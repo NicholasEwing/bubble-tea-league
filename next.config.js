@@ -23,6 +23,8 @@ module.exports = async (phase) => {
     reactStrictMode: true,
     env: {
       patchNumber,
+      s3BucketUrl:
+        "https://cdk-hnb659fds-assets-846395320883-us-east-1.s3.amazonaws.com",
     },
     images: {
       domains: [
@@ -32,6 +34,7 @@ module.exports = async (phase) => {
         "www.fillmurray.com",
         "localhost",
         "am-a.akamaihd.net",
+        "cdk-hnb659fds-assets-846395320883-us-east-1.s3.amazonaws.com",
       ],
       formats: ["image/avif", "image/webp"],
     },
