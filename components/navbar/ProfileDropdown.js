@@ -2,54 +2,22 @@ import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-import { signIn, signOut } from "next-auth/react";
 
-export default function ProfileDropdown({
-  session,
-  status,
-  discordLogo,
-  classNames,
-}) {
+export default function ProfileDropdown({ session, status, classNames }) {
   return (
     <Menu as="div" className="relative ml-3">
       <div>
-        <Menu.Button
-          className={
-            status !== "authenticated" && !session
-              ? "relative flex h-12 w-28 items-center justify-between rounded-md border border-transparent bg-indigo-500 px-2 py-1 text-sm font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-              : "flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-          }
-        >
-          {status !== "authenticated" && !session ? (
-            <a
-              onClick={(e) => {
-                e.preventDefault();
-                signIn("discord", null, { prompt: "none" });
-              }}
-              className="flex items-center"
-            >
-              <div className="mx-1 grid h-10 w-8 place-items-center">
-                <Image
-                  src={discordLogo}
-                  alt="Discord Logo"
-                  width="30"
-                  height="33.75"
-                />
-              </div>
-              <p className="mx-1 mb-0.5 text-sm">Sign In</p>
-            </a>
-          ) : (
-            <>
-              <span className="sr-only">Open user menu</span>
-              <Image
-                className="h-8 w-8 rounded-full"
-                src={session?.user?.image}
-                alt="Profile icon"
-                width="30"
-                height="30"
-              />
-            </>
-          )}
+        <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+          <>
+            <span className="sr-only">Open user menu</span>
+            <Image
+              className="h-8 w-8 rounded-full"
+              src={session?.user?.image}
+              alt="Profile icon"
+              width="30"
+              height="30"
+            />
+          </>
         </Menu.Button>
       </div>
       <Transition
