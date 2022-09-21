@@ -117,15 +117,14 @@ export default function Home({ schedule = null, teams = null }) {
       {futureSchedule.length > 0 && (
         <ScheduleBanner schedule={futureSchedule} teams={teams} />
       )}
-      {featuredMatch && (
-        <HomeContent
-          teamOne={teams.find((t) => t.id === featuredMatch?.teamOneId)}
-          teamTwo={teams.find((t) => t.id === featuredMatch?.teamTwoId)}
-          bestOf={featuredMatch?.isPlayoffsMatch ? "Bo3" : "Bo1"}
-          scheduledTime={featuredMatch?.scheduledTime}
-          season={featuredMatch?.season}
-        />
-      )}
+      <HomeContent
+        teamOne={teams.find((t) => t.id === featuredMatch?.teamOneId)}
+        teamTwo={teams.find((t) => t.id === featuredMatch?.teamTwoId)}
+        bestOf={featuredMatch?.isPlayoffsMatch ? "Bo3" : "Bo1"}
+        scheduledTime={featuredMatch?.scheduledTime}
+        season={featuredMatch?.season}
+        featuredMatch={featuredMatch}
+      />
       <WhatIsBtl />
       {pastSchedule.length > 0 && (
         <SectionContainer>
