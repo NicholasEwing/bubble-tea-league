@@ -1,7 +1,7 @@
 [Click here to try a live demo!](https://bubble-tea-league.vercel.app/)
 
 **Some notable pages (with placeholder data):**
-- [Match results page](https://bubble-tea-league-4temqtag2-nicholasewing.vercel.app/match-results/11)
+- [Match results page](https://bubble-tea-league-4temqtag2-nicholasewing.vercel.app/match-results/11) (some info missing due to limits of development key!)
 
 Right now this app is not very functional since a Season of BTL hasn't kicked off. We'll have a season kicking off in Jan / Feb of 2023 which will show more functionality.
 
