@@ -2,6 +2,7 @@ import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 export default function ProfileDropdown({ session, status, classNames }) {
   return (
