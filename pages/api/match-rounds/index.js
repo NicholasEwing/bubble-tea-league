@@ -20,11 +20,6 @@ const { prisma } = require("../../../prisma/db");
 
 export default async function handler(req, res) {
   try {
-    if (process.env.NODE_ENV === "production") {
-      const session = await unstable_getServerSession(req, res, authOptions);
-      const userIsAdmin = admins.includes(session?.user?.email);
-      if (!userIsAdmin) res.status(401).end();
-    }
     switch (req.method) {
       case "POST":
         // where a lot of the magic happens
