@@ -1,12 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Account {
@@ -26,6 +25,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -34,6 +34,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
@@ -103,6 +105,7 @@ model MatchRoundPlayerStats {
   playerId             Int
 
   @@index([matchRoundId, playerId])
+  @@index([playerId])
 }
 
 model MatchRoundTeamStats {
@@ -122,6 +125,7 @@ model MatchRoundTeamStats {
   teamId              Int
 
   @@index([matchRoundId, teamId])
+  @@index([teamId])
 }
 
 model MatchRound {
@@ -143,7 +147,10 @@ model MatchRound {
   match                 Match                   @relation(fields: [matchId], references: [id])
   matchId               Int
 
-  @@index([winningTeamId, redTeamId, blueTeamId, matchId])
+  @@index([winningTeamId])
+  @@index([redTeamId])
+  @@index([blueTeamId])
+  @@index([matchId])
 }
 
 model Match {
@@ -167,7 +174,11 @@ model Match {
   teamTwoId         Int?
   MatchRound        MatchRound[]
 
-  @@index([matchWinnerTeamId, matchLoserTeamId, teamOneId, teamTwoId])
+  @@index([seasonId])
+  @@index([matchWinnerTeamId])
+  @@index([matchLoserTeamId])
+  @@index([teamOneId])
+  @@index([teamTwoId])
 }
 
 model PlayerTeamHistory {
@@ -179,7 +190,7 @@ model PlayerTeamHistory {
   playerId Int
 
   @@unique([teamId, playerId])
-  @@index([teamId, playerId])
+  @@index([playerId, teamId])
 }
 
 model Player {
