@@ -10,15 +10,17 @@ export default function HomeContent({
   featuredMatch,
 }) {
   return (
-    <div className="HomeLiveBanner relative bg-home-hero bg-cover py-10">
-      <a
-        href={
-          featuredMatch
-            ? "https://www.twitch.tv/thebubbletealeague"
-            : "https://www.youtube.com/channel/UCp9thtIHYrohmAW3qzQCLfQ"
-        }
-        className="invisible-overlay-button z-10 h-full w-full cursor-pointer"
-      >
+    <a
+      target="_blank"
+      rel="noopener noreferrer"
+      href={
+        featuredMatch
+          ? "https://www.twitch.tv/thebubbletealeague"
+          : "https://www.youtube.com/channel/UCp9thtIHYrohmAW3qzQCLfQ"
+      }
+      className="invisible-overlay-button z-10 h-full w-full cursor-pointer"
+    >
+      <div className="HomeLiveBanner relative bg-home-hero bg-cover pt-8">
         <div className="header mb-5 flex flex-row items-center justify-center">
           <TeamLogo
             tbd={!teamOne}
@@ -64,15 +66,14 @@ export default function HomeContent({
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
+              allowFullScreen
             ></iframe>
           )}
-
-          <div className="watch-live absolute bottom-5 left-1/2 -translate-x-1/2 rounded-3xl bg-[#de2f2f] py-3 px-6 font-medium uppercase tracking-widest text-white">
-            {featuredMatch ? "Watch Live" : "Watch VODs"}
-          </div>
         </div>
-      </a>
-    </div>
+      </div>
+      <div className="watch-live my-6 mx-auto w-56 rounded-3xl bg-[#de2f2f] py-3 px-6 text-center font-medium uppercase tracking-widest text-white">
+        {featuredMatch ? "Watch Live" : "Watch VODs"}
+      </div>
+    </a>
   );
 }
