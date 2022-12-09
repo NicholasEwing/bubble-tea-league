@@ -24,7 +24,7 @@ export default function DropdownInput({
 
   return (
     <select
-      className="text-black"
+      className="mr-4 w-auto text-black"
       name={inputName}
       onChange={(e) => {
         handleChanges(e, inputName);
