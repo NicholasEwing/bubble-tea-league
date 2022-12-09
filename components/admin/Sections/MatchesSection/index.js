@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/solid";
+import React, { useEffect, useState } from "react";
 import { findTeamName } from "../../../../lib/utils";
 import EditableTable from "../../EditableTable";
 import SectionContainer from "../../table/SectionContainer";
 import TextHeadingContainer from "../../TextHeadingContainer";
-import CopyIcon from "./CopyIcon";
+import CopyButton from "./CopyButton";
 
 export default function MatchesSection({
   items,
@@ -20,24 +21,13 @@ export default function MatchesSection({
     {
       valueKey: "id",
       name: "Tournament Codes",
-      small: true,
       needsForeignEditState: true,
       customFormatter: ({ id, foreignEditState }) => {
-        const tournamentCodes = foreignEditState
+        const tournamentCode = foreignEditState
           .filter((fes) => fes.matchId === id)
           .map((i) => i.tournamentCode);
 
-        return (
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(tournamentCodes);
-            }}
-            className="inline-flex cursor-pointer select-none items-center rounded-full border border-gray-500 px-2.5 py-0.5"
-          >
-            <CopyIcon />
-            Copy
-          </button>
-        );
+        return <CopyButton tournamentCode={tournamentCode} />;
       },
     },
     {
