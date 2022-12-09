@@ -10,7 +10,7 @@ export default function Row({
   return (
     <tr className={selectedItems.includes(item) ? "bg-gray-700" : undefined}>
       {!isPublic && (
-        <td className="sm relative w-6 bg-gray-800 px-6">
+        <td className="sm relative w-6 px-6">
           {selectedItems.includes(item) && (
             <div className="absolute inset-y-0 left-0 w-0.5 bg-teal-accent" />
           )}
