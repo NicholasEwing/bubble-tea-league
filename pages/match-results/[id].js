@@ -20,7 +20,6 @@ export const getStaticPaths = async () => {
     return {
       paths: [],
       fallback: false,
-      revalidate: 10,
     };
   }
 
@@ -207,6 +206,7 @@ export const getStaticProps = async (context) => {
       matchRoundTeamStats: JSON.parse(JSON.stringify(matchRoundTeamStats)),
       matchRoundPlayerStats: JSON.parse(JSON.stringify(matchRoundPlayerStats)),
     },
+    revalidate: 10,
   };
 };
 
