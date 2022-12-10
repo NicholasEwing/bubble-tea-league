@@ -11,7 +11,7 @@ import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
 
 import admins from "../admins";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const { prisma } = require("../prisma/db");
 
   const provider = await prisma.provider.findMany();
@@ -34,7 +34,6 @@ export const getStaticProps = async () => {
       matchRounds: JSON.parse(JSON.stringify(matchRounds)),
       playerTeamHistories: JSON.parse(JSON.stringify(playerTeamHistories)),
     },
-    revalidate: 10,
   };
 };
 
