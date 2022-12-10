@@ -1,4 +1,58 @@
 -- CreateTable
+CREATE TABLE `Account` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `type` VARCHAR(191) NOT NULL,
+    `provider` VARCHAR(191) NOT NULL,
+    `providerAccountId` VARCHAR(191) NOT NULL,
+    `refresh_token` TEXT NULL,
+    `access_token` TEXT NULL,
+    `expires_at` INTEGER NULL,
+    `token_type` VARCHAR(191) NULL,
+    `scope` VARCHAR(191) NULL,
+    `id_token` TEXT NULL,
+    `session_state` VARCHAR(191) NULL,
+
+    INDEX `Account_userId_idx`(`userId`),
+    UNIQUE INDEX `Account_provider_providerAccountId_key`(`provider`, `providerAccountId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Session` (
+    `id` VARCHAR(191) NOT NULL,
+    `sessionToken` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `expires` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Session_sessionToken_key`(`sessionToken`),
+    INDEX `Session_userId_idx`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `User` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NULL,
+    `email` VARCHAR(191) NULL,
+    `emailVerified` DATETIME(3) NULL,
+    `image` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `VerificationToken` (
+    `identifier` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `expires` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `VerificationToken_token_key`(`token`),
+    UNIQUE INDEX `VerificationToken_identifier_token_key`(`identifier`, `token`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `MatchRoundPlayerStats` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `kills` INTEGER UNSIGNED NOT NULL,
@@ -9,7 +63,7 @@ CREATE TABLE `MatchRoundPlayerStats` (
     `visionScore` INTEGER UNSIGNED NOT NULL,
     `firstBlood` BOOLEAN NOT NULL,
     `totalDmgToChamps` INTEGER UNSIGNED NOT NULL,
-    `kda` INTEGER UNSIGNED NOT NULL,
+    `kda` DOUBLE NOT NULL,
     `championName` VARCHAR(255) NOT NULL,
     `championTransform` INTEGER UNSIGNED NOT NULL DEFAULT 0,
     `item0` INTEGER UNSIGNED NOT NULL,
@@ -28,8 +82,8 @@ CREATE TABLE `MatchRoundPlayerStats` (
     `primaryRunePerks` VARCHAR(255) NOT NULL,
     `secondaryRunePath` INTEGER UNSIGNED NOT NULL,
     `secondaryRunePerks` VARCHAR(255) NOT NULL,
-    `killParticipation` VARCHAR(255) NOT NULL,
-    `teamDamagePercentage` VARCHAR(255) NOT NULL,
+    `killParticipation` INTEGER UNSIGNED NOT NULL,
+    `teamDamagePercentage` INTEGER UNSIGNED NOT NULL,
     `wardsPlaced` INTEGER UNSIGNED NOT NULL,
     `wardTakedowns` INTEGER UNSIGNED NOT NULL,
     `summonerName` VARCHAR(255) NOT NULL,
@@ -46,6 +100,7 @@ CREATE TABLE `MatchRoundPlayerStats` (
     `playerId` INTEGER NOT NULL,
 
     INDEX `MatchRoundPlayerStats_matchRoundId_playerId_idx`(`matchRoundId`, `playerId`),
+    INDEX `MatchRoundPlayerStats_playerId_idx`(`playerId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -65,6 +120,7 @@ CREATE TABLE `MatchRoundTeamStats` (
     `teamId` INTEGER NOT NULL,
 
     INDEX `MatchRoundTeamStats_matchRoundId_teamId_idx`(`matchRoundId`, `teamId`),
+    INDEX `MatchRoundTeamStats_teamId_idx`(`teamId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -82,7 +138,11 @@ CREATE TABLE `MatchRound` (
     `blueTeamId` INTEGER NULL,
     `matchId` INTEGER NOT NULL,
 
-    INDEX `MatchRound_winningTeamId_redTeamId_blueTeamId_idx`(`winningTeamId`, `redTeamId`, `blueTeamId`),
+    UNIQUE INDEX `MatchRound_tournamentCode_key`(`tournamentCode`),
+    INDEX `MatchRound_winningTeamId_idx`(`winningTeamId`),
+    INDEX `MatchRound_redTeamId_idx`(`redTeamId`),
+    INDEX `MatchRound_blueTeamId_idx`(`blueTeamId`),
+    INDEX `MatchRound_matchId_idx`(`matchId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -103,17 +163,23 @@ CREATE TABLE `Match` (
     `teamTwoId` INTEGER NULL,
 
     UNIQUE INDEX `vodLink`(`vodLink`),
-    INDEX `Match_matchWinnerTeamId_matchLoserTeamId_teamOneId_teamTwoId_idx`(`matchWinnerTeamId`, `matchLoserTeamId`, `teamOneId`, `teamTwoId`),
+    INDEX `Match_seasonId_idx`(`seasonId`),
+    INDEX `Match_matchWinnerTeamId_idx`(`matchWinnerTeamId`),
+    INDEX `Match_matchLoserTeamId_idx`(`matchLoserTeamId`),
+    INDEX `Match_teamOneId_idx`(`teamOneId`),
+    INDEX `Match_teamTwoId_idx`(`teamTwoId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `PlayerTeamHistory` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `role` VARCHAR(255) NULL DEFAULT 'Fill',
-    `playerId` INTEGER NULL,
+    `role` VARCHAR(255) NOT NULL DEFAULT 'Fill',
+    `teamId` INTEGER NOT NULL,
+    `playerId` INTEGER NOT NULL,
 
-    INDEX `PlayerTeamHistory_playerId_idx`(`playerId`),
+    INDEX `PlayerTeamHistory_playerId_teamId_idx`(`playerId`, `teamId`),
+    UNIQUE INDEX `PlayerTeamHistory_teamId_playerId_key`(`teamId`, `playerId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

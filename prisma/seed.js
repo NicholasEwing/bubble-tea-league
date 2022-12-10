@@ -17,14 +17,14 @@ async function main() {
   await prisma.provider.deleteMany();
 
   // todo: probably rate limit this in the future...
-  for (const player of btlPlayers) {
-    const PUUID = await getPlayerPUUID(player.summonerName);
-    player.PUUID = PUUID;
-  }
+  // for (const player of btlPlayers) {
+  //   const PUUID = await getPlayerPUUID(player.summonerName);
+  //   player.PUUID = PUUID;
+  // }
 
-  await prisma.player.createMany({
-    data: btlPlayers,
-  });
+  // await prisma.player.createMany({
+  //   data: btlPlayers,
+  // });
 }
 
 main()
