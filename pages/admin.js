@@ -34,6 +34,7 @@ export const getStaticProps = async () => {
       matchRounds: JSON.parse(JSON.stringify(matchRounds)),
       playerTeamHistories: JSON.parse(JSON.stringify(playerTeamHistories)),
     },
+    revalidate: 10,
   };
 };
 
