@@ -1,0 +1,275 @@
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  EventHandler,
+  useEffect,
+  useState,
+} from "react";
+import Form from "../../modal/Form";
+import ModalTextInput from "../../modal/ModalTextInput";
+import SubmitSuccess from "../../modal/SubmitSuccess";
+import ConfirmButton from "../../modal/ConfirmButton";
+import SubmitFail from "../../modal/SubmitFail";
+import LoadingSpinner from "../../modal/LoadingSpinner";
+import { useRefreshContext } from "../context/refreshData";
+import { Player } from "@prisma/client";
+
+interface PlayersModalProps {
+  players: Player[];
+  closeModal: React.MouseEventHandler<HTMLButtonElement>;
+  isFreeAgent: boolean;
+}
+
+export default function PlayersModal({
+  players,
+  closeModal,
+  isFreeAgent = false,
+}: PlayersModalProps) {
+  const refreshData = useRefreshContext();
+
+  const [playerValues, setPlayerValues] = useState({
+    PUUID: "",
+    summonerName: "",
+    discordName: "",
+    firstName: "",
+  });
+
+  const [canSubmit, setCanSubmit] = useState(false);
+
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Something went wrong.");
+  const [loading, setLoading] = useState(false);
+
+  const [discordNameState, setDiscordNameState] = useState("");
+  const [discordNameValid, setDiscordNameValid] = useState(false);
+  const [discordNameWarning, setDiscordNameWarning] = useState(
+    "❌ Discord name is invalid!"
+  );
+
+  const [summonerNameState, setSummonerNameState] = useState("");
+  const [summonerNameValid, setSummonerNameValid] = useState(false);
+  const [summonerNameWarning, setSummonerNameWarning] = useState(
+    "❌ Summoner name not found!"
+  );
+  const [riotApiLoading, setRiotApiLoading] = useState(false);
+
+  useEffect(() => {
+    return () => setFormSubmitted(false);
+  }, []);
+
+  // TODO: make this work on prod
+  const checkPlayerPUUID = async (summonerName: string) => {
+    // do some stuff to check puuid from server here
+    const res = await fetch(`/api/check-puuid/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ summonerName }),
+    });
+
+    const { PUUID } = await res.json();
+    return PUUID;
+  };
+
+  const summonerNameBlurHandler = async (e: ChangeEvent) => {
+    const summonerName = (e.target as HTMLInputElement).value;
+
+    setSummonerNameState(summonerName);
+
+    const summonerNameAlreadyExists =
+      players.filter(
+        (p) =>
+          p.summonerName.toUpperCase().trim() ===
+          summonerName.toUpperCase().trim()
+      ).length > 0;
+
+    const isValid = /^.{3,16}$/gim.test(summonerName);
+
+    if (summonerNameAlreadyExists) {
+      setSummonerNameValid(false);
+      setSummonerNameWarning("❌ Summoner name already exists!");
+      setCanSubmit(false);
+    } else if (!isValid) {
+      setSummonerNameValid(false);
+      setSummonerNameWarning("❌ Summoner name not valid!");
+      setCanSubmit(false);
+    } else if (isValid) {
+      setRiotApiLoading(true);
+      const PUUID = await checkPlayerPUUID(summonerName);
+      const puuidAlreadyExists =
+        players.filter((p) => p.PUUID === PUUID).length > 0;
+
+      if (puuidAlreadyExists) {
+        setSummonerNameValid(false);
+        setSummonerNameWarning(
+          "❌ Player already exists under a different summoner name!"
+        );
+        setCanSubmit(false);
+      } else if (PUUID?.length > 0) {
+        setRiotApiLoading(false);
+        setSummonerNameValid(true);
+        setPlayerValues({ ...playerValues, summonerName, PUUID });
+        setCanSubmit(true);
+      } else {
+        setRiotApiLoading(false);
+        setSummonerNameValid(false);
+        setSummonerNameWarning(
+          "❌ Summoner name not found from Riot Games API!"
+        );
+        setCanSubmit(false);
+      }
+    } else {
+      setSummonerNameValid(false);
+      setCanSubmit(false);
+      setSummonerNameWarning("❌ Something went wrong! Please try again.");
+    }
+  };
+
+  const discordNameBlurHandler = (e: ChangeEvent) => {
+    const discordName = (e.target as HTMLInputElement).value;
+    setDiscordNameState(discordName);
+    const isValid = /^.{3,32}#[0-9]{4}$/gim.test(discordName);
+
+    const discordNameAlreadyExists =
+      players.filter(
+        (p) =>
+          p.discordName.toUpperCase().trim() ===
+          discordName.toUpperCase().trim()
+      ).length > 0;
+
+    if (discordNameAlreadyExists) {
+      setDiscordNameValid(false);
+      setDiscordNameWarning("❌ Discord name already exists!");
+      setCanSubmit(false);
+    } else if (isValid) {
+      setDiscordNameValid(true);
+      setPlayerValues({ ...playerValues, discordName });
+      setCanSubmit(true);
+    } else {
+      setDiscordNameValid(false);
+    }
+  };
+
+  const handleFirstNameChange = (e: ChangeEvent) =>
+    setPlayerValues({
+      ...playerValues,
+      firstName: (e.target as HTMLInputElement).value,
+    });
+
+  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      let res = await fetch("/api/players", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...playerValues, isFreeAgent }),
+      });
+
+      if (res.ok) {
+        setFormSubmitted(true);
+        refreshData();
+      } else {
+        const resJson = await res.json();
+        console.log("json", resJson);
+        throw new Error(resJson.message);
+      }
+    } catch (error: any) {
+      setFormSubmitted(false);
+      if (error.message) {
+        setErrorMessage(error.message);
+      }
+      setFormError(true);
+    }
+
+    setLoading(false);
+  };
+
+  if (formSubmitted) {
+    return <SubmitSuccess itemName="player" closeModal={closeModal} />;
+  } else if (loading) {
+    return <LoadingSpinner />;
+  } else if (formError) {
+    return (
+      <SubmitFail
+        error={errorMessage}
+        itemName="player"
+        closeModal={closeModal}
+      />
+    );
+  } else {
+    return (
+      <Form>
+        <div>
+          <h3 className="text-lg font-medium leading-6 text-white">
+            Create a New Player
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm">
+            Add a new player to the Bubble Tea League.
+          </p>
+        </div>
+        <div className="space-y-6 sm:space-y-5">
+          <ModalTextInput
+            label="Summoner Name"
+            inputName="summonerName"
+            required
+            blurHandler={summonerNameBlurHandler}
+          >
+            {summonerNameState.length > 0 && riotApiLoading && (
+              <span className="mt-4 flex">
+                <LoadingSpinner />
+                <p className="text-sm text-gray-300">
+                  Checking Riot Games API...
+                </p>
+              </span>
+            )}
+            {summonerNameState.length > 0 &&
+              !riotApiLoading &&
+              (summonerNameValid ? (
+                <p className="mt-4 text-sm text-green-300">
+                  ✓ Summoner name found from Riot Games API!
+                </p>
+              ) : (
+                <p className="mt-4 text-sm text-red-300">
+                  {summonerNameWarning}
+                </p>
+              ))}
+          </ModalTextInput>
+          <ModalTextInput
+            label="Discord Handle"
+            inputName="discordName"
+            blurHandler={discordNameBlurHandler}
+          >
+            {discordNameState.length > 0 &&
+              (discordNameValid ? (
+                <p className="mt-4 text-sm text-green-300">
+                  ✓ Discord name is valid!
+                </p>
+              ) : (
+                <p className="mt-4 text-sm text-red-300">
+                  {discordNameWarning}
+                </p>
+              ))}
+          </ModalTextInput>
+          <ModalTextInput
+            label="First Name"
+            inputName="firstName"
+            handleOnChange={handleFirstNameChange}
+          />
+          <ConfirmButton
+            closeModal={closeModal}
+            handleSubmit={handleSubmit}
+            canSubmit={canSubmit}
+            dtopText="Create a new player"
+            mobileText="Create player"
+          />
+        </div>
+      </Form>
+    );
+  }
+}

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 const RefreshContext = createContext();
 

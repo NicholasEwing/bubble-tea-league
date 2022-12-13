@@ -1,5 +1,4 @@
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PlayerAbilities from "./PlayerAbilities";
 import PlayerSkillOrder from "./PlayerSkillOrder";
 
@@ -63,8 +62,8 @@ export default function Abilities({
 
   return (
     <section className="flex min-h-[600px]">
-      <div className="flex-1 hidden xl:flex">
-        <div className="flex flex-col p-8 border-b border-b-[#252c32] border-r border-[#252c32] flex-1">
+      <div className="hidden flex-1 xl:flex">
+        <div className="flex flex-1 flex-col border-b border-r border-[#252c32] border-b-[#252c32] p-8">
           {!isLoading && primaryChampInfo && (
             <>
               <PlayerAbilities
@@ -80,7 +79,7 @@ export default function Abilities({
             </>
           )}
         </div>
-        <div className="flex-col p-8 border-b border-b-[#252c32] flex-1">
+        <div className="flex-1 flex-col border-b border-b-[#252c32] p-8">
           {!isLoading && secondaryChampInfo && (
             <>
               <PlayerAbilities
@@ -96,7 +95,7 @@ export default function Abilities({
         </div>
       </div>
       <div className="flex-1 xl:hidden">
-        <div className="flex flex-col p-8 border-b border-b-[#252c32]">
+        <div className="flex flex-col border-b border-b-[#252c32] p-8">
           {!isLoading && focusedChampInfo && (
             <>
               <PlayerAbilities
