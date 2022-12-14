@@ -55,7 +55,8 @@ export default function Dashboard({
   }, [status, isPlayer, isAdmin, router]);
 
   useEffect(() => {
-    if (status === "unauthenticated") signIn("discord");
+    if (status === "unauthenticated")
+      signIn("discord", undefined, { prompt: "none" });
   }, [status]);
 
   if (isPlayer || isAdmin)

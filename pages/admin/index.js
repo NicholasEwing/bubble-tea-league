@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import { RefreshWrapper } from "../components/admin/context/refreshData";
-import ProviderSection from "../components/admin/Sections/ProviderSection";
-import SeasonsSection from "../components/admin/Sections/SeasonsSection";
-import TeamsSection from "../components/admin/Sections/TeamsSection";
-import MatchesSection from "../components/admin/Sections/MatchesSection";
-import PlayersSection from "../components/admin/Sections/PlayersSection";
-import FreeAgentsSection from "../components/admin/Sections/FreeAgentsSection";
+import { RefreshWrapper } from "../../components/admin/context/refreshData";
+import ProviderSection from "../../components/admin/Sections/ProviderSection";
+import SeasonsSection from "../../components/admin/Sections/SeasonsSection";
+import TeamsSection from "../../components/admin/Sections/TeamsSection";
+import MatchesSection from "../../components/admin/Sections/MatchesSection";
+import PlayersSection from "../../components/admin/Sections/PlayersSection";
+import FreeAgentsSection from "../../components/admin/Sections/FreeAgentsSection";
 
-import admins from "../admins";
+import admins from "../../admins";
 
 export const getServerSideProps = async () => {
-  const { prisma } = require("../prisma/db");
+  const { prisma } = require("../../prisma/db");
 
   const provider = await prisma.provider.findMany();
   const seasons = await prisma.season.findMany();
@@ -57,7 +57,8 @@ export default function Dashboard({
   }, [status, isAdmin, router]);
 
   useEffect(() => {
-    if (status === "unauthenticated") signIn("discord");
+    if (status === "unauthenticated")
+      signIn("discord", undefined, { prompt: "none" });
   }, [status]);
 
   if (!isAdmin && status === "authenticated")
