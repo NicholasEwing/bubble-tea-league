@@ -28,9 +28,9 @@ export default function HomeContent({
           ? "https://www.twitch.tv/thebubbletealeague"
           : "https://www.youtube.com/channel/UCp9thtIHYrohmAW3qzQCLfQ"
       }
-      className="invisible-overlay-button z-10 h-full w-full cursor-pointer"
+      className="invisible-overlay-button h-full w-full cursor-pointer"
     >
-      <div className="HomeLiveBanner relative bg-home-hero bg-cover pt-8">
+      <div className="relative bg-home-hero bg-cover bg-no-repeat py-8">
         <div className="header mb-5 flex flex-row items-center justify-center">
           <TeamLogo
             tbd={!teamOne}
@@ -78,9 +78,9 @@ export default function HomeContent({
             ></iframe>
           )}
         </div>
-      </div>
-      <div className="watch-live my-6 mx-auto w-56 rounded-3xl bg-[#de2f2f] py-3 px-6 text-center font-medium uppercase tracking-widest text-white">
-        {featuredMatch ? "Watch Live" : "Watch VODs"}
+        <div className="watch-live my-6 mx-auto w-56 rounded-3xl bg-[#de2f2f] py-3 px-6 text-center font-medium uppercase tracking-widest text-white">
+          {featuredMatch ? "Watch Live" : "Watch VODs"}
+        </div>
       </div>
     </a>
   );
