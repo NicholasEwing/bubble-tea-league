@@ -22,10 +22,10 @@ export const getStaticProps = async () => {
   teams = teams.map((team) => {
     // return team object WITH new info
     const groupStageWins = groupStageMatches.filter(
-      (m) => m.matchWinnerTeamId === team.id && m.season === team.season
+      (m) => m.matchWinnerTeamId === team.id && m.seasonId === team.seasonId
     );
     const groupStageLosses = groupStageMatches.filter(
-      (m) => m.matchLoserTeamId === team.id && m.season === team.season
+      (m) => m.matchLoserTeamId === team.id && m.seasonId === team.seasonId
     );
     return { ...team, groupStageWins, groupStageLosses };
   });
