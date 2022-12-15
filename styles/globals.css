@@ -22,3 +22,7 @@ a {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+textarea:focus {
+  box-shadow: none;
+}

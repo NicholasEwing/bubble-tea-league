@@ -6,8 +6,18 @@ export default function Document() {
       <Head />
       <body>
         <Main />
-        <div id="modal" />
         <NextScript />
+        <div id="modal" />
+        <div
+          id="portal"
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            zIndex: 9999,
+          }}
+        />
+        {/* "position: fixed; left: 0; top: 0; z-index: 9999;" */}
       </body>
     </Html>
   );
