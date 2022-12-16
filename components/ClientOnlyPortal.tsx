@@ -2,7 +2,7 @@ import { useRef, useEffect, useState, ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 interface ClientOnlyPortalProps {
-  children: ReactNode[];
+  children: ReactNode[] | ReactNode;
   selector: string;
 }
 
@@ -20,5 +20,7 @@ export default function ClientOnlyPortal({
 
   if (ref) {
     return mounted ? createPortal(children, ref.current!) : null;
+  } else {
+    return null;
   }
 }

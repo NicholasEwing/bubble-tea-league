@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../modal";
 import PlayersModal from "../AdminModals/PlayersModal";
 import AddButton from "../table/AddButton";
@@ -14,6 +14,8 @@ import {
   GridColumnIcon,
   Item,
 } from "@glideapps/glide-data-grid";
+import useAPIError from "../../hooks/useAPIError";
+
 const Grid = dynamic(
   () => {
     return import("../../GlideGrid/index");
@@ -34,6 +36,8 @@ export default function FreeAgentsSection({
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
+
+  const { error, addError } = useAPIError();
 
   // Grid columns may also provide icon, overlayIcon, menu, style, and theme overrides
   const columns: GridColumn[] = [
@@ -56,7 +60,7 @@ export default function FreeAgentsSection({
     },
   ];
 
-  const onCellEdited = ([col, row]: Item, newValue: EditableGridCell) => {
+  const onCellEdited = async ([col, row]: Item, newValue: EditableGridCell) => {
     if (newValue.kind !== GridCellKind.Text) return;
     const data = freeAgents[row];
 
@@ -66,6 +70,23 @@ export default function FreeAgentsSection({
         break;
       default:
         break;
+    }
+
+    try {
+      const res = await fetch("/api/players", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ players: [{ ...data }] }),
+      });
+
+      if (!res.ok) {
+        const resJson = await res.json();
+        throw new Error(resJson.message);
+      }
+    } catch (error: any) {
+      addError(error.message, "");
     }
   };
 

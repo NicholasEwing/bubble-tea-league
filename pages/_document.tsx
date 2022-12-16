@@ -17,7 +17,6 @@ export default function Document() {
             zIndex: 9999,
           }}
         />
-        {/* "position: fixed; left: 0; top: 0; z-index: 9999;" */}
       </body>
     </Html>
   );
