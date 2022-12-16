@@ -1,6 +1,6 @@
 interface LoadingSpinnerProps {
-  wheelColor: string;
-  wheelAccent: string;
+  wheelColor?: string;
+  wheelAccent?: string;
 }
 
 export default function LoadingSpinner({
