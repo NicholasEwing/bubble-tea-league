@@ -14,7 +14,7 @@ interface GridProps {
   getData: (cell: Item) => GridCell;
   data: any[];
   columns: GridColumn[];
-  onCellEdited: (cell: Item, newValue: EditableGridCell) => void;
+  onCellEdited?: (cell: Item, newValue: EditableGridCell) => void;
 }
 
 export default function Grid({
