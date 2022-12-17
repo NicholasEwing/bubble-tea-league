@@ -82,11 +82,16 @@ export default function FreeAgentsSection({
       });
 
       if (!res.ok) {
-        const resJson = await res.json();
-        throw new Error(resJson.message);
+        throw new Error(res.statusText);
       }
     } catch (error: any) {
-      addError(error.message, "");
+      if ("message" in error) {
+        addError(error.message);
+      } else {
+        addError(
+          "Something went wrong when updating Free Agents. Please check your changes."
+        );
+      }
     }
   };
 
@@ -100,6 +105,7 @@ export default function FreeAgentsSection({
         allowOverlay: false,
         readonly: true,
         displayData: data.summonerName,
+        lastUpdated: data.glideUpdatedAt,
       };
     } else if (col === 1) {
       return {

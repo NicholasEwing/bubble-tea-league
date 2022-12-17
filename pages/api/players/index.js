@@ -46,7 +46,7 @@ export default async function handler(req, res) {
 
             await prisma.player.update({
               where: {
-                idz,
+                id,
               },
               data: {
                 summonerName,
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
           }
           res.status(200).end();
         } catch (error) {
-          res.status(500).send({ message: "yoooo" });
+          res.status(500).send(error);
         }
         break;
       case "DELETE":

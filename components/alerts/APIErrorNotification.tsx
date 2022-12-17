@@ -19,8 +19,9 @@ export default function APIErrorNotification() {
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-red-800">
-                  {error?.status && `${error?.status} - `}
-                  {error.message}
+                  {error.message
+                    ? `Error: ${error.message}`
+                    : `Something went wrong! Please try again.`}
                 </p>
               </div>
               <div className="ml-auto pl-3">

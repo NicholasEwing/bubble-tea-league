@@ -1,8 +1,8 @@
 import { useState, useCallback, ReactNode, createContext } from "react";
 
 type APIErrorContext = {
-  error: { message?: string; status?: string };
-  addError: (message?: string, status?: string) => void;
+  error: { message?: string };
+  addError: (message?: string) => void;
   removeError: () => void;
 };
 
@@ -19,21 +19,15 @@ interface APIErrorProviderProps {
 export default function APIErrorProvider({ children }: APIErrorProviderProps) {
   const [error, setError] = useState<{
     message?: string;
-    status?: string;
-  }>({ message: "", status: "" });
+  }>({ message: "" });
 
-  console.log("error inside provider", error);
-  const removeError = () => setError({ message: "", status: "" });
+  const removeError = () => setError({ message: undefined });
 
-  const addError = (message?: string, status?: string) =>
-    setError({ message, status });
+  const addError = (message?: string) => setError({ message });
 
   const contextValue = {
     error,
-    addError: useCallback(
-      (message?: string, status?: string) => addError(message, status),
-      []
-    ),
+    addError: useCallback((message?: string) => addError(message), []),
     removeError: useCallback(() => removeError(), []),
   };
 
