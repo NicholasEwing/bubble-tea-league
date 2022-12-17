@@ -45,7 +45,7 @@ export default function Grid({
     <DataEditor
       className="my-8"
       columns={columns}
-      rows={data.length}
+      rows={data.length || 0}
       getCellContent={getData}
       onCellEdited={onCellEdited}
       onItemHovered={onItemHovered}

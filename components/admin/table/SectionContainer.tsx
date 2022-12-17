@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 interface SectionContainerProps {
-  children: ReactNode[];
+  children: ReactNode[] | ReactNode;
 }
 
 export default function SectionContainer({ children }: SectionContainerProps) {

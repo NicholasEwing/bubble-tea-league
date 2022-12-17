@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "../../modal";
 import PlayersModal from "../AdminModals/PlayersModal";
 import AddButton from "../table/AddButton";
@@ -105,7 +105,7 @@ export default function FreeAgentsSection({
         allowOverlay: false,
         readonly: true,
         displayData: data.summonerName,
-        lastUpdated: data.glideUpdatedAt,
+        // lastUpdated: data.glideUpdatedAt,
       };
     } else if (col === 1) {
       return {
