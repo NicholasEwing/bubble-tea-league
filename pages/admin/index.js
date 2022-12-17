@@ -78,11 +78,15 @@ export default function Dashboard({
   return (
     <RefreshWrapper>
       {provider.length === 0 && <ProviderSection provider={provider} />}
-      <SeasonsSection items={seasons} players={players} />
+      <SeasonsSection seasons={seasons} players={players} />
       <TeamsSection teams={teams} />
-      <MatchesSection items={matches} teams={teams} matchRounds={matchRounds} />
+      <MatchesSection
+        matches={matches}
+        teams={teams}
+        matchRounds={matchRounds}
+      />
       <PlayersSection
-        items={assignedPlayers}
+        assignedPlayers={assignedPlayers}
         players={players}
         teams={teams}
         seasons={seasons}

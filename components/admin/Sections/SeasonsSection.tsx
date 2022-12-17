@@ -1,34 +1,87 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "../../modal";
-import EditableTable from "../EditableTable";
 import SeasonsModal from "../AdminModals/SeasonsModal";
 import AddButton from "../table/AddButton";
 import SectionContainer from "../table/SectionContainer";
 import TextHeadingContainer from "../TextHeadingContainer";
+import useAPIError from "../../hooks/useAPIError";
+import { Player, Season } from "@prisma/client";
+import {
+  GridCell,
+  GridCellKind,
+  GridColumn,
+  GridColumnIcon,
+  Item,
+} from "@glideapps/glide-data-grid";
+import Grid from "../../GlideGrid";
 
-export default function SeasonsSection({ items, players }) {
+interface SeasonsSectionProps {
+  seasons: Season[];
+  players: Player[];
+}
+
+export default function SeasonsSection({
+  seasons,
+  players,
+}: SeasonsSectionProps) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
 
-  const seasonColumns = [
+  const { addError } = useAPIError();
+
+  const columns: GridColumn[] = [
     {
-      valueKey: "id",
-      name: "Number",
-      canEdit: false,
-      small: true,
+      title: "Season Number",
+      id: "id",
+      icon: GridColumnIcon.HeaderRowID,
+      overlayIcon: GridColumnIcon.ProtectedColumnOverlay,
     },
     {
-      valueKey: "year",
-      name: "Year",
-      canEdit: true,
-      pattern: "^[0-9]{1,4}",
-      small: true,
+      title: "Year",
+      id: "year",
+      icon: GridColumnIcon.HeaderDate,
     },
   ];
 
   const regularPlayers = players.filter((p) => !p.isFreeAgent);
+
+  function getMatches([col, row]: Item): GridCell {
+    if (!seasons) {
+      return {
+        kind: GridCellKind.Text,
+        data: "",
+        allowOverlay: true,
+        readonly: true,
+        displayData: "",
+      };
+    }
+    const data = seasons[row];
+
+    if (col === 0) {
+      return {
+        kind: GridCellKind.Number,
+        data: data.id,
+        allowOverlay: true,
+        readonly: true,
+        displayData: data.id.toString(),
+      };
+    } else if (col === 1) {
+      return {
+        kind: GridCellKind.Number,
+        data: data.year,
+        allowOverlay: false,
+        readonly: true,
+        displayData: data.year.toString(),
+      };
+    } else {
+      addError(
+        "There was an error when updating data! Please check your changes."
+      );
+      throw new Error("There was an error when updating data!");
+    }
+  }
 
   return (
     <SectionContainer>
@@ -64,13 +117,9 @@ export default function SeasonsSection({ items, players }) {
           assign times to all matches.
         </p>
       </TextHeadingContainer>
-      <EditableTable
-        items={items}
-        columns={seasonColumns}
-        tableName="seasons"
-      />
+      <Grid data={seasons} columns={columns} getData={getMatches} />
       <Modal open={open} closeModal={closeModal}>
-        <SeasonsModal seasons={items} closeModal={closeModal} />
+        <SeasonsModal seasons={seasons} closeModal={closeModal} />
       </Modal>
     </SectionContainer>
   );
