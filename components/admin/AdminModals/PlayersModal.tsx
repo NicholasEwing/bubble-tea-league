@@ -17,7 +17,7 @@ import { Player } from "@prisma/client";
 interface PlayersModalProps {
   players: Player[];
   closeModal: React.MouseEventHandler<HTMLButtonElement>;
-  isFreeAgent: boolean;
+  isFreeAgent?: boolean;
 }
 
 export default function PlayersModal({
@@ -163,7 +163,7 @@ export default function PlayersModal({
     setLoading(true);
 
     try {
-      let res = await fetch("/api/players", {
+      let res = await fetch("/api/player", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
