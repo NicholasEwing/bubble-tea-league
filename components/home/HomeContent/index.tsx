@@ -71,7 +71,7 @@ export default function HomeContent({
             <iframe
               width="560"
               height="315"
-              src="https://www.youtube.com/embed/8g1OcOlQTZY?start=1365&amp;autoplay=1&amp;mute=1"
+              src="https://www.youtube-nocookie.com/embed/8g1OcOlQTZY?start=1365&amp;autoplay=1&amp;mute=1"
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
