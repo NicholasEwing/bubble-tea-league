@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Modal from "../../modal";
 import PlayersModal from "../AdminModals/PlayersModal";
-import AddButton from "../table/AddButton";
-import SectionContainer from "../table/SectionContainer";
-import TextHeadingContainer from "../TextHeadingContainer";
+import AddButton from "../Buttons/AddButton";
+import SectionContainer from "../../Containers/SectionContainer";
+import TextHeadingContainer from "../../Containers/TextHeadingContainer";
 import dynamic from "next/dynamic";
 import { Player } from "@prisma/client";
 import {
@@ -15,6 +15,8 @@ import {
   Item,
 } from "@glideapps/glide-data-grid";
 import useAPIError from "../../hooks/useAPIError";
+
+// TODO: Ensure someone can't add an existing player as a free agent
 
 const Grid = dynamic(
   () => {

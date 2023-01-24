@@ -1,6 +1,6 @@
 import React from "react";
-import SectionContainer from "../components/admin/table/SectionContainer";
-import TextHeadingContainer from "../components/admin/TextHeadingContainer";
+import SectionContainer from "../components/Containers/SectionContainer";
+import TextHeadingContainer from "../components/Containers/TextHeadingContainer";
 
 export default function Rules() {
   return (

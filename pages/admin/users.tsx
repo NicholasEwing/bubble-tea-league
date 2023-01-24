@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import SectionContainer from "../../components/admin/table/SectionContainer";
+import SectionContainer from "../../components/Containers/SectionContainer";
 
 import admins from "../../admins";
 import { useEffect } from "react";

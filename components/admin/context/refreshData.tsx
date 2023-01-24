@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
 import { createContext, ReactNode, useContext } from "react";
 
-const RefreshContext = createContext();
+const RefreshContext = createContext(() => {});
 
-export function RefreshWrapper({ children }) {
+interface RefreshWrapperProps {
+  children: ReactNode | ReactNode[];
+}
+
+export function RefreshWrapper({ children }: RefreshWrapperProps) {
   const router = useRouter();
 
   const refreshData = () => {

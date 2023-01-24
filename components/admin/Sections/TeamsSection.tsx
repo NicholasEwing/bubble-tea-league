@@ -9,8 +9,8 @@ import {
 import { Team } from "@prisma/client";
 import Grid from "../../GlideGrid";
 import useAPIError from "../../hooks/useAPIError";
-import SectionContainer from "../table/SectionContainer";
-import TextHeadingContainer from "../TextHeadingContainer";
+import SectionContainer from "../../Containers/SectionContainer";
+import TextHeadingContainer from "../../Containers/TextHeadingContainer";
 
 interface TeamsSectionProps {
   teams: Team[];
@@ -52,7 +52,7 @@ export default function TeamsSection({ teams }: TeamsSectionProps) {
     if (col === 0) {
       return {
         kind: GridCellKind.Text,
-        data: data.teamName,
+        data: data?.teamName,
         allowOverlay: false,
         readonly: true,
         displayData: data.teamName,
@@ -60,7 +60,7 @@ export default function TeamsSection({ teams }: TeamsSectionProps) {
     } else if (col === 1) {
       return {
         kind: GridCellKind.Text,
-        data: data.tricode || "",
+        data: data?.tricode || "",
         allowOverlay: false,
         readonly: true,
         displayData: data.tricode || "",
@@ -68,18 +68,18 @@ export default function TeamsSection({ teams }: TeamsSectionProps) {
     } else if (col === 2) {
       return {
         kind: GridCellKind.Image,
-        data: [data.logoImgPath || ""],
+        data: [data?.logoImgPath || ""],
         allowOverlay: true,
         allowAdd: false,
-        displayData: [data.logoImgPath || ""],
+        displayData: [data?.logoImgPath || ""],
       };
     } else if (col === 3) {
       return {
         kind: GridCellKind.Text,
-        data: data.seasonId.toString(),
+        data: data?.seasonId.toString(),
         allowOverlay: false,
         readonly: true,
-        displayData: data.seasonId.toString(),
+        displayData: data?.seasonId.toString(),
       };
     } else {
       addError(
@@ -111,12 +111,12 @@ export default function TeamsSection({ teams }: TeamsSectionProps) {
     }
 
     try {
-      const res = await fetch("/api/players", {
+      const res = await fetch("/api/player", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ players: [{ ...data }] }),
+        body: JSON.stringify({ player: { ...data } }),
       });
 
       if (!res.ok) {

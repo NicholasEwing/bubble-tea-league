@@ -1,6 +1,19 @@
-import React from "react";
+import { ReactNode } from "react";
+import { ComparisonTab } from "../../../../../types";
 
-export default function TabContainer({ children, tabName, selectTab, active }) {
+interface TabContainerProps {
+  children: ReactNode | ReactNode[];
+  tabName: ComparisonTab;
+  selectTab: (tab: ComparisonTab) => void;
+  active: boolean;
+}
+
+export default function TabContainer({
+  children,
+  tabName,
+  selectTab,
+  active,
+}: TabContainerProps) {
   return (
     <div
       onClick={() => selectTab(tabName)}

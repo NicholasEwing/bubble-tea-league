@@ -38,10 +38,10 @@ export default function Modal({ open, closeModal, children }) {
     <>
       {open && (
         <ClientOnlyPortal selector="#modal">
-          <div className="backdrop fixed backdrop-blur-sm top-0 right-0 bottom-0 left-0 overflow-y-auto">
+          <div className="backdrop fixed top-0 right-0 bottom-0 left-0 overflow-y-auto backdrop-blur-sm">
             <div
               ref={ref}
-              className="modal absolute w-full md:w-auto flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 text-slate-400 ring-slate-900 ring-1 ring-opacity-10 rounded-md shadow-xl md:min-w-[80%] md:min-h-[80%] min-w-screen min-h-screen md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
+              className="modal min-w-screen absolute flex min-h-screen w-full flex-col items-center justify-center rounded-md bg-gradient-to-br from-slate-900 to-slate-800 text-slate-400 shadow-xl ring-1 ring-slate-900 ring-opacity-10 md:top-1/2 md:left-1/2 md:min-h-[80%] md:w-auto md:min-w-[80%] md:-translate-x-1/2 md:-translate-y-1/2"
             >
               {cloneElement(children, { closeModal })}
             </div>

@@ -5,9 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import APIErrorProvider from "../components/providers/APIErrorProvider";
 import APIErrorNotification from "../components/alerts/APIErrorNotification";
 import Layout from "../components/layout";
-import useAPIError from "../components/hooks/useAPIError";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+function BTLApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
       <APIErrorProvider>
@@ -20,4 +19,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default MyApp;
+export default BTLApp;

@@ -9,8 +9,8 @@ import { Match, MatchRound, Team } from "@prisma/client";
 import { findTeamName } from "../../../../lib/utils";
 import Grid from "../../../GlideGrid";
 import useAPIError from "../../../hooks/useAPIError";
-import SectionContainer from "../../table/SectionContainer";
-import TextHeadingContainer from "../../TextHeadingContainer";
+import SectionContainer from "../../../Containers/SectionContainer";
+import TextHeadingContainer from "../../../Containers/TextHeadingContainer";
 
 interface MatchesSectionProps {
   matches: Match[];

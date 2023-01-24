@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import { ComparisonTab } from "../../../../../types";
 import AbilitiesIcon from "./icons/AbilitiesIcon";
 import ItemsIcon from "./icons/ItemsIcon";
 import RunesIcon from "./icons/RunesIcon";
 import StatsIcon from "./icons/StatsIcon";
 import TabContainer from "./TabContainer";
 
-export default function ComparisonDetailsSelector({ activeTab, selectTab }) {
+interface ComparisonDetailsSelectorProps {
+  activeTab: ComparisonTab;
+  selectTab: (tab: ComparisonTab) => void;
+}
+
+export default function ComparisonDetailsSelector({
+  activeTab,
+  selectTab,
+}: ComparisonDetailsSelectorProps) {
   const icons = [
     { key: "stats", Component: StatsIcon },
     { key: "items", Component: ItemsIcon },
@@ -18,7 +26,7 @@ export default function ComparisonDetailsSelector({ activeTab, selectTab }) {
       {icons.map((Icon) => (
         <TabContainer
           key={Icon.key}
-          tabName={Icon.key}
+          tabName={Icon.key as ComparisonTab}
           selectTab={selectTab}
           active={activeTab === Icon.key}
         >

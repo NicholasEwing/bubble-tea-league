@@ -44,6 +44,9 @@ export default function Grid({
   return (
     <DataEditor
       className="my-8"
+      // onGridSelectionChange={(gridSelection) => {
+      //   console.log(gridSelection);
+      // }}
       columns={columns}
       rows={data.length || 0}
       getCellContent={getData}

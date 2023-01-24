@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import SeasonSelector from "../components/admin/Sections/PlayersSection/SeasonSelector";
-import SectionContainer from "../components/admin/table/SectionContainer";
+import SectionContainer from "../components/Containers/SectionContainer";
 import { findTeamName, percentageFormatter } from "../lib/utils";
-import EditableTable from "../components/admin/EditableTable";
-import TextHeadingContainer from "../components/admin/TextHeadingContainer";
+import TextHeadingContainer from "../components/Containers/TextHeadingContainer";
 
 export const getStaticProps = async () => {
   const { prisma } = require("../prisma/db");
@@ -382,12 +381,6 @@ export default function PlayerStats({ seasons = null, seasonRows = null }) {
             handleActiveSeason={handleActiveSeason}
           />
         )}
-        <EditableTable
-          items={rowsToDisplay}
-          columns={playerStatsColumns}
-          tableName="player-stats"
-          isPublic
-        />
       </SectionContainer>
     </div>
   );

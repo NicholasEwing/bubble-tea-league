@@ -1,9 +1,19 @@
 /* This example requires Tailwind CSS v2.0+ */
+
+import { Season } from "@prisma/client";
+import { MouseEventHandler } from "react";
+
+interface SeasonSelectorProps {
+  seasons: Season[];
+  activeSeason: number;
+  handleActiveSeason: (number: number) => void;
+}
+
 export default function SeasonSelector({
   seasons,
   activeSeason,
   handleActiveSeason,
-}) {
+}: SeasonSelectorProps) {
   return (
     <>
       <p className="mt-2 mb-1 text-sm text-gray-300">Season Selector:</p>

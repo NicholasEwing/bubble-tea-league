@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { RefreshWrapper } from "../../components/admin/context/refreshData";
-import ProviderSection from "../../components/admin/Sections/ProviderSection";
+import ProviderSection from "../../components/admin/Sections/ProviderSection/index";
 import SeasonsSection from "../../components/admin/Sections/SeasonsSection";
 import TeamsSection from "../../components/admin/Sections/TeamsSection";
 import MatchesSection from "../../components/admin/Sections/MatchesSection";
@@ -10,11 +10,20 @@ import PlayersSection from "../../components/admin/Sections/PlayersSection";
 import FreeAgentsSection from "../../components/admin/Sections/FreeAgentsSection";
 
 import admins from "../../admins";
+import {
+  Match,
+  MatchRound,
+  Player,
+  PlayerTeamHistory,
+  Provider,
+  Season,
+  Team,
+} from "@prisma/client";
 
 export const getServerSideProps = async () => {
-  const { prisma } = require("../../prisma/db");
+  const { prisma } = require("../../prisma/db.ts");
 
-  const provider = await prisma.provider.findMany();
+  const provider = await prisma.provider.findFirst();
   const seasons = await prisma.season.findMany();
   const teams = await prisma.team.findMany();
   const players = await prisma.player.findMany();
@@ -37,20 +46,30 @@ export const getServerSideProps = async () => {
   };
 };
 
+interface DashboardProps {
+  provider: Provider;
+  seasons: Season[];
+  teams: Team[];
+  players: Player[];
+  matches: Match[];
+  matchRounds: MatchRound[];
+  playerTeamHistories: PlayerTeamHistory[];
+}
+
 export default function Dashboard({
-  provider = null,
-  seasons = null,
-  teams = null,
-  players = null,
-  matches = null,
-  matchRounds = null,
-  playerTeamHistories = null,
-}) {
+  provider,
+  seasons,
+  teams,
+  players,
+  matches,
+  matchRounds,
+  playerTeamHistories,
+}: DashboardProps) {
   const router = useRouter();
 
   const sessionInfo = useSession();
   const { status } = useSession();
-  const isAdmin = admins.includes(sessionInfo?.data?.user?.email);
+  const isAdmin = admins.includes(sessionInfo?.data?.user?.email || "");
 
   useEffect(() => {
     if (status === "authenticated" && !isAdmin) router.push("/");
@@ -77,17 +96,16 @@ export default function Dashboard({
 
   return (
     <RefreshWrapper>
-      {provider.length === 0 && <ProviderSection provider={provider} />}
-      <SeasonsSection seasons={seasons} players={players} />
+      {provider && <ProviderSection provider={provider} />}
+      {/* <SeasonsSection seasons={seasons} players={players} />
       <TeamsSection teams={teams} />
       <MatchesSection
         matches={matches}
         teams={teams}
         matchRounds={matchRounds}
-      />
+      /> */}
       <PlayersSection
         assignedPlayers={assignedPlayers}
-        players={players}
         teams={teams}
         seasons={seasons}
         playerTeamHistories={playerTeamHistories}

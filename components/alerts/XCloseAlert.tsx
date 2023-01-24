@@ -2,7 +2,7 @@ import { MouseEventHandler } from "react";
 
 interface XCloseAlertProps {
   success: boolean;
-  dismissHandler: MouseEventHandler;
+  dismissHandler?: MouseEventHandler;
 }
 
 export default function XCloseAlert({

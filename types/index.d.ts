@@ -11,4 +11,6 @@ interface TeamWithInfo extends Team {
   groupStageLosses: Match[];
 }
 
-export type { BestOf, TeamSide, PlayerRow, TeamWithInfo };
+type ComparisonTab = "stats" | "items" | "abilities" | "runes";
+
+export type { BestOf, TeamSide, PlayerRow, TeamWithInfo, ComparisonTab };

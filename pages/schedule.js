@@ -6,7 +6,7 @@ import FutureMatch from "../components/schedule/FutureMatch";
 import EventDate from "../components/schedule/EventDate";
 import DividerLive from "../components/schedule/DividerLive";
 import { dateInPast, isToday } from "../lib/utils";
-import SectionContainer from "../components/admin/table/SectionContainer";
+import SectionContainer from "../components/Containers/SectionContainer";
 
 export const getStaticProps = async () => {
   const { prisma } = require("../prisma/db");

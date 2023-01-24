@@ -12,14 +12,13 @@ import Grid from "../../../GlideGrid";
 import useAPIError from "../../../hooks/useAPIError";
 import Modal from "../../../modal";
 import PlayersModal from "../../AdminModals/PlayersModal";
-import AddButton from "../../table/AddButton";
-import SectionContainer from "../../table/SectionContainer";
-import TextHeadingContainer from "../../TextHeadingContainer";
+import AddButton from "../../Buttons/AddButton";
+import SectionContainer from "../../../Containers/SectionContainer";
+import TextHeadingContainer from "../../../Containers/TextHeadingContainer";
 
 interface PlayersSectionProps {
   assignedPlayers: Player[];
   teams: Team[];
-  players: Player[];
   seasons: Season[];
   playerTeamHistories: PlayerTeamHistory[];
 }
@@ -64,6 +63,7 @@ export default function PlayersSection({
   // TODO: Reactivate (or make a prettier verison) of the Season selector
   // TODO: Calculate player's team / role for a Season
   // TODO: Add dropdown options to edit player's team / role for a Season
+  // TODO: Ensure someone can't add an existing free agent as a player
 
   const columns: GridColumn[] = [
     {

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import MatchesSection from "../components/admin/Sections/MatchesSection";
 import Warning from "../components/tournament-codes/warning";
-import SectionContainer from "../components/admin/table/SectionContainer";
+import SectionContainer from "../components/Containers/SectionContainer";
 import admins from "../admins";
 
 export const getStaticProps = async () => {

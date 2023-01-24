@@ -5,7 +5,7 @@ import AlertContainer from "./AlertContainer";
 import XCloseAlert from "./XCloseAlert";
 
 interface SuccessProps {
-  closeSuccess: MouseEventHandler;
+  closeSuccess?: MouseEventHandler;
   successMsg: string;
 }
 

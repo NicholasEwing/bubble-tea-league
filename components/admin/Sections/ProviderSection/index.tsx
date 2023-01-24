@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Failed from "../../../alerts/Failed";
 import Success from "../../../alerts/Success";
-import SectionContainer from "../../table/SectionContainer";
-import TextHeadingContainer from "../../TextHeadingContainer";
+import SectionContainer from "../../../Containers/SectionContainer";
+import TextHeadingContainer from "../../../Containers/TextHeadingContainer";
 import ProviderWarning from "./ProviderWarning";
 import { useRefreshContext } from "../../context/refreshData";
+import { Provider } from "@prisma/client";
 
-export default function ProviderSection({ provider }) {
+interface ProviderSectionProps {
+  provider: Provider;
+}
+
+export default function ProviderSection({ provider }: ProviderSectionProps) {
   // submit / success / error controls
   const [applying, setApplying] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -46,7 +51,7 @@ export default function ProviderSection({ provider }) {
   return (
     <SectionContainer>
       <TextHeadingContainer>
-        {!provider?.length && (
+        {!provider && (
           <ProviderWarning
             applying={applying}
             sendProviderRequest={sendProviderRequest}

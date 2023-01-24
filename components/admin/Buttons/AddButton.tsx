@@ -1,10 +1,16 @@
-import React from "react";
+import { MouseEventHandler } from "react";
+
+interface AddButtonProps {
+  buttonText: string;
+  buttonAction: () => void;
+  disabled?: boolean;
+}
 
 export default function AddButton({
   buttonText,
   buttonAction,
   disabled = false,
-}) {
+}: AddButtonProps) {
   return (
     <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
       <button

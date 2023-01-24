@@ -1,6 +1,9 @@
-import React from "react";
+interface LeftArrowProps {
+  hide: boolean;
+  handleSlideLeft: () => void;
+}
 
-export default function LeftArrow({ hide, handleSlideLeft }) {
+export default function LeftArrow({ hide, handleSlideLeft }: LeftArrowProps) {
   return (
     <button
       onClick={handleSlideLeft}

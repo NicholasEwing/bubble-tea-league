@@ -1,4 +1,12 @@
-export default function RightArrow({ hide, handleSlideRight }) {
+interface RightArrowProps {
+  hide: boolean;
+  handleSlideRight: () => void;
+}
+
+export default function RightArrow({
+  hide,
+  handleSlideRight,
+}: RightArrowProps) {
   return (
     <button
       onClick={handleSlideRight}

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Modal from "../../modal";
 import SeasonsModal from "../AdminModals/SeasonsModal";
-import AddButton from "../table/AddButton";
-import SectionContainer from "../table/SectionContainer";
-import TextHeadingContainer from "../TextHeadingContainer";
+import AddButton from "../Buttons/AddButton";
+import SectionContainer from "../../Containers/SectionContainer";
+import TextHeadingContainer from "../../Containers/TextHeadingContainer";
 import useAPIError from "../../hooks/useAPIError";
 import { Player, Season } from "@prisma/client";
 import {
@@ -62,18 +62,18 @@ export default function SeasonsSection({
     if (col === 0) {
       return {
         kind: GridCellKind.Number,
-        data: data.id,
+        data: data?.id,
         allowOverlay: true,
         readonly: true,
-        displayData: data.id.toString(),
+        displayData: data?.id.toString(),
       };
     } else if (col === 1) {
       return {
         kind: GridCellKind.Number,
-        data: data.year,
+        data: data?.year,
         allowOverlay: false,
         readonly: true,
-        displayData: data.year.toString(),
+        displayData: data?.year.toString(),
       };
     } else {
       addError(

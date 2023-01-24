@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import SectionContainer from "../components/admin/table/SectionContainer";
+import SectionContainer from "../components/Containers/SectionContainer";
 import HomeContent from "../components/home/HomeContent";
 import RecentVods from "../components/home/RecentVods";
 import ScheduleBanner from "../components/home/ScheduleBanner";

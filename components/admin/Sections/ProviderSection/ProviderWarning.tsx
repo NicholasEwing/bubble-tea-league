@@ -2,7 +2,15 @@
 import { XCircleIcon } from "@heroicons/react/solid";
 import LoadingSpinner from "../../../modal/LoadingSpinner";
 
-export default function ProviderWarning({ applying, sendProviderRequest }) {
+interface ProviderWarningProps {
+  applying: boolean;
+  sendProviderRequest: () => void;
+}
+
+export default function ProviderWarning({
+  applying,
+  sendProviderRequest,
+}: ProviderWarningProps) {
   return (
     <div className="rounded-md bg-red-50 p-4">
       <div className="flex">
