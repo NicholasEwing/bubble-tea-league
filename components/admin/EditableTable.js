@@ -188,7 +188,7 @@ export default function EditableTable({
       const upload = await fetch(url, {
         method: "POST",
         body: formData,
-        mode: process.env.NODE_ENV !== "production" ? "no-cors" : undefined,
+        mode: "no-cors",
       });
 
       console.log("upload", upload);
