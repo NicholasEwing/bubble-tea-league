@@ -9,7 +9,7 @@ import {
 } from "../../../lib/riot-games-api-helpers";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import admins from "../../admin";
+import admins from "../../../admins";
 
 import { prisma } from "../../../prisma/db";
 
